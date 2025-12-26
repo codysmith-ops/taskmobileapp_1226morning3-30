@@ -1,0 +1,59 @@
+I have a React Native iOS project (MobileTodoList) with multiple build errors and warnings. Please create comprehensive fix scripts and documentation to resolve all of these issues:
+
+**CRITICAL ERRORS (Build Blockers):**
+1. `error: No member named 'NativeRNCGeolocationSpecJSI' in namespace 'facebook::react'` in RNCGeolocation.mm:559
+2. `error: No template named 'result_of' in namespace 'std'` in promise_like.h:74
+3. `error: A template argument list is expected after a name prefixed by the template keyword` in basic_seq.h:103
+
+**XCODE PROJECT WARNINGS:**
+- MobileTodoList.xcodeproj:1: Update to recommended settings
+- Pods.xcodeproj:1: Update to recommended settings
+
+**BUILD SCRIPT WARNINGS:**
+- Run script build phase 'Bundle React Native code and images' will be run during every build because it does not specify any outputs
+- Run script build phase '[CP-User] [RN]Check rncore' will be run during every build because it does not specify any outputs
+- Run script build phase '[CP-User] [Hermes] Replace Hermes for the right configuration, if needed' will be run during every build because it does not specify any outputs
+
+**REACT NATIVE DEPRECATION WARNINGS (25+ total including):**
+- RCTBridge.mm:209: 'reload' is deprecated: Use RCTReloadCommand instead
+- RCTBridgeProxy.mm:44: Designated initializer missing a 'super' call
+- RCTBridgeProxy.mm:417: Designated initializer missing a 'super' call
+- RCTCallInvoker.mm:10: Method override for the designated initializer of the superclass '-init' not found
+- RCTModuleData.mm:102: Convenience initializer missing a 'self' call
+- RCTModuleData.mm:110: Convenience initializer should not invoke an initializer on 'super'
+- RCTMultipartStreamReader.m:99: Variable length array folded to constant array
+- RCTUtils.m:242: 'CC_MD5' is deprecated: first deprecated in iOS 13.0
+- RCTSurfaceHostingProxyRootView.mm:52: Method override for the designated initializer missing
+- RCTPausedInDebuggerOverlayController.mm:59: 'adjustsImageWhenDisabled' is deprecated: first deprecated in iOS 15.0
+- RCTCxxInspectorWebSocketAdapter.mm:53: 'send:' is deprecated
+- RCTAppearance.mm:123: 'windows' is deprecated: first deprecated in iOS 15.0
+- RCTDeviceInfo.mm:131: 'keyWindow' is deprecated: first deprecated in iOS 13.0
+- RCTDevMenu.mm:206: 'windows' is deprecated: first deprecated in iOS 15.0
+- RCTStatusBarManager.mm (multiple): Status bar notifications deprecated in iOS 13.0
+- RNCGeolocation.mm:368,472: 'authorizationStatus' is deprecated: first deprecated in iOS 14.0
+- RCTImageStoreManager.mm:205: 'UTTypeCopyPreferredTagWithClass' and 'kUTTagClassMIMEType' deprecated in iOS 15.0
+
+**THIRD-PARTY WARNINGS:**
+- raw_logging.cc:153 & utilities.cc:254: 'syscall' is deprecated: first deprecated in iOS 10.0
+
+Please create:
+1. An automated bash script that fixes all critical errors (updates geolocation package, creates updated Podfile with C++17 support, cleans builds, reinstalls pods)
+2. An updated Podfile with C++17 language standard set to fix gRPC errors
+3. A .xcode.env file for proper Node environment
+4. Comprehensive documentation including:
+   - Quick start guide
+   - Detailed manual fix instructions
+   - Command reference sheet
+   - Troubleshooting guide
+5. Optional Ruby script to automatically add output files to Xcode build phases
+6. Visual summary and execution guide
+
+The fixes should:
+- Update @react-native-community/geolocation to latest compatible version
+- Set CLANG_CXX_LANGUAGE_STANDARD to 'c++17' in Podfile
+- Set IPHONEOS_DEPLOYMENT_TARGET to '13.4'
+- Suppress warnings for third-party node_modules code while keeping warnings for my code
+- Add output file dependencies to build script phases
+- Provide instructions for updating Xcode project settings manually
+
+Create all files with clear instructions, make scripts executable-ready, and provide a START_HERE script that guides me through the entire fix process interactively. Include verification checklists and troubleshooting steps for common issues.

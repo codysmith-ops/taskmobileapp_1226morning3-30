@@ -1,0 +1,66 @@
+# Podfile for MobileTodoList
+# This fixes C++ compatibility issues and updates dependencies
+
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+platform :ios, '13.4'
+install! 'cocoapods', :deterministic_uuids => false
+
+target 'MobileTodoList' do
+  config = use_native_modules!
+
+  # Flags change depending on the env values.
+  flags = get_default_flags()
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # Hermes is now required.
+    :hermes_enabled => flags[:hermes_enabled],
+    :fabric_enabled => flags[:fabric_enabled],
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  target 'MobileTodoListTests' do
+    inherit! :complete
+    # Pods for testing
+  end
+
+  post_install do |installer|
+    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false
+    )
+    
+    # Fix for C++ compatibility issues (gRPC and other C++ dependencies)
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        # Set C++17 standard to fix gRPC errors
+        config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+        
+        # Ensure minimum deployment target
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.4'
+        
+        # Fix for gRPC and other third-party warnings
+        if target.name == 'gRPC-Core' || target.name.start_with?('gRPC')
+          config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
+        end
+        
+        # Fix for React Native warnings in node_modules
+        if target.name.start_with?('React-') || target.name == 'React'
+          config.build_settings['CLANG_WARN_STRICT_PROTOTYPES'] = 'NO'
+          config.build_settings['CLANG_WARN_DOCUMENTATION_COMMENTS'] = 'NO'
+        end
+        
+        # Additional fixes for iOS 13+ deprecations
+        config.build_settings['CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS'] = 'NO'
+        config.build_settings['WARNING_CFLAGS'] ||= ['$(inherited)']
+      end
+    end
+    
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+  end
+end

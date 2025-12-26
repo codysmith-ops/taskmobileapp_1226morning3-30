@@ -7,4 +7,52 @@
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Podfile.new">
+   </FileRef>
+   <FileRef
+      location = "group:package-updates.json">
+   </FileRef>
+   <FileRef
+      location = "group:fix-ios-build.sh">
+   </FileRef>
+   <FileRef
+      location = "group:bundle-react-native-fixed.sh">
+   </FileRef>
+   <FileRef
+      location = "group:IOS_BUILD_FIX_GUIDE.md">
+   </FileRef>
+   <FileRef
+      location = "group:fix-xcode-build-phases.rb">
+   </FileRef>
+   <FileRef
+      location = "group:README_IOS_FIXES.md">
+   </FileRef>
+   <FileRef
+      location = "group:COMMANDS_REFERENCE.sh">
+   </FileRef>
+   <FileRef
+      location = "group:EXECUTION_SUMMARY.md">
+   </FileRef>
+   <FileRef
+      location = "group:START_HERE.sh">
+   </FileRef>
+   <FileRef
+      location = "group:VISUAL_OVERVIEW.txt">
+   </FileRef>
+   <FileRef
+      location = "group:README_START_HERE.txt">
+   </FileRef>
+   <FileRef
+      location = "group:QUICK_REFERENCE.txt">
+   </FileRef>
+   <FileRef
+      location = "group:PROMPT_FOR_CLAUDE.txt">
+   </FileRef>
+   <FileRef
+      location = "group:MAINTENANCE_CHECKLIST.md">
+   </FileRef>
+   <FileRef
+      location = "group:ADDITIONAL_IMPROVEMENTS.md">
+   </FileRef>
 </Workspace>

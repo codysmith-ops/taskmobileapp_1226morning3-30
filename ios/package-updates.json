@@ -1,0 +1,15 @@
+{
+  "name": "fix-dependencies",
+  "description": "Updated package.json with fixed geolocation dependency",
+  "note": "Merge these dependency updates into your existing package.json",
+  "dependencies_to_update": {
+    "@react-native-community/geolocation": "^3.2.1"
+  },
+  "instructions": [
+    "1. Update @react-native-community/geolocation to version 3.2.1 or later",
+    "2. Run: npm install",
+    "3. Run: cd ios && pod install && cd ..",
+    "4. Clean build folder in Xcode",
+    "5. Rebuild project"
+  ]
+}
