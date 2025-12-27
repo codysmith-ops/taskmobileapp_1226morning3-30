@@ -2,11 +2,11 @@
 set -euo pipefail
 
 # FAANG-level preflight checks for iOS builds
-# Enforces Xcode 26.2 and iPhone 15 iOS 17.5 simulator
+# Enforces Xcode 15.4 and iPhone 15 iOS 17.5 simulator
 
-REQUIRED_XCODE_PATH="/Applications/Xcode.app/Contents/Developer"
-REQUIRED_XCODE_VERSION="Xcode 26.2"
-REQUIRED_XCODE_BUILD="17C52"
+REQUIRED_XCODE_PATH="/Applications/Xcode-15.4.app/Contents/Developer"
+REQUIRED_XCODE_VERSION="Xcode 15.4"
+REQUIRED_XCODE_BUILD="15F31d"
 REQUIRED_SIMULATOR="iPhone 15"
 REQUIRED_IOS_VERSION="17.5"
 
