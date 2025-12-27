@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
+    "pre-commit": "npm run lint",
     "xcode:audit": "python3 xcode_auditor.py --audit-only",
     "xcode:fix": "python3 xcode_auditor.py --fix",
     "xcode:fix-quick": "bash fix_build_phases.sh",

@@ -13,6 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Select Xcode 15.4
+      run: |
+        sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+        xcodebuild -version
+    
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
@@ -21,6 +26,11 @@ jobs:
     
     - name: Install dependencies
       run: npm install
+    
+    - name: Run Preflight Checks (ENFORCED)
+      run: |
+        chmod +x scripts/preflight.sh
+        ./scripts/preflight.sh
     
     - name: Run Xcode Audit
       run: |
@@ -31,7 +41,7 @@ jobs:
         cd ios
         pod install
     
-    - name: Build iOS app
+    - name: Build iOS app (ENFORCED: iPhone 15 / iOS 17.5)
       run: |
         cd ios
         xcodebuild clean build \
@@ -39,7 +49,7 @@ jobs:
           -scheme MobileTodoList \
           -configuration Debug \
           -sdk iphonesimulator \
-          -destination 'platform=iOS Simulator,name=iPhone 15'
+          -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5'
     
     - name: Upload build artifacts
       if: failure()
