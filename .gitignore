@@ -71,6 +71,12 @@ fastlane/test_output
 .env
 .env.local
 .env.*.local
+.env.development
+.env.staging
+.env.production
+
+# Keep template file
+!.env.example
 
 # ============================================
 # IDE

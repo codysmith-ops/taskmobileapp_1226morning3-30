@@ -1,0 +1,87 @@
+# Enterprise iOS SwiftLint Configuration
+# Project: MobileTodoList-iOS
+# Updated: December 27, 2025
+
+disabled_rules:
+  - trailing_whitespace  # Prettier handles this
+  - line_length  # More flexible for React Native bridge code
+  
+opt_in_rules:
+  - empty_count
+  - empty_string
+  - explicit_init
+  - fatal_error_message
+  - file_header
+  - first_where
+  - force_unwrapping
+  - implicit_return
+  - multiline_parameters
+  - overridden_super_call
+  - private_outlet
+  - redundant_nil_coalescing
+  - sorted_imports
+  - unneeded_parentheses_in_closure_argument
+  - vertical_parameter_alignment_on_call
+
+included:
+  - ios/MobileTodoList
+
+excluded:
+  - ios/Pods
+  - ios/build
+  - ios/DerivedData
+  - node_modules
+  - __tests__
+  - vendor
+  - .build
+
+line_length:
+  warning: 120
+  error: 200
+  ignores_comments: true
+
+file_length:
+  warning: 500
+  error: 1000
+
+function_body_length:
+  warning: 50
+  error: 100
+
+type_body_length:
+  warning: 300
+  error: 500
+
+identifier_name:
+  min_length:
+    warning: 2
+  excluded:
+    - id
+    - ID
+    - URL
+    - url
+    - x
+    - y
+    - z
+    - i
+    - j
+    - k
+
+force_cast: warning
+force_try: warning
+force_unwrapping: warning
+
+custom_rules:
+  no_print_statements:
+    name: "No Print Statements"
+    regex: "print\\("
+    message: "Use os_log or NSLog for production logging"
+    severity: warning
+    
+  no_direct_standard_output_logs:
+    name: "No Direct Standard Output Logs"
+    regex: "Swift\\.print\\("
+    message: "Use structured logging instead of Swift.print"
+    severity: warning
+
+reporter: "xcode"

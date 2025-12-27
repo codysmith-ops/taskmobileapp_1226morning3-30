@@ -1,22 +1,22 @@
-require_relative '../node_modules/react-native/scripts/react_native_pods'
-require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )',
+__dir__]).strip
 
 platform :ios, '16.0'
-install! 'cocoapods', :deterministic_uuids => false
-
-# Enable modular headers for Firebase static libraries
-use_modular_headers!
-
-$RNFirebaseAsStaticFramework = true
+prepare_react_native_project!
 
 target 'MobileTodoList' do
   config = use_native_modules!
+  
+  use_modular_headers!
 
   use_react_native!(
     :path => config[:reactNativePath],
     :hermes_enabled => true,
     :fabric_enabled => false,
-    :flipper_configuration => FlipperConfiguration.disabled,
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
@@ -25,110 +25,17 @@ target 'MobileTodoList' do
   end
 
   post_install do |installer|
-    react_native_post_install(
-      installer,
-      :mac_catalyst_enabled => false
-    )
-    
-    # Fix gRPC-Core basic_seq.h template error
-    basic_seq_path = File.join(installer.sandbox.root, 'gRPC-Core/src/core/lib/promise/detail/basic_seq.h')
-    if File.exist?(basic_seq_path)
-      puts "Patching gRPC-Core basic_seq.h for C++ template compatibility..."
-      
-      # Make file writable
-      FileUtils.chmod(0644, basic_seq_path)
-      
-      text = File.read(basic_seq_path)
-      
-      # Fix line 103: Add template arguments to CallSeqFactory
-      new_text = text.gsub(
-        'Traits::template CallSeqFactory(f_, *cur_, std::move(arg))',
-        'Traits::template CallSeqFactory<Factory, IterValue, Argument>(f_, *cur_, std::move(arg))'
-      )
-      
-      if text != new_text
-        File.write(basic_seq_path, new_text)
-        puts "✓ Successfully patched gRPC-Core basic_seq.h"
-      else
-        puts "⚠ File already patched or pattern not found"
-      end
-    end
-    
-    # Fix for gRPC-Core and other C++ compilation issues
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
-        # Set deployment target to iOS 16.0 for ALL pods (minimum 12.0, recommended 16.0)
-        current_target = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
-        if current_target.nil? || current_target.to_f < 16.0
-          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
-        end
-        
-        # Fix C++ language standard - use C++17 for better compatibility
-        config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
-        config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
-        
-        # Disable warnings for third-party code to reduce noise
-        config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
-        config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
-        config.build_settings['CLANG_WARN_DOCUMENTATION_COMMENTS'] = 'NO'
-        config.build_settings['CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS'] = 'NO'
-        
-        # Suppress implicit conversion warnings
-        config.build_settings['GCC_WARN_64_TO_32_BIT_CONVERSION'] = 'NO'
-        config.build_settings['CLANG_WARN_IMPLICIT_SIGN_CONVERSION'] = 'NO'
-        
-        # Fix duplicate library warning
-        config.build_settings['OTHER_LDFLAGS'] ||= ['$(inherited)']
-        config.build_settings['OTHER_LDFLAGS'].delete('-lc++') if config.build_settings['OTHER_LDFLAGS'].include?('-lc++')
-        
-        # Additional fixes for gRPC - use gnu++17 for better template support
-        if target.name.start_with?('gRPC')
-          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++17'
-          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
-          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'GPB_USE_PROTOBUF_FRAMEWORK_IMPORTS=0'
-        end
-        
-        # Fix for abseil (used by gRPC)
-        if target.name.start_with?('abseil')
-          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
-        end
-        
-        # Fix for specific pods with known issues
-        case target.name
-        when 'react-native-geolocation', 'react-native-image-picker', 'react-native-voice'
-          # These have deployment target 9.0, force to 16.0
-          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
-        when 'RNDateTimePicker', 'RNGestureHandler', 'SocketRocket'
-          # These have deployment target 11.0, force to 16.0
-          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
-        when 'fmt', 'libevent'
-          # These have deployment target 10.0, force to 16.0
-          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
-        end
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
       end
     end
-
-    # Fix Run Script warnings by adding output files
-    installer.pods_project.targets.each do |target|
-      target.build_phases.each do |phase|
-        if phase.is_a?(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)
-          # Only set output_paths if it's nil or empty
-          if phase.name&.include?('Bundle React Native code') && (phase.output_paths.nil? || phase.output_paths.empty?)
-            phase.output_paths = [
-              '$(DERIVED_FILE_DIR)/main.jsbundle',
-              '$(DERIVED_FILE_DIR)/main.jsbundle.map'
-            ]
-          elsif phase.name&.include?('[RNFB] Core Configuration') && (phase.output_paths.nil? || phase.output_paths.empty?)
-            phase.output_paths = [
-              '$(DERIVED_FILE_DIR)/rnfb-config-output.txt'
-            ]
-          elsif phase.name&.include?('Hermes') && (phase.output_paths.nil? || phase.output_paths.empty?)
-            phase.output_paths = [
-              '$(DERIVED_FILE_DIR)/hermes-replacement-output.txt'
-            ]
-          end
-        end
-      end
-    end
+    
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false
+    )
   end
 end
+

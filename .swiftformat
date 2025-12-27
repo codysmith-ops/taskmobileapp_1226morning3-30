@@ -1,0 +1,40 @@
+# SwiftFormat Configuration - Enterprise iOS Standard
+# Project: MobileTodoList-iOS
+# Updated: December 27, 2025
+
+--swiftversion 5.9
+
+# Indentation & Spacing
+--indent 2
+--tabwidth 2
+--xcodeindentation enabled
+--indentcase false
+--trimwhitespace always
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+
+# Braces & Parentheses
+--allman false
+--elseposition same-line
+--guardelse auto
+
+# Wrapping
+--maxwidth 120
+--wrapternary before-operators
+
+# Formatting Rules
+--enable isEmpty
+--enable sortedImports
+--enable redundantSelf
+--disable blankLinesAroundMark
+--disable blankLinesAtStartOfScope
+--disable blankLinesAtEndOfScope
+
+# Excluded Paths
+--exclude ios/Pods
+--exclude ios/build
+--exclude ios/DerivedData
+--exclude node_modules
+--exclude .build
+--exclude vendor
