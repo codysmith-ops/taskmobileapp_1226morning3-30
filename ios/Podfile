@@ -22,6 +22,9 @@ target 'MobileTodoList' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  # Firebase - Let @react-native-firebase manage version (18.9.0 requires Firebase 10.20.0)
+  # Pinned for RN 0.73.9 + Xcode 15.4 compatibility
+
   target 'MobileTodoListTests' do
     inherit! :complete
   end

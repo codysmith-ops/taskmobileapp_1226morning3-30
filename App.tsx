@@ -25,6 +25,7 @@ import Geolocation from '@react-native-community/geolocation';
 import {getDistance} from 'geolib';
 import {launchCamera} from 'react-native-image-picker';
 import MlkitOcr from 'react-native-mlkit-ocr';
+import analytics from '@react-native-firebase/analytics';
 import {useTodoStore, NavPreference, Task} from './src/store';
 import {palette, radius, shadow, spacing} from './src/theme';
 import {useVoiceInput} from './src/hooks/useVoiceInput';
@@ -72,6 +73,25 @@ const App = (): React.JSX.Element => {
     stop,
     reset,
   } = useVoiceInput();
+
+  // Initialize Firebase Analytics and Crashlytics
+  useEffect(() => {
+  useEffect(() => {
+    const initFirebase = async () => {
+      try {
+        // Log app start event
+        await analytics().logEvent('app_start', {
+          platform: Platform.OS,
+          version: Platform.Version,
+        });
+        
+        console.log('Firebase Analytics
+        console.error('Firebase initialization error:', error);
+      }
+    };
+    
+    initFirebase();
+  }, []);
 
   useEffect(() => {
     if (transcript) {
