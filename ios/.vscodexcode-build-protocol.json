@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "protocol": "Xcode Build Configuration Protocol",
+  "description": "Standardized protocol for VS Code to make Xcode-compatible edits",
+  "lastUpdated": "2025-12-26",
+  
+  "buildPhaseConfiguration": {
+    "scriptPhases": {
+      "outputFilesRequired": true,
+      "description": "All script build phases must specify output files for dependency tracking",
+      "rules": [
+        {
+          "id": "BP001",
+          "name": "React Native Bundle Script",
+          "scriptName": "Bundle React Native code and images",
+          "requiredOutputs": [
+            "$(DERIVED_FILE_DIR)/main.jsbundle",
+            "$(DERIVED_FILE_DIR)/main.jsbundle.map"
+          ],
+          "shellPath": "/bin/sh",
+          "showEnvVarsInLog": false
+        },
+        {
+          "id": "BP002",
+          "name": "Firebase Core Configuration",
+          "scriptName": "[CP-User] [RNFB] Core Configuration",
+          "requiredOutputs": [
+            "$(DERIVED_FILE_DIR)/rnfb-config-generated.stamp"
+          ],
+          "shellPath": "/bin/sh",
+          "showEnvVarsInLog": false
+        },
+        {
+          "id": "BP003",
+          "name": "Generic CocoaPods Script",
+          "scriptPattern": "\\[CP.*\\]",
+          "requiredOutputs": [
+            "$(DERIVED_FILE_DIR)/${SCRIPT_NAME}.stamp"
+          ],
+          "shellPath": "/bin/sh",
+          "showEnvVarsInLog": false
+        }
+      ]
+    }
+  },
+  
+  "compilerConfiguration": {
+    "cppStandard": "c++17",
+    "cStandard": "c11",
+    "rules": [
+      {
+        "id": "CC001",
+        "name": "JSI CallInvoker Compatibility",
+        "description": "Ensure React Native JSI CallInvoker API compatibility",
+        "affectedFileTypes": [".mm", ".cpp", ".h"],
+        "requiredIncludes": [
+          "CallInvoker.h",
+          "jsi/jsi.h"
+        ],
+        "commonIssues": [
+          {
+            "error": "No matching function for call to 'CallSeqFactory'",
+            "solution": "Replace CallSeqFactory with proper CallInvoker::invokeAsync pattern",
+            "searchPattern": "CallSeqFactory",
+            "replacementPattern": "callInvoker_->invokeAsync"
+          }
+        ]
+      },
+      {
+        "id": "CC002",
+        "name": "React Native Bridge Compatibility",
+        "description": "Ensure proper React Native bridge API usage",
+        "affectedFileTypes": [".mm", ".m"],
+        "requiredFrameworks": [
+          "React-Core",
+          "React-RCTBridge"
+        ]
+      }
+    ]
+  },
+  
+  "dependencyManagement": {
+    "cocoapods": {
+      "podfileLocation": "ios/Podfile",
+      "postInstallHooks": true,
+      "rules": [
+        {
+          "id": "DM001",
+          "name": "CocoaPods Build Phase Preservation",
+          "description": "Preserve custom build phase modifications after pod install",
+          "action": "backup_and_restore",
+          "affectedFiles": ["*.pbxproj"]
+        }
+      ]
+    }
+  },
+  
+  "auditConfiguration": {
+    "enabled": true,
+    "runOn": ["pre-build", "manual"],
+    "checks": [
+      "buildPhaseOutputs",
+      "compilerErrors",
+      "missingIncludes",
+      "deprecatedAPIs",
+      "memoryLeaks",
+      "threadSafety"
+    ]
+  },
+  
+  "automationRules": {
+    "autoFixEnabled": true,
+    "requireConfirmation": false,
+    "backupBeforeFix": true,
+    "rules": [
+      {
+        "trigger": "build_error",
+        "pattern": "No matching function for call",
+        "action": "apply_compatibility_fix",
+        "auditAfterFix": true
+      },
+      {
+        "trigger": "build_warning",
+        "pattern": "will be run during every build because it does not specify any outputs",
+        "action": "add_output_dependencies",
+        "auditAfterFix": true
+      }
+    ]
+  }
+}

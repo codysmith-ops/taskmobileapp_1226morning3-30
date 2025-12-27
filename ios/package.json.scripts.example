@@ -1,0 +1,44 @@
+{
+  "name": "xcode-build-scripts",
+  "description": "NPM scripts for Xcode build automation - Add these to your package.json",
+  "scripts": {
+    "xcode:audit": "python3 xcode_auditor.py --audit-only",
+    "xcode:fix": "python3 xcode_auditor.py --fix",
+    "xcode:fix-quick": "bash fix_build_phases.sh",
+    "xcode:fix-no-backup": "python3 xcode_auditor.py --fix --no-backup",
+    
+    "prebuild:ios": "npm run xcode:fix",
+    "build:ios": "cd ios && xcodebuild clean build -workspace *.xcworkspace -scheme MobileTodoList -configuration Debug -sdk iphonesimulator",
+    "build:ios:release": "cd ios && xcodebuild clean build -workspace *.xcworkspace -scheme MobileTodoList -configuration Release -sdk iphoneos",
+    
+    "ios:clean": "cd ios && xcodebuild clean && rm -rf build",
+    "ios:clean-derived": "rm -rf ~/Library/Developer/Xcode/DerivedData/*",
+    "ios:clean-all": "npm run ios:clean && npm run ios:clean-derived",
+    
+    "ios:pods": "cd ios && pod install",
+    "ios:pods-update": "cd ios && pod update",
+    "ios:pods-clean": "cd ios && rm -rf Pods Podfile.lock && pod install",
+    
+    "ios:start": "npx react-native run-ios",
+    "ios:start-device": "npx react-native run-ios --device",
+    
+    "test:xcode": "cd ios && xcodebuild test -workspace *.xcworkspace -scheme MobileTodoList -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 14'",
+    
+    "lint:xcode": "npm run xcode:audit",
+    
+    "postinstall": "cd ios && pod install",
+    "precommit": "npm run xcode:audit",
+    
+    "ios:workflow": "npm run xcode:fix && npm run ios:clean && npm run ios:pods && npm run build:ios",
+    
+    "doctor": "npx react-native doctor && npm run xcode:audit",
+    
+    "backup:list": "ls -la .xcode_backup",
+    "backup:clean": "find .xcode_backup -mtime +30 -delete",
+    
+    "report": "cat xcode-audit-report.json | python3 -m json.tool"
+  },
+  "devDependencies": {
+    "comment": "No additional dependencies required - uses system Python and bash"
+  }
+}

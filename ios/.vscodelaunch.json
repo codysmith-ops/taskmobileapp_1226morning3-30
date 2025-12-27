@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug iOS App",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/ios/build/Build/Products/Debug-iphonesimulator/MobileTodoList.app",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "React Native: Start Metro"
+    }
+  ]
+}

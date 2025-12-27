@@ -1,101 +1,105 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 platform :ios, '16.0'
 install! 'cocoapods', :deterministic_uuids => false
 
-# Force compatible versions to fix gRPC-Core template error
+# Enable modular headers for Firebase static libraries
+use_modular_headers!
+
 $RNFirebaseAsStaticFramework = true
 
 target 'MobileTodoList' do
   config = use_native_modules!
 
-  # Flags change depending on the env values.
-  flags = get_default_flags()
-
   use_react_native!(
     :path => config[:reactNativePath],
-    # Hermes is now enabled by default. Disable by setting this flag to false.
-    :hermes_enabled => flags[:hermes_enabled],
-    :fabric_enabled => flags[:fabric_enabled],
-    # Note that if you have use_frameworks! enabled, Flipper will not work and
-    # you should disable the next line.
+    :hermes_enabled => true,
+    :fabric_enabled => false,
     :flipper_configuration => FlipperConfiguration.disabled,
-    # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # Fix gRPC-Core template error by forcing compatible version
-  pod 'gRPC-Core', '1.44.0', :modular_headers => false
-  pod 'gRPC-C++', '1.44.0', :modular_headers => false
-  
-  # Ensure compatible Firebase versions
-  # pod 'Firebase/Core', '~> 10.20.0'
-  # pod 'Firebase/Auth'
-  # pod 'Firebase/Firestore'
-  # pod 'Firebase/Storage'
-  
   target 'MobileTodoListTests' do
     inherit! :complete
-    # Pods for testing
   end
 
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
       installer,
-      config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    
+    # Fix gRPC-Core basic_seq.h template error
+    basic_seq_path = File.join(installer.sandbox.root, 'gRPC-Core/src/core/lib/promise/detail/basic_seq.h')
+    if File.exist?(basic_seq_path)
+      puts "Patching gRPC-Core basic_seq.h for C++ template compatibility..."
+      
+      # Make file writable
+      FileUtils.chmod(0644, basic_seq_path)
+      
+      text = File.read(basic_seq_path)
+      
+      # Fix line 103: Add template arguments to CallSeqFactory
+      new_text = text.gsub(
+        'Traits::template CallSeqFactory(f_, *cur_, std::move(arg))',
+        'Traits::template CallSeqFactory<Factory, IterValue, Argument>(f_, *cur_, std::move(arg))'
+      )
+      
+      if text != new_text
+        File.write(basic_seq_path, new_text)
+        puts "✓ Successfully patched gRPC-Core basic_seq.h"
+      else
+        puts "⚠ File already patched or pattern not found"
+      end
+    end
     
     # Fix for gRPC-Core and other C++ compilation issues
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
-        # Fix C++ language standard
+        # Set deployment target to iOS 16.0
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+        
+        # Fix C++ language standard - use C++17 for better compatibility
         config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
         config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
-        
-        # Fix deployment target warnings
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
         
         # Disable some warnings for third-party code
         config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
         config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
         
-        # Fix for template issues in gRPC
-        if target.name == 'gRPC-Core' || target.name == 'gRPC-C++'
+        # Additional fixes for gRPC - use gnu++17 for better template support
+        if target.name.start_with?('gRPC')
           config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++17'
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'GPB_USE_PROTOBUF_FRAMEWORK_IMPORTS=0'
         end
         
-        # Fix for fmt library char_traits warning
-        if target.name.include?('fmt')
-          config.build_settings['CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS'] = 'NO'
+        # Fix for abseil (used by gRPC)
+        if target.name.start_with?('abseil')
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
         end
       end
     end
-    
+
     # Fix Run Script warnings by adding output files
     installer.pods_project.targets.each do |target|
       target.build_phases.each do |phase|
         if phase.is_a?(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)
-          # Add output files to avoid "will be run during every build" warning
-          if phase.name&.include?('Bundle React Native code')
+          # Only set output_paths if it's nil or empty
+          if phase.name&.include?('Bundle React Native code') && (phase.output_paths.nil? || phase.output_paths.empty?)
             phase.output_paths = [
               '$(DERIVED_FILE_DIR)/main.jsbundle',
               '$(DERIVED_FILE_DIR)/main.jsbundle.map'
-            ] if phase.output_paths.empty?
-          elsif phase.name&.include?('[RNFB] Core Configuration')
+            ]
+          elsif phase.name&.include?('[RNFB] Core Configuration') && (phase.output_paths.nil? || phase.output_paths.empty?)
             phase.output_paths = [
               '$(DERIVED_FILE_DIR)/rnfb-config-output.txt'
-            ] if phase.output_paths.empty?
-          elsif phase.name&.include?('Hermes')
+            ]
+          elsif phase.name&.include?('Hermes') && (phase.output_paths.nil? || phase.output_paths.empty?)
             phase.output_paths = [
               '$(DERIVED_FILE_DIR)/hermes-replacement-output.txt'
-            ] if phase.output_paths.empty?
+            ]
           end
         end
       end

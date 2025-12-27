@@ -1,0 +1,130 @@
+/**
+ * VS Code Extension Configuration for Xcode Build Protocol
+ * 
+ * This configuration enables VS Code to automatically detect and fix
+ * Xcode build issues following the standardized protocol.
+ */
+
+{
+  "version": "2.0.0",
+  
+  // Tasks for building and auditing
+  "tasks": [
+    {
+      "label": "Xcode: Run Full Audit",
+      "type": "shell",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/xcode_auditor.py",
+        "--project-root",
+        "${workspaceFolder}",
+        "--audit-only"
+      ],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Xcode: Audit and Fix All Issues",
+      "type": "shell",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/xcode_auditor.py",
+        "--project-root",
+        "${workspaceFolder}",
+        "--fix"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Xcode: Quick Fix Build Phases",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "${workspaceFolder}/fix_build_phases.sh"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Xcode: Clean and Build (iOS)",
+      "type": "shell",
+      "command": "cd ios && xcodebuild clean build -workspace *.xcworkspace -scheme ${input:scheme} -configuration Debug -sdk iphonesimulator",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": {
+        "owner": "xcode",
+        "fileLocation": "absolute",
+        "pattern": [
+          {
+            "regexp": "^(.+?):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "message": 5
+          }
+        ]
+      }
+    },
+    {
+      "label": "React Native: Start Metro",
+      "type": "shell",
+      "command": "npx react-native start",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": ".",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "."
+        }
+      }
+    },
+    {
+      "label": "CocoaPods: Update",
+      "type": "shell",
+      "command": "cd ios && pod install --repo-update",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    }
+  ],
+  
+  // Input variables
+  "inputs": [
+    {
+      "id": "scheme",
+      "type": "promptString",
+      "description": "Enter the Xcode scheme name",
+      "default": "MobileTodoList"
+    }
+  ]
+}

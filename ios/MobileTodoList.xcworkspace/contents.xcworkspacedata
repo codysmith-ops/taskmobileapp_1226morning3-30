@@ -49,4 +49,64 @@
    <FileRef
       location = "group:fix_ios_build 2.sh">
    </FileRef>
+   <FileRef
+      location = "group:fix_xcode_build_phases.rb">
+   </FileRef>
+   <FileRef
+      location = "group:fix_all_ios_issues.sh">
+   </FileRef>
+   <FileRef
+      location = "group:fix_build_phase_warnings.py">
+   </FileRef>
+   <FileRef
+      location = "group:IOS_FIX_COMPLETE_GUIDE.md">
+   </FileRef>
+   <FileRef
+      location = "group:fix_everything.sh">
+   </FileRef>
+   <FileRef
+      location = "group:FIX_SUMMARY.md">
+   </FileRef>
+   <FileRef
+      location = "group:make_executable.sh">
+   </FileRef>
+   <FileRef
+      location = "group:START_HERE.md">
+   </FileRef>
+   <FileRef
+      location = "group:FILE_STRUCTURE_GUIDE.txt">
+   </FileRef>
+   <FileRef
+      location = "group:CHECKLIST.md">
+   </FileRef>
+   <FileRef
+      location = "group:VISUAL_GUIDE.txt">
+   </FileRef>
+   <FileRef
+      location = "group:NAVIGATION_INDEX.txt">
+   </FileRef>
+   <FileRef
+      location = "group:EXECUTIVE_SUMMARY.txt">
+   </FileRef>
+   <FileRef
+      location = "group:READ_ME_FIRST.sh">
+   </FileRef>
+   <FileRef
+      location = "group:xcode_auditor.py">
+   </FileRef>
+   <FileRef
+      location = "group:fix_build_phases.sh">
+   </FileRef>
+   <FileRef
+      location = "group:XCODE_PROTOCOL_GUIDE.md">
+   </FileRef>
+   <FileRef
+      location = "group:podfile_post_install_hook.rb">
+   </FileRef>
+   <FileRef
+      location = "group:AUTOMATED_FIX_README.md">
+   </FileRef>
+   <FileRef
+      location = "group:package.json.scripts.example">
+   </FileRef>
 </Workspace>

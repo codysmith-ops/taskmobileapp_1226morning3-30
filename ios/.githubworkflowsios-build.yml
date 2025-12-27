@@ -1,0 +1,112 @@
+name: iOS Build with Xcode Audit
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  audit-and-build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Install CocoaPods dependencies
+      run: |
+        cd ios
+        pod install
+        
+    - name: Run Xcode Configuration Audit
+      id: audit
+      run: |
+        python3 xcode_auditor.py --audit-only
+      continue-on-error: true
+      
+    - name: Apply Xcode Fixes
+      if: steps.audit.outcome == 'failure'
+      run: |
+        python3 xcode_auditor.py --fix --no-backup
+        
+    - name: Upload Audit Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: xcode-audit-report
+        path: xcode-audit-report.json
+        
+    - name: Build iOS App
+      run: |
+        cd ios
+        xcodebuild clean build \
+          -workspace *.xcworkspace \
+          -scheme MobileTodoList \
+          -configuration Debug \
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 14' \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          | xcpretty
+          
+    - name: Run Tests
+      run: |
+        cd ios
+        xcodebuild test \
+          -workspace *.xcworkspace \
+          -scheme MobileTodoList \
+          -configuration Debug \
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 14' \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          | xcpretty
+          
+    - name: Check for build warnings
+      run: |
+        if grep -q "will be run during every build" ios/build.log 2>/dev/null; then
+          echo "⚠️  Build phase warnings still present"
+          exit 1
+        fi
+        
+    - name: Comment PR with Audit Results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          if (fs.existsSync('xcode-audit-report.json')) {
+            const report = JSON.parse(fs.readFileSync('xcode-audit-report.json'));
+            const body = `
+            ## 🔍 Xcode Configuration Audit
+            
+            **Total Issues:** ${report.audit.total_issues}
+            - Errors: ${report.audit.issues_by_severity.error}
+            - Warnings: ${report.audit.issues_by_severity.warning}
+            
+            **Fixes Applied:** ${report.fixes.fixes_applied}
+            
+            ${report.audit.total_issues > 0 ? '⚠️  Issues found and fixed automatically' : '✅  No issues found'}
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+          }

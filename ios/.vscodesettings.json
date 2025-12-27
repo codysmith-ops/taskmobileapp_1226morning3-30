@@ -1,0 +1,81 @@
+{
+  // VS Code Settings for Xcode Build Protocol
+  
+  // File associations
+  "files.associations": {
+    "*.pbxproj": "plaintext",
+    "Podfile": "ruby",
+    "*.xcconfig": "properties"
+  },
+  
+  // Search exclusions for performance
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/ios/Pods": true,
+    "**/ios/build": true,
+    "**/android/.gradle": true,
+    "**/.xcode_backup": true,
+    "**/DerivedData": true
+  },
+  
+  // File watcher exclusions
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/ios/Pods/**": true,
+    "**/ios/build/**": true,
+    "**/.xcode_backup/**": true
+  },
+  
+  // Editor settings for Objective-C/C++
+  "editor.formatOnSave": true,
+  "[objective-c]": {
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+    "editor.tabSize": 2
+  },
+  "[objective-cpp]": {
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+    "editor.tabSize": 2
+  },
+  "[cpp]": {
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+    "editor.tabSize": 2
+  },
+  
+  // Python for audit scripts
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.tabSize": 4
+  },
+  
+  // Enable problem matchers
+  "problems.autoReveal": true,
+  
+  // Terminal settings
+  "terminal.integrated.env.osx": {
+    "LANG": "en_US.UTF-8"
+  },
+  
+  // Recommended extensions
+  "extensions.recommendations": [
+    "llvm-vs-code-extensions.vscode-clangd",
+    "ms-python.python",
+    "ms-python.black-formatter",
+    "vadimcn.vscode-lldb"
+  ],
+  
+  // Code formatting
+  "clangd.arguments": [
+    "--background-index",
+    "--clang-tidy",
+    "--completion-style=detailed",
+    "--header-insertion=iwyu"
+  ],
+  
+  // Auto-run audit on save for protocol file
+  "files.onSave": {
+    "xcode-build-protocol.json": {
+      "runTask": "Xcode: Run Full Audit"
+    }
+  }
+}
