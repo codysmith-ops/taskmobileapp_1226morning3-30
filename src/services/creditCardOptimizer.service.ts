@@ -78,7 +78,11 @@ class CreditCardOptimizationService {
           spendRequirement: 4000,
           months: 3,
         },
-        perks: ['Primary rental car insurance', '2x points on travel', 'No foreign transaction fees'],
+        perks: [
+          'Primary rental car insurance',
+          '2x points on travel',
+          'No foreign transaction fees',
+        ],
       },
 
       // Chase Freedom Unlimited
@@ -225,11 +229,7 @@ class CreditCardOptimizationService {
   /**
    * Get best card for a specific purchase
    */
-  getBestCardForPurchase(
-    amount: number,
-    category: string,
-    store?: string
-  ): PointsRecommendation {
+  getBestCardForPurchase(amount: number, category: string, store?: string): PointsRecommendation {
     let bestCard: CreditCard | null = null;
     let bestValue = 0;
     let bestPoints = 0;
@@ -243,23 +243,26 @@ class CreditCardOptimizationService {
       if (store) {
         const storeKey = store.toLowerCase().replace(/\s+/g, '-');
         if (card.categories[storeKey]) {
-          earnRate = card.categories[storeKey].pointsPerDollar || 
-                    (card.categories[storeKey].cashbackPercent || 0) * 100;
+          earnRate =
+            card.categories[storeKey].pointsPerDollar ||
+            (card.categories[storeKey].cashbackPercent || 0) * 100;
           categoryMatched = storeKey;
         }
       }
 
       // Check category bonuses
       if (earnRate === 0 && card.categories[category]) {
-        earnRate = card.categories[category].pointsPerDollar || 
-                  (card.categories[category].cashbackPercent || 0) * 100;
+        earnRate =
+          card.categories[category].pointsPerDollar ||
+          (card.categories[category].cashbackPercent || 0) * 100;
         categoryMatched = category;
       }
 
       // Default rate
       if (earnRate === 0 && card.categories.default) {
-        earnRate = card.categories.default.pointsPerDollar || 
-                  (card.categories.default.cashbackPercent || 0) * 100;
+        earnRate =
+          card.categories.default.pointsPerDollar ||
+          (card.categories.default.cashbackPercent || 0) * 100;
         categoryMatched = 'default';
       }
 
@@ -281,9 +284,11 @@ class CreditCardOptimizationService {
     const alternatives = this.cards
       .filter(c => c.id !== bestCard!.id)
       .map(card => {
-        const rate = card.categories[category]?.pointsPerDollar || 
-                    (card.categories[category]?.cashbackPercent || 0) * 100 ||
-                    card.categories.default?.pointsPerDollar || 0;
+        const rate =
+          card.categories[category]?.pointsPerDollar ||
+          (card.categories[category]?.cashbackPercent || 0) * 100 ||
+          card.categories.default?.pointsPerDollar ||
+          0;
         const points = amount * rate;
         return {
           card,
@@ -304,9 +309,14 @@ class CreditCardOptimizationService {
     };
   }
 
-  private generateReason(card: CreditCard, category: string, points: number, amount: number): string {
+  private generateReason(
+    card: CreditCard,
+    category: string,
+    points: number,
+    amount: number
+  ): string {
     const rate = points / amount;
-    
+
     if (rate >= 5) {
       return `Excellent! ${rate}x points on ${category}`;
     } else if (rate >= 3) {
@@ -323,7 +333,7 @@ class CreditCardOptimizationService {
    */
   optimizeCart(items: Array<{ name: string; price: number; category: string; store?: string }>) {
     const recommendations: Array<PointsRecommendation & { item: string }> = [];
-    
+
     let totalPoints = 0;
     let totalCash = 0;
 
@@ -367,11 +377,13 @@ class CreditCardOptimizationService {
     if (groups.length === 1) {
       const card = groups[0].card.name;
       const points = Math.round(groups[0].totalPoints);
-      return `Use ${card} for everything and earn ${points} points (worth $${groups[0].totalValue.toFixed(2)})`;
+      return `Use ${card} for everything and earn ${points} points (worth $${groups[0].totalValue.toFixed(
+        2
+      )})`;
     }
 
-    const lines = groups.map(g => 
-      `${g.card.name}: ${g.items.length} items, ${Math.round(g.totalPoints)} points`
+    const lines = groups.map(
+      g => `${g.card.name}: ${g.items.length} items, ${Math.round(g.totalPoints)} points`
     );
 
     return `Split across ${groups.length} cards:\n` + lines.join('\n');
@@ -401,8 +413,10 @@ class CreditCardOptimizationService {
       // Actual points earned
       const usedCard = this.cards.find(c => c.id === purchase.cardUsed);
       if (usedCard) {
-        const rate = usedCard.categories[purchase.category]?.pointsPerDollar || 
-                    usedCard.categories.default?.pointsPerDollar || 0;
+        const rate =
+          usedCard.categories[purchase.category]?.pointsPerDollar ||
+          usedCard.categories.default?.pointsPerDollar ||
+          0;
         const points = purchase.amount * rate;
         totalPoints += points;
 
@@ -414,7 +428,11 @@ class CreditCardOptimizationService {
       }
 
       // Optimal points
-      const optimal = this.getBestCardForPurchase(purchase.amount, purchase.category, purchase.store);
+      const optimal = this.getBestCardForPurchase(
+        purchase.amount,
+        purchase.category,
+        purchase.store
+      );
       potentialPoints += optimal.pointsEarned;
     }
 
@@ -455,9 +473,9 @@ class CreditCardOptimizationService {
   /**
    * Suggest new cards based on spending
    */
-  suggestNewCards(
-    monthlySpending: { [category: string]: number }
-  ): Array<{ card: CreditCard; annualValue: number; reasoning: string }> {
+  suggestNewCards(monthlySpending: {
+    [category: string]: number;
+  }): Array<{ card: CreditCard; annualValue: number; reasoning: string }> {
     const suggestions: Array<{ card: CreditCard; annualValue: number; reasoning: string }> = [];
 
     for (const card of this.cards) {
@@ -466,8 +484,10 @@ class CreditCardOptimizationService {
 
       // Calculate annual value based on spending
       for (const [category, monthlyAmount] of Object.entries(monthlySpending)) {
-        const rate = card.categories[category]?.pointsPerDollar || 
-                    card.categories.default?.pointsPerDollar || 0;
+        const rate =
+          card.categories[category]?.pointsPerDollar ||
+          card.categories.default?.pointsPerDollar ||
+          0;
         const annualPoints = monthlyAmount * 12 * rate;
         const value = annualPoints * this.defaultCPP;
         annualValue += value;
@@ -489,9 +509,10 @@ class CreditCardOptimizationService {
         suggestions.push({
           card,
           annualValue,
-          reasoning: categories.length > 0 
-            ? `Earn extra on: ${categories.join(', ')}`
-            : `Good general-purpose card`,
+          reasoning:
+            categories.length > 0
+              ? `Earn extra on: ${categories.join(', ')}`
+              : 'Good general-purpose card',
         });
       }
     }

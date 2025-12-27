@@ -7,7 +7,14 @@ import Voice from '@react-native-voice/voice';
 
 export interface VoiceCommand {
   command: string;
-  intent: 'add_item' | 'check_deals' | 'find_store' | 'navigate' | 'check_list' | 'price_check' | 'smart_suggestion';
+  intent:
+    | 'add_item'
+    | 'check_deals'
+    | 'find_store'
+    | 'navigate'
+    | 'check_list'
+    | 'price_check'
+    | 'smart_suggestion';
   entities: {
     item?: string;
     store?: string;
@@ -82,7 +89,11 @@ class VoiceAssistantService {
     }
 
     // Check deals intent
-    if (lowerText.includes('sale') || lowerText.includes('deal') || lowerText.includes('discount')) {
+    if (
+      lowerText.includes('sale') ||
+      lowerText.includes('deal') ||
+      lowerText.includes('discount')
+    ) {
       return this.parseDealsIntent(lowerText);
     }
 
@@ -92,22 +103,38 @@ class VoiceAssistantService {
     }
 
     // Navigation intent
-    if (lowerText.includes('navigate') || lowerText.includes('directions') || lowerText.includes('take me')) {
+    if (
+      lowerText.includes('navigate') ||
+      lowerText.includes('directions') ||
+      lowerText.includes('take me')
+    ) {
       return this.parseNavigationIntent(lowerText);
     }
 
     // Check list intent
-    if (lowerText.includes('what\'s on') || lowerText.includes('show list') || lowerText.includes('my list')) {
+    if (
+      lowerText.includes("what's on") ||
+      lowerText.includes('show list') ||
+      lowerText.includes('my list')
+    ) {
       return this.parseCheckListIntent(lowerText);
     }
 
     // Price check intent
-    if (lowerText.includes('price') || lowerText.includes('cost') || lowerText.includes('how much')) {
+    if (
+      lowerText.includes('price') ||
+      lowerText.includes('cost') ||
+      lowerText.includes('how much')
+    ) {
       return this.parsePriceCheckIntent(lowerText);
     }
 
     // Smart suggestion
-    if (lowerText.includes('suggest') || lowerText.includes('recommend') || lowerText.includes('should i buy')) {
+    if (
+      lowerText.includes('suggest') ||
+      lowerText.includes('recommend') ||
+      lowerText.includes('should i buy')
+    ) {
       return this.parseSuggestionIntent(lowerText);
     }
 
@@ -121,11 +148,7 @@ class VoiceAssistantService {
 
   private parseAddIntent(text: string): VoiceCommand {
     // Extract item name
-    const addPatterns = [
-      /add (.*?) to/i,
-      /put (.*?) on/i,
-      /add (.*)/i,
-    ];
+    const addPatterns = [/add (.*?) to/i, /put (.*?) on/i, /add (.*)/i];
 
     let item = '';
     let store = '';
@@ -239,25 +262,25 @@ class VoiceAssistantService {
     switch (command.intent) {
       case 'add_item':
         return this.handleAddItem(command);
-      
+
       case 'check_deals':
         return this.handleCheckDeals(command);
-      
+
       case 'find_store':
         return this.handleFindStore(command);
-      
+
       case 'navigate':
         return this.handleNavigation(command);
-      
+
       case 'check_list':
         return this.handleCheckList(command);
-      
+
       case 'price_check':
         return this.handlePriceCheck(command);
-      
+
       case 'smart_suggestion':
         return this.handleSmartSuggestion(command);
-      
+
       default:
         return {
           text: "I'm not sure what you mean. Try saying 'add milk' or 'what's on sale at Target?'",
@@ -267,14 +290,14 @@ class VoiceAssistantService {
 
   private async handleAddItem(command: VoiceCommand): Promise<VoiceResponse> {
     const { item, store, quantity } = command.entities;
-    
+
     if (!item) {
-      return { text: "What would you like to add?" };
+      return { text: 'What would you like to add?' };
     }
 
     const quantityText = quantity && quantity > 1 ? `${quantity} ` : '';
     const storeText = store ? ` at ${store}` : '';
-    
+
     return {
       text: `Added ${quantityText}${item}${storeText} to your list`,
       action: () => {
@@ -287,7 +310,7 @@ class VoiceAssistantService {
 
   private async handleCheckDeals(command: VoiceCommand): Promise<VoiceResponse> {
     const { store } = command.entities;
-    
+
     if (!store) {
       return {
         text: "Here are today's best deals: Milk $2.99 at Safeway, Eggs $3.49 at Target, Bread $1.99 at Walmart",
@@ -296,13 +319,13 @@ class VoiceAssistantService {
 
     // Mock deals - would fetch from deals service
     const deals = {
-      target: "20% off groceries, $5 off $50 purchase",
-      safeway: "Buy one get one free on select items",
-      walmart: "Rollback prices on dairy products",
+      target: '20% off groceries, $5 off $50 purchase',
+      safeway: 'Buy one get one free on select items',
+      walmart: 'Rollback prices on dairy products',
     };
 
-    const storeDeal = deals[store.toLowerCase() as keyof typeof deals] || "No current deals";
-    
+    const storeDeal = deals[store.toLowerCase() as keyof typeof deals] || 'No current deals';
+
     return {
       text: `At ${store}: ${storeDeal}`,
       data: { store, deals: storeDeal },
@@ -311,9 +334,9 @@ class VoiceAssistantService {
 
   private async handleFindStore(command: VoiceCommand): Promise<VoiceResponse> {
     const { store } = command.entities;
-    
+
     if (!store) {
-      return { text: "Which store are you looking for?" };
+      return { text: 'Which store are you looking for?' };
     }
 
     return {
@@ -324,9 +347,9 @@ class VoiceAssistantService {
 
   private async handleNavigation(command: VoiceCommand): Promise<VoiceResponse> {
     const { store } = command.entities;
-    
+
     if (!store) {
-      return { text: "Where would you like to go?" };
+      return { text: 'Where would you like to go?' };
     }
 
     return {
@@ -342,7 +365,7 @@ class VoiceAssistantService {
   private async handleCheckList(command: VoiceCommand): Promise<VoiceResponse> {
     // Mock list - would fetch from store
     const items = ['milk', 'eggs', 'bread', 'chicken'];
-    
+
     return {
       text: `You have ${items.length} items on your list: ${items.join(', ')}`,
       data: { items },
@@ -351,20 +374,23 @@ class VoiceAssistantService {
 
   private async handlePriceCheck(command: VoiceCommand): Promise<VoiceResponse> {
     const { item, store } = command.entities;
-    
+
     if (!item) {
-      return { text: "What item do you want to check?" };
+      return { text: 'What item do you want to check?' };
     }
 
     const storeText = store ? ` at ${store}` : ' at nearby stores';
-    
+
     return {
       text: `${item}${storeText}: $3.99 at Target, $4.49 at Safeway, $3.79 at Walmart. Best price is at Walmart`,
-      data: { item, prices: [
-        { store: 'Target', price: 3.99 },
-        { store: 'Safeway', price: 4.49 },
-        { store: 'Walmart', price: 3.79 },
-      ]},
+      data: {
+        item,
+        prices: [
+          { store: 'Target', price: 3.99 },
+          { store: 'Safeway', price: 4.49 },
+          { store: 'Walmart', price: 3.79 },
+        ],
+      },
     };
   }
 
@@ -380,16 +406,16 @@ class VoiceAssistantService {
    */
   getCommonCommands() {
     return [
-      "Add milk to my list",
+      'Add milk to my list',
       "What's on sale at Target?",
       "Where's the nearest Safeway?",
-      "Take me to Whole Foods",
+      'Take me to Whole Foods',
       "What's on my list?",
-      "How much is milk at Walmart?",
-      "What should I buy?",
-      "Add 2 dozen eggs at Costco",
-      "Find organic bananas",
-      "Navigate to Target",
+      'How much is milk at Walmart?',
+      'What should I buy?',
+      'Add 2 dozen eggs at Costco',
+      'Find organic bananas',
+      'Navigate to Target',
     ];
   }
 
@@ -398,12 +424,12 @@ class VoiceAssistantService {
    */
   async handleFollowUp(text: string): Promise<VoiceResponse> {
     const lastCommand = this.conversationContext[this.conversationContext.length - 1];
-    
+
     if (text.toLowerCase().includes('yes') || text.toLowerCase().includes('sure')) {
       // Confirm previous action
       return { text: "Great! I've done that for you" };
     }
-    
+
     if (text.toLowerCase().includes('no') || text.toLowerCase().includes('cancel')) {
       // Cancel previous action
       return { text: "Okay, I've cancelled that" };

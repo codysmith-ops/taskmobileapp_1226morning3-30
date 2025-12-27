@@ -70,14 +70,12 @@ class DietaryScannerService {
     const warnings: string[] = [];
     const isCompatible = this.restrictions.every(restriction => {
       const restrictionName = restriction.name.toLowerCase();
-      const hasIssue = mockProduct.allergens.some(a => 
-        restrictionName.includes(a) || a.includes(restrictionName)
+      const hasIssue = mockProduct.allergens.some(
+        a => restrictionName.includes(a) || a.includes(restrictionName)
       );
 
       if (hasIssue) {
-        warnings.push(
-          `Contains ${restriction.name} (${restriction.severity})`
-        );
+        warnings.push(`Contains ${restriction.name} (${restriction.severity})`);
         return restriction.severity === 'preference';
       }
       return true;
@@ -110,7 +108,7 @@ class DietaryScannerService {
     issues: string[];
   } {
     const issues: string[] = [];
-    
+
     ingredients.forEach(ingredient => {
       this.restrictions.forEach(restriction => {
         if (ingredient.toLowerCase().includes(restriction.name.toLowerCase())) {
@@ -177,9 +175,7 @@ class NutritionTrackingService {
    */
   logMeal(name: string, nutrition: NutritionInfo) {
     const today = new Date().toDateString();
-    let dailyLog = this.dailyLogs.find(
-      log => log.date.toDateString() === today
-    );
+    let dailyLog = this.dailyLogs.find(log => log.date.toDateString() === today);
 
     if (!dailyLog) {
       dailyLog = {
@@ -217,9 +213,7 @@ class NutritionTrackingService {
     percentComplete: { [key: string]: number };
   } {
     const today = new Date().toDateString();
-    const dailyLog = this.dailyLogs.find(
-      log => log.date.toDateString() === today
-    ) || {
+    const dailyLog = this.dailyLogs.find(log => log.date.toDateString() === today) || {
       calories: 0,
       protein: 0,
       carbs: 0,
@@ -267,8 +261,7 @@ class NutritionTrackingService {
     topDeficiency: string;
   } {
     const lastWeek = this.dailyLogs.slice(-7);
-    const avgCalories =
-      lastWeek.reduce((sum, log) => sum + log.calories, 0) / lastWeek.length || 0;
+    const avgCalories = lastWeek.reduce((sum, log) => sum + log.calories, 0) / lastWeek.length || 0;
     const daysOnTrack = lastWeek.filter(
       log => log.calories >= this.goals.calories * 0.9 && log.calories <= this.goals.calories * 1.1
     ).length;
@@ -330,7 +323,7 @@ class MealPlannerService {
   }): Promise<MealPlan> {
     // Mock meal plan - would use AI to generate based on preferences
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    
+
     const meals: MealPlan['meals'] = {};
     const shoppingList: Set<string> = new Set();
 
@@ -339,15 +332,37 @@ class MealPlannerService {
         name: 'Oatmeal with Berries',
         ingredients: ['oats', 'berries', 'honey', 'almonds'],
         cookTime: 10,
-        nutrition: { calories: 300, protein: 8, carbs: 45, fat: 8, fiber: 6, sugar: 12, sodium: 50 },
+        nutrition: {
+          calories: 300,
+          protein: 8,
+          carbs: 45,
+          fat: 8,
+          fiber: 6,
+          sugar: 12,
+          sodium: 50,
+        },
         cost: 3,
       };
 
       const lunch: Meal = {
         name: 'Chicken Caesar Salad',
-        ingredients: ['chicken breast', 'romaine lettuce', 'parmesan', 'caesar dressing', 'croutons'],
+        ingredients: [
+          'chicken breast',
+          'romaine lettuce',
+          'parmesan',
+          'caesar dressing',
+          'croutons',
+        ],
         cookTime: 20,
-        nutrition: { calories: 450, protein: 35, carbs: 20, fat: 25, fiber: 3, sugar: 2, sodium: 800 },
+        nutrition: {
+          calories: 450,
+          protein: 35,
+          carbs: 20,
+          fat: 25,
+          fiber: 3,
+          sugar: 2,
+          sodium: 800,
+        },
         cost: 8,
       };
 
@@ -355,7 +370,15 @@ class MealPlannerService {
         name: 'Salmon with Roasted Vegetables',
         ingredients: ['salmon', 'broccoli', 'carrots', 'olive oil', 'lemon'],
         cookTime: 30,
-        nutrition: { calories: 500, protein: 40, carbs: 25, fat: 28, fiber: 5, sugar: 5, sodium: 300 },
+        nutrition: {
+          calories: 500,
+          protein: 40,
+          carbs: 25,
+          fat: 28,
+          fiber: 5,
+          sugar: 5,
+          sodium: 300,
+        },
         cost: 12,
       };
 
@@ -405,7 +428,15 @@ class MealPlannerService {
         recipe: '1. Boil pasta. 2. Sauté vegetables. 3. Mix together.',
         ingredients: ['pasta', 'tomatoes', 'bell peppers', 'olive oil'],
         cookTime: 25,
-        nutrition: { calories: 400, protein: 12, carbs: 60, fat: 15, fiber: 5, sugar: 6, sodium: 400 },
+        nutrition: {
+          calories: 400,
+          protein: 12,
+          carbs: 60,
+          fat: 15,
+          fiber: 5,
+          sugar: 6,
+          sodium: 400,
+        },
         cost: 6,
       },
     ];
@@ -422,7 +453,7 @@ class MealPlannerService {
     // Would intelligently swap expensive meals for cheaper alternatives
     // For now, just reduce portion sizes or substitute ingredients
     const optimized = { ...mealPlan };
-    
+
     if (mealPlan.totalCost > targetBudget) {
       const scaleFactor = targetBudget / mealPlan.totalCost;
       optimized.totalCost = targetBudget;
@@ -456,7 +487,9 @@ class CarbonOffsetService {
   /**
    * Calculate carbon footprint
    */
-  calculateFootprint(purchases: Array<{ item: string; category: string; quantity: number }>): CarbonFootprint {
+  calculateFootprint(
+    purchases: Array<{ item: string; category: string; quantity: number }>
+  ): CarbonFootprint {
     // Carbon intensity by category (kg CO2 per kg product)
     const carbonIntensity: { [key: string]: number } = {
       beef: 27.0,
@@ -480,7 +513,9 @@ class CarbonOffsetService {
     });
 
     // Comparison
-    const comparison = `${totalKgCO2.toFixed(1)} kg CO2 = driving ${(totalKgCO2 / 0.411).toFixed(0)} miles`;
+    const comparison = `${totalKgCO2.toFixed(1)} kg CO2 = driving ${(totalKgCO2 / 0.411).toFixed(
+      0
+    )} miles`;
 
     return {
       totalKgCO2,
@@ -522,7 +557,7 @@ class CarbonOffsetService {
   async purchaseOffset(offset: CarbonOffset): Promise<{ success: boolean; certificate: string }> {
     // Mock purchase - would integrate with offset providers
     console.log('Purchasing offset:', offset);
-    
+
     return {
       success: true,
       certificate: `CERT-${Date.now()}`,
@@ -532,7 +567,10 @@ class CarbonOffsetService {
   /**
    * Get eco-friendly alternatives
    */
-  getEcoAlternatives(item: string, category: string): Array<{ name: string; carbonSavings: number }> {
+  getEcoAlternatives(
+    item: string,
+    category: string
+  ): Array<{ name: string; carbonSavings: number }> {
     const alternatives: { [key: string]: Array<{ name: string; carbonSavings: number }> } = {
       beef: [
         { name: 'Chicken Breast', carbonSavings: 20.1 },

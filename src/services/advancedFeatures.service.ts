@@ -30,11 +30,20 @@ class StoreCrowdingService {
 
     // Typical patterns
     const patterns: { [key: number]: number[] } = {
-      0: [20, 15, 10, 10, 15, 30, 50, 60, 55, 50, 45, 40, 40, 45, 50, 60, 70, 75, 60, 40, 30, 25, 20, 15], // Sunday
-      6: [30, 25, 20, 15, 20, 35, 55, 70, 75, 80, 75, 70, 65, 60, 65, 75, 85, 90, 75, 55, 40, 35, 30, 25], // Saturday
+      0: [
+        20, 15, 10, 10, 15, 30, 50, 60, 55, 50, 45, 40, 40, 45, 50, 60, 70, 75, 60, 40, 30, 25, 20,
+        15,
+      ], // Sunday
+      6: [
+        30, 25, 20, 15, 20, 35, 55, 70, 75, 80, 75, 70, 65, 60, 65, 75, 85, 90, 75, 55, 40, 35, 30,
+        25,
+      ], // Saturday
     };
 
-    const todayPattern = patterns[dayOfWeek] || [30, 25, 20, 15, 20, 30, 45, 60, 65, 60, 55, 50, 50, 55, 60, 70, 80, 75, 60, 45, 35, 30, 25, 20];
+    const todayPattern = patterns[dayOfWeek] || [
+      30, 25, 20, 15, 20, 30, 45, 60, 65, 60, 55, 50, 50, 55, 60, 70, 80, 75, 60, 45, 35, 30, 25,
+      20,
+    ];
 
     const prediction = todayPattern.map((capacity, h) => ({
       hour: h,
@@ -48,9 +57,7 @@ class StoreCrowdingService {
       .slice(0, 3);
 
     // Find peak times (capacity > 70%)
-    const peakTimes = prediction
-      .filter(p => p.capacity > 70)
-      .map(p => `${p.hour}:00`);
+    const peakTimes = prediction.filter(p => p.capacity > 70).map(p => `${p.hour}:00`);
 
     return {
       store,
@@ -133,9 +140,7 @@ class SocialProofService {
     return {
       friendsBought,
       friendsRecommend,
-      alternativeSuggestions: [
-        { product: 'Horizon Organic Milk', friendCount: 2, avgRating: 4.5 },
-      ],
+      alternativeSuggestions: [{ product: 'Horizon Organic Milk', friendCount: 2, avgRating: 4.5 }],
       reviews,
     };
   }
@@ -241,9 +246,10 @@ class SubscriptionManagerService {
       subscriptionCost,
       inStoreCost,
       savings,
-      recommendation: savings > 5 
-        ? `Cancel subscription and buy in-store to save $${savings.toFixed(2)}/month`
-        : `Subscription saves time, worth the $${Math.abs(savings).toFixed(2)} premium`,
+      recommendation:
+        savings > 5
+          ? `Cancel subscription and buy in-store to save $${savings.toFixed(2)}/month`
+          : `Subscription saves time, worth the $${Math.abs(savings).toFixed(2)} premium`,
     };
   }
 }
@@ -422,7 +428,9 @@ class FamilyAllowanceService {
    */
   respondToRequest(requestId: string, approved: boolean) {
     const request = this.requests.find(r => r.id === requestId);
-    if (!request) return;
+    if (!request) {
+      return;
+    }
 
     request.status = approved ? 'approved' : 'denied';
 
@@ -451,7 +459,9 @@ class FamilyAllowanceService {
     percentUsed: number;
   } | null {
     const member = this.members.find(m => m.id === memberId);
-    if (!member) return null;
+    if (!member) {
+      return null;
+    }
 
     const remaining = member.monthlyAllowance - member.currentSpent;
     const percentUsed = (member.currentSpent / member.monthlyAllowance) * 100;

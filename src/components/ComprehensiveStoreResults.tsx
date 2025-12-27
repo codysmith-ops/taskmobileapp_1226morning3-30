@@ -3,7 +3,7 @@
  * Displays ALL nearby stores with filtering, grouping, and map view
  */
 
-import React, {useMemo, useState} from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -14,14 +14,14 @@ import {
   Linking,
   Switch,
 } from 'react-native';
-import {StoreResult} from '../services/storeSearch';
+import { StoreResult } from '../services/storeSearch';
 import {
   StoreType,
   STORE_CATEGORIES,
   filterStores,
   groupStoresByType,
 } from '../services/storeDiscovery';
-import {palette, spacing, radius} from '../theme';
+import { palette, spacing, radius } from '../theme';
 import {
   LocationIcon,
   PhoneIcon,
@@ -37,7 +37,7 @@ import {
 
 interface Props {
   results: StoreResult[];
-  userLocation?: {latitude: number; longitude: number};
+  userLocation?: { latitude: number; longitude: number };
   onStoreSelect?: (result: StoreResult) => void;
 }
 
@@ -90,16 +90,26 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
   };
 
   const formatDistance = (meters?: number): string => {
-    if (!meters) return '';
-    if (meters < 1000) return `${Math.round(meters)}m`;
+    if (!meters) {
+      return '';
+    }
+    if (meters < 1000) {
+      return `${Math.round(meters)}m`;
+    }
     const miles = meters / 1609.34;
     return `${miles.toFixed(1)} mi`;
   };
 
   const getAvailabilityColor = (availability: string): string => {
-    if (availability === 'In Stock') return palette.success;
-    if (availability === 'Low Stock') return palette.warning;
-    if (availability === 'Out of Stock') return palette.error;
+    if (availability === 'In Stock') {
+      return palette.success;
+    }
+    if (availability === 'Low Stock') {
+      return palette.warning;
+    }
+    if (availability === 'Out of Stock') {
+      return palette.error;
+    }
     return palette.textSecondary;
   };
 
@@ -110,34 +120,36 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
     }
   };
 
-  const StoreCard = ({item}: {item: StoreResult}) => (
+  const StoreCard = ({ item }: { item: StoreResult }) => (
     <TouchableOpacity
       style={styles.storeCard}
       onPress={() => onStoreSelect?.(item)}
       activeOpacity={0.7}
       accessible={true}
       accessibilityRole="button"
-      accessibilityLabel={`${item.store}, ${item.productName}, $${item.price.toFixed(2)}, ${item.availability}${
-        item.storeLocation?.distance
-          ? `, ${formatDistance(item.storeLocation.distance)} away`
-          : ''
+      accessibilityLabel={`${item.store}, ${item.productName}, $${item.price.toFixed(2)}, ${
+        item.availability
+      }${
+        item.storeLocation?.distance ? `, ${formatDistance(item.storeLocation.distance)} away` : ''
       }`}
-      accessibilityHint="Double tap to view store details">
+      accessibilityHint="Double tap to view store details"
+    >
       <View style={styles.cardHeader}>
-        <Text style={styles.storeLogo} aria-hidden="true">{item.storeLogo}</Text>
+        <Text style={styles.storeLogo} aria-hidden="true">
+          {item.storeLogo}
+        </Text>
         <View style={styles.headerInfo}>
           <Text style={styles.storeName}>{item.store}</Text>
           {item.storeLocation?.distance && (
-            <Text style={styles.distance}>
-              {formatDistance(item.storeLocation.distance)}
-            </Text>
+            <Text style={styles.distance}>{formatDistance(item.storeLocation.distance)}</Text>
           )}
         </View>
         <View
           style={[
             styles.availabilityBadge,
-            {backgroundColor: getAvailabilityColor(item.availability)},
-          ]}>
+            { backgroundColor: getAvailabilityColor(item.availability) },
+          ]}
+        >
           <Text style={styles.availabilityText}>{item.availability}</Text>
         </View>
       </View>
@@ -151,9 +163,7 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
           {item.storeLocation?.rating && (
             <View style={styles.ratingContainer}>
               <StarIcon size={16} color="#D97706" filled />
-              <Text style={styles.rating}>
-                {item.storeLocation.rating.toFixed(1)}
-              </Text>
+              <Text style={styles.rating}>{item.storeLocation.rating.toFixed(1)}</Text>
             </View>
           )}
         </View>
@@ -175,7 +185,8 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
                 accessible={true}
                 accessibilityRole="button"
                 accessibilityLabel={`Call ${item.store}`}
-                accessibilityHint="Double tap to call this store">
+                accessibilityHint="Double tap to call this store"
+              >
                 <PhoneIcon size={16} color={palette.primary} />
                 <Text style={styles.actionButton}>Call</Text>
               </TouchableOpacity>
@@ -186,7 +197,8 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
               accessible={true}
               accessibilityRole="button"
               accessibilityLabel="Navigate to store"
-              accessibilityHint="Double tap to open navigation in Maps">
+              accessibilityHint="Double tap to open navigation in Maps"
+            >
               <NavigationIcon size={16} color={palette.primary} />
               <Text style={styles.actionButton}>Navigate</Text>
             </TouchableOpacity>
@@ -197,7 +209,8 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
                 accessible={true}
                 accessibilityRole="button"
                 accessibilityLabel="View store website"
-                accessibilityHint="Double tap to open store website">
+                accessibilityHint="Double tap to open store website"
+              >
                 <LinkIcon size={16} color={palette.primary} />
                 <Text style={styles.actionButton}>View</Text>
               </TouchableOpacity>
@@ -212,29 +225,25 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
     <View style={styles.container}>
       {/* Header with stats */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>
-          {filteredResults.length} stores found
-        </Text>
+        <Text style={styles.headerTitle}>{filteredResults.length} stores found</Text>
         <View style={styles.headerStats}>
           <Text style={styles.statText}>
-            {filteredResults.filter(r => r.inStock).length} in stock
-        accessible={true}
-        accessibilityRole="button"
-        accessibilityLabel={filters.showFilters ? "Hide filters" : "Show filters"}
-        accessibilityHint="Double tap to toggle filter panel"
-        accessibilityState={{expanded: filters.showFilters}}
+            {filteredResults.filter(r => r.inStock).length} in stock accessible={true}
+            accessibilityRole="button" accessibilityLabel=
+            {filters.showFilters ? 'Hide filters' : 'Show filters'}
+            accessibilityHint="Double tap to toggle filter panel" accessibilityState=
+            {{ expanded: filters.showFilters }}
           </Text>
           <Text style={styles.statDivider}>•</Text>
-          <Text style={styles.statText}>
-            Within {filters.maxDistance} mi
-          </Text>
+          <Text style={styles.statText}>Within {filters.maxDistance} mi</Text>
         </View>
       </View>
 
       {/* Filter Toggle */}
       <TouchableOpacity
         style={styles.filterToggle}
-        onPress={() => setFilters(p => ({...p, showFilters: !p.showFilters}))}>
+        onPress={() => setFilters(p => ({ ...p, showFilters: !p.showFilters }))}
+      >
         <View style={styles.filterToggleContent}>
           {filters.showFilters ? (
             <ChevronDownIcon size={18} color={palette.primary} />
@@ -258,16 +267,14 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
             <Text style={styles.filterLabel}>In Stock Only</Text>
             <Switch
               value={filters.inStockOnly}
-              onValueChange={v => setFilters(p => ({...p, inStockOnly: v}))}
-              trackColor={{false: palette.border, true: palette.primary}}
+              onValueChange={v => setFilters(p => ({ ...p, inStockOnly: v }))}
+              trackColor={{ false: palette.border, true: palette.primary }}
             />
           </View>
 
           {/* Distance Filter */}
           <View style={styles.filterRow}>
-            <Text style={styles.filterLabel}>
-              Max Distance: {filters.maxDistance} mi
-            </Text>
+            <Text style={styles.filterLabel}>Max Distance: {filters.maxDistance} mi</Text>
           </View>
           <View style={styles.distanceButtons}>
             {[5, 10, 15, 25].map(distance => (
@@ -277,13 +284,14 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
                   styles.distanceButton,
                   filters.maxDistance === distance && styles.distanceButtonActive,
                 ]}
-                onPress={() => setFilters(p => ({...p, maxDistance: distance}))}>
+                onPress={() => setFilters(p => ({ ...p, maxDistance: distance }))}
+              >
                 <Text
                   style={[
                     styles.distanceButtonText,
-                    filters.maxDistance === distance &&
-                      styles.distanceButtonTextActive,
-                  ]}>
+                    filters.maxDistance === distance && styles.distanceButtonTextActive,
+                  ]}
+                >
                   {distance} mi
                 </Text>
               </TouchableOpacity>
@@ -299,17 +307,17 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
                   key={category.type}
                   style={[
                     styles.storeTypeChip,
-                    filters.storeTypes.includes(category.type) &&
-                      styles.storeTypeChipActive,
+                    filters.storeTypes.includes(category.type) && styles.storeTypeChipActive,
                   ]}
-                  onPress={() => toggleStoreTypeFilter(category.type)}>
+                  onPress={() => toggleStoreTypeFilter(category.type)}
+                >
                   <Text style={styles.storeTypeIcon}>{category.icon}</Text>
                   <Text
                     style={[
                       styles.storeTypeLabel,
-                      filters.storeTypes.includes(category.type) &&
-                        styles.storeTypeLabelActive,
-                    ]}>
+                      filters.storeTypes.includes(category.type) && styles.storeTypeLabelActive,
+                    ]}
+                  >
                     {category.label}
                   </Text>
                 </TouchableOpacity>
@@ -318,9 +326,7 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
           </ScrollView>
 
           {/* Clear Filters */}
-          {(filters.inStockOnly ||
-            filters.storeTypes.length > 0 ||
-            filters.maxDistance !== 10) && (
+          {(filters.inStockOnly || filters.storeTypes.length > 0 || filters.maxDistance !== 10) && (
             <TouchableOpacity
               style={styles.clearFiltersButton}
               onPress={() =>
@@ -331,7 +337,8 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
                   maxDistance: 10,
                   minRating: 0,
                 }))
-              }>
+              }
+            >
               <Text style={styles.clearFiltersText}>Clear All Filters</Text>
             </TouchableOpacity>
           )}
@@ -350,12 +357,10 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
               accessibilityRole="button"
               accessibilityLabel={`${mode} view`}
               accessibilityHint={`Double tap to switch to ${mode} view`}
-              accessibilityState={{selected: isActive}}
-              style={[
-                styles.viewModeButton,
-                isActive && styles.viewModeButtonActive,
-              ]}
-              onPress={() => setViewMode(mode)}>
+              accessibilityState={{ selected: isActive }}
+              style={[styles.viewModeButton, isActive && styles.viewModeButtonActive]}
+              onPress={() => setViewMode(mode)}
+            >
               {mode === 'list' && <ListIcon size={24} color={iconColor} />}
               {mode === 'grouped' && <FolderIcon size={24} color={iconColor} />}
               {mode === 'map' && <MapIcon size={24} color={iconColor} />}
@@ -369,8 +374,8 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
         <SectionList
           sections={groupedResults}
           keyExtractor={(item, index) => `${item.store}-${index}`}
-          renderItem={({item}) => <StoreCard item={item} />}
-          renderSectionHeader={({section}) => (
+          renderItem={({ item }) => <StoreCard item={item} />}
+          renderSectionHeader={({ section }) => (
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionIcon}>{section.icon}</Text>
               <Text style={styles.sectionTitle}>
@@ -381,9 +386,7 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
           stickySectionHeadersEnabled
           ListEmptyComponent={
             <View style={styles.emptyState}>
-              <Text style={styles.emptyText}>
-                No stores found matching your filters
-              </Text>
+              <Text style={styles.emptyText}>No stores found matching your filters</Text>
             </View>
           }
         />
@@ -396,9 +399,7 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
       ) : (
         <View style={styles.mapPlaceholder}>
           <MapIcon size={64} color={palette.textTertiary} />
-          <Text style={styles.mapPlaceholderText}>
-            Map view coming soon
-          </Text>
+          <Text style={styles.mapPlaceholderText}>Map view coming soon</Text>
           <Text style={styles.mapPlaceholderSubtext}>
             Will show all {filteredResults.length} stores on interactive map
           </Text>

@@ -3,7 +3,7 @@
  * Uses Google Places API + store-specific APIs for comprehensive coverage
  */
 
-import {StoreResult} from './storeSearch';
+import { StoreResult } from './storeSearch';
 
 export interface StoreLocation {
   placeId: string;
@@ -62,7 +62,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
     chains: [
       'Whole Foods',
       'Safeway',
-      'Trader Joe\'s',
+      "Trader Joe's",
       'Kroger',
       'Albertsons',
       'Publix',
@@ -90,14 +90,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
     type: 'pharmacy',
     label: 'Pharmacies',
     icon: 'PH',
-    chains: [
-      'CVS',
-      'Walgreens',
-      'Rite Aid',
-      'Duane Reade',
-      'Bartell Drugs',
-      'Longs Drugs',
-    ],
+    chains: ['CVS', 'Walgreens', 'Rite Aid', 'Duane Reade', 'Bartell Drugs', 'Longs Drugs'],
     placeTypes: ['pharmacy', 'drugstore'],
   },
   {
@@ -121,23 +114,14 @@ export const STORE_CATEGORIES: StoreCategory[] = [
     type: 'big_box',
     label: 'Big Box Retailers',
     icon: 'BB',
-    chains: [
-      'Target',
-      'Walmart',
-      'Kmart',
-      'Big Lots',
-    ],
+    chains: ['Target', 'Walmart', 'Kmart', 'Big Lots'],
     placeTypes: ['department_store', 'home_goods_store'],
   },
   {
     type: 'warehouse',
     label: 'Warehouse Clubs',
     icon: 'WH',
-    chains: [
-      'Costco',
-      'Sam\'s Club',
-      'BJ\'s Wholesale',
-    ],
+    chains: ['Costco', "Sam's Club", "BJ's Wholesale"],
     placeTypes: ['department_store'],
   },
   {
@@ -145,12 +129,12 @@ export const STORE_CATEGORIES: StoreCategory[] = [
     label: 'Department Stores',
     icon: 'DP',
     chains: [
-      'Macy\'s',
+      "Macy's",
       'Nordstrom',
-      'Kohl\'s',
+      "Kohl's",
       'JCPenney',
-      'Dillard\'s',
-      'Bloomingdale\'s',
+      "Dillard's",
+      "Bloomingdale's",
       'Saks Fifth Avenue',
       'Neiman Marcus',
     ],
@@ -169,7 +153,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
       'Five Below',
       'Container Store',
       'The Home Depot',
-      'Lowe\'s',
+      "Lowe's",
       'Ace Hardware',
       'PetSmart',
       'Petco',
@@ -190,25 +174,14 @@ export const STORE_CATEGORIES: StoreCategory[] = [
     type: 'dollar',
     label: 'Dollar Stores',
     icon: 'DL',
-    chains: [
-      'Dollar General',
-      'Dollar Tree',
-      'Family Dollar',
-      '99 Cents Only',
-    ],
+    chains: ['Dollar General', 'Dollar Tree', 'Family Dollar', '99 Cents Only'],
     placeTypes: ['store'],
   },
   {
     type: 'online',
     label: 'Online Retailers',
     icon: 'ON',
-    chains: [
-      'Amazon',
-      'Instacart',
-      'Shipt',
-      'DoorDash',
-      'Uber Eats',
-    ],
+    chains: ['Amazon', 'Instacart', 'Shipt', 'DoorDash', 'Uber Eats'],
     placeTypes: [],
   },
 ];
@@ -222,26 +195,26 @@ export const discoverNearbyStores = async (params: {
   radiusMiles?: number;
   types?: StoreType[];
 }): Promise<StoreLocation[]> => {
-  const {latitude, longitude, radiusMiles = 10, types} = params;
+  const { latitude, longitude, radiusMiles = 10, types } = params;
   const radiusMeters = radiusMiles * 1609.34;
-  
+
   const categoriesToSearch = types
     ? STORE_CATEGORIES.filter(c => types.includes(c.type))
     : STORE_CATEGORIES;
-  
+
   const allStores: StoreLocation[] = [];
-  
+
   // Search each category in parallel
   const searches = categoriesToSearch.map(category =>
     searchPlacesByCategory(latitude, longitude, radiusMeters, category)
   );
-  
+
   const results = await Promise.all(searches);
   results.forEach(stores => allStores.push(...stores));
-  
+
   // Remove duplicates (same place found in multiple categories)
   const uniqueStores = deduplicateStores(allStores);
-  
+
   // Sort by distance
   return uniqueStores.sort((a, b) => (a.distance || 0) - (b.distance || 0));
 };
@@ -253,32 +226,32 @@ const searchPlacesByCategory = async (
   latitude: number,
   longitude: number,
   radius: number,
-  category: StoreCategory,
+  category: StoreCategory
 ): Promise<StoreLocation[]> => {
   // PRODUCTION: Replace with real Google Places API
   const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY || 'YOUR_API_KEY';
-  
+
   const stores: StoreLocation[] = [];
-  
+
   for (const placeType of category.placeTypes) {
     try {
       const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${radius}&type=${placeType}&key=${GOOGLE_PLACES_API_KEY}`;
-      
+
       // MOCK DATA FOR DEVELOPMENT
       const mockStores = generateMockStores(latitude, longitude, category, 5);
       stores.push(...mockStores);
-      
+
       /* PRODUCTION CODE:
       const response = await fetch(url);
       const data = await response.json();
-      
+
       if (data.results) {
         data.results.forEach((place: GooglePlaceResult) => {
           // Check if it matches our known chains
-          const chain = category.chains.find(c => 
+          const chain = category.chains.find(c =>
             place.name.toLowerCase().includes(c.toLowerCase())
           );
-          
+
           stores.push({
             placeId: place.place_id,
             name: place.name,
@@ -303,7 +276,7 @@ const searchPlacesByCategory = async (
       console.error(`Error searching ${placeType}:`, error);
     }
   }
-  
+
   return stores;
 };
 
@@ -315,8 +288,8 @@ export const checkStoreInventory = async (params: {
   searchTerm: string;
   productBrand?: string;
 }): Promise<StoreResult | null> => {
-  const {store, searchTerm, productBrand} = params;
-  
+  const { store, searchTerm, productBrand } = params;
+
   // Route to appropriate API based on chain
   switch (store.chain?.toLowerCase()) {
     case 'target':
@@ -342,12 +315,19 @@ export const searchAllNearbyStores = async (params: {
   searchTerm: string;
   productBrand?: string;
   productDetails?: string;
-  userLocation: {latitude: number; longitude: number};
+  userLocation: { latitude: number; longitude: number };
   radiusMiles?: number;
   storeTypes?: StoreType[];
 }): Promise<StoreResult[]> => {
-  const {searchTerm, productBrand, productDetails, userLocation, radiusMiles = 10, storeTypes} = params;
-  
+  const {
+    searchTerm,
+    productBrand,
+    productDetails,
+    userLocation,
+    radiusMiles = 10,
+    storeTypes,
+  } = params;
+
   // Step 1: Discover all stores in area
   const nearbyStores = await discoverNearbyStores({
     latitude: userLocation.latitude,
@@ -355,16 +335,16 @@ export const searchAllNearbyStores = async (params: {
     radiusMiles,
     types: storeTypes,
   });
-  
+
   console.log(`Found ${nearbyStores.length} stores within ${radiusMiles} miles`);
-  
+
   // Step 2: Check each store for product (in batches to avoid rate limits)
   const results: StoreResult[] = [];
   const batchSize = 10;
-  
+
   for (let i = 0; i < nearbyStores.length; i += batchSize) {
     const batch = nearbyStores.slice(i, i + batchSize);
-    
+
     const batchResults = await Promise.all(
       batch.map(store =>
         checkStoreInventory({
@@ -374,19 +354,23 @@ export const searchAllNearbyStores = async (params: {
         })
       )
     );
-    
-    results.push(...batchResults.filter(r => r !== null) as StoreResult[]);
-    
+
+    results.push(...(batchResults.filter(r => r !== null) as StoreResult[]));
+
     // Rate limit pause between batches
     if (i + batchSize < nearbyStores.length) {
       await new Promise(resolve => setTimeout(resolve, 500));
     }
   }
-  
+
   // Sort by: In Stock first, then by distance
   return results.sort((a, b) => {
-    if (a.inStock && !b.inStock) return -1;
-    if (!a.inStock && b.inStock) return 1;
+    if (a.inStock && !b.inStock) {
+      return -1;
+    }
+    if (!a.inStock && b.inStock) {
+      return 1;
+    }
     return (a.distance || 999) - (b.distance || 999);
   });
 };
@@ -405,33 +389,33 @@ export const filterStores = (
   }
 ): StoreResult[] => {
   let filtered = stores;
-  
+
   if (filters.maxDistance) {
     const maxMeters = filters.maxDistance * 1609.34;
     filtered = filtered.filter(s => (s.distance || 0) <= maxMeters);
   }
-  
+
   if (filters.inStockOnly) {
     filtered = filtered.filter(s => s.inStock);
   }
-  
+
   if (filters.storeTypes && filters.storeTypes.length > 0) {
     filtered = filtered.filter(s => {
-      const category = STORE_CATEGORIES.find(c => 
+      const category = STORE_CATEGORIES.find(c =>
         c.chains.some(chain => s.store.toLowerCase().includes(chain.toLowerCase()))
       );
       return category && filters.storeTypes!.includes(category.type);
     });
   }
-  
+
   if (filters.minRating) {
     filtered = filtered.filter(s => (s.storeLocation?.rating || 0) >= filters.minRating!);
   }
-  
+
   if (filters.maxPrice) {
     filtered = filtered.filter(s => s.price <= filters.maxPrice!);
   }
-  
+
   return filtered;
 };
 
@@ -440,21 +424,21 @@ export const filterStores = (
  */
 export const groupStoresByType = (stores: StoreResult[]): Map<StoreType, StoreResult[]> => {
   const grouped = new Map<StoreType, StoreResult[]>();
-  
+
   STORE_CATEGORIES.forEach(category => {
     grouped.set(category.type, []);
   });
-  
+
   stores.forEach(store => {
     const category = STORE_CATEGORIES.find(c =>
       c.chains.some(chain => store.store.toLowerCase().includes(chain.toLowerCase()))
     );
-    
+
     if (category) {
       grouped.get(category.type)?.push(store);
     }
   });
-  
+
   return grouped;
 };
 
@@ -464,7 +448,9 @@ const deduplicateStores = (stores: StoreLocation[]): StoreLocation[] => {
   const seen = new Set<string>();
   return stores.filter(store => {
     const key = `${store.latitude.toFixed(5)},${store.longitude.toFixed(5)},${store.name}`;
-    if (seen.has(key)) return false;
+    if (seen.has(key)) {
+      return false;
+    }
     seen.add(key);
     return true;
   });
@@ -472,16 +458,16 @@ const deduplicateStores = (stores: StoreLocation[]): StoreLocation[] => {
 
 const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
   const R = 6371e3; // Earth radius in meters
-  const φ1 = lat1 * Math.PI / 180;
-  const φ2 = lat2 * Math.PI / 180;
-  const Δφ = (lat2 - lat1) * Math.PI / 180;
-  const Δλ = (lon2 - lon1) * Math.PI / 180;
-  
-  const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-    Math.cos(φ1) * Math.cos(φ2) *
-    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const φ1 = (lat1 * Math.PI) / 180;
+  const φ2 = (lat2 * Math.PI) / 180;
+  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  
+
   return R * c; // Distance in meters
 };
 
@@ -495,13 +481,13 @@ const generateMockStores = (
 ): StoreLocation[] => {
   const stores: StoreLocation[] = [];
   const selectedChains = category.chains.slice(0, Math.min(count, category.chains.length));
-  
+
   selectedChains.forEach((chain, index) => {
     const offsetLat = (Math.random() - 0.5) * 0.1;
     const offsetLon = (Math.random() - 0.5) * 0.1;
     const lat = centerLat + offsetLat;
     const lon = centerLon + offsetLon;
-    
+
     stores.push({
       placeId: `mock_${category.type}_${index}`,
       name: `${chain}${index > 0 ? ` #${index + 1}` : ''}`,
@@ -509,14 +495,16 @@ const generateMockStores = (
       latitude: lat,
       longitude: lon,
       distance: calculateDistance(centerLat, centerLon, lat, lon),
-      phone: `(555) ${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
+      phone: `(555) ${Math.floor(Math.random() * 900) + 100}-${
+        Math.floor(Math.random() * 9000) + 1000
+      }`,
       hours: 'Open 8am-10pm',
       rating: 3.5 + Math.random() * 1.5,
       type: category.type,
       chain,
     });
   });
-  
+
   return stores;
 };
 
@@ -577,20 +565,18 @@ const checkWholeFoodsInventory = async (
 const createGenericStoreResult = (
   store: StoreLocation,
   searchTerm: string,
-  overrides?: {inStock?: boolean; price?: number}
+  overrides?: { inStock?: boolean; price?: number }
 ): StoreResult => {
   const inStock = overrides?.inStock ?? Math.random() > 0.3;
   const price = overrides?.price ?? 10 + Math.random() * 20;
-  
+
   return {
     store: store.name,
     storeLogo: getStoreIcon(store.chain || store.name),
     productName: searchTerm,
     price: parseFloat(price.toFixed(2)),
     inStock,
-    availability: inStock
-      ? Math.random() > 0.7 ? 'Low Stock' : 'In Stock'
-      : 'Out of Stock',
+    availability: inStock ? (Math.random() > 0.7 ? 'Low Stock' : 'In Stock') : 'Out of Stock',
     storeLocation: {
       name: store.name,
       address: store.address,
@@ -600,21 +586,41 @@ const createGenericStoreResult = (
       phone: store.phone,
       rating: store.rating,
     },
-    url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.name + ' ' + store.address)}`,
+    url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      store.name + ' ' + store.address
+    )}`,
   };
 };
 
 const getStoreIcon = (storeName: string): string => {
   const name = storeName.toLowerCase();
-  if (name.includes('target')) return 'TG';
-  if (name.includes('walmart')) return 'WM';
-  if (name.includes('whole foods')) return 'WF';
-  if (name.includes('safeway')) return 'SW';
-  if (name.includes('cvs') || name.includes('walgreens')) return 'PH';
-  if (name.includes('costco') || name.includes('sam')) return 'WH';
-  if (name.includes('trader joe')) return 'TJ';
-  if (name.includes('7-eleven')) return '7E';
-  if (name.includes('kroger') || name.includes('albertsons')) return 'GR';
+  if (name.includes('target')) {
+    return 'TG';
+  }
+  if (name.includes('walmart')) {
+    return 'WM';
+  }
+  if (name.includes('whole foods')) {
+    return 'WF';
+  }
+  if (name.includes('safeway')) {
+    return 'SW';
+  }
+  if (name.includes('cvs') || name.includes('walgreens')) {
+    return 'PH';
+  }
+  if (name.includes('costco') || name.includes('sam')) {
+    return 'WH';
+  }
+  if (name.includes('trader joe')) {
+    return 'TJ';
+  }
+  if (name.includes('7-eleven')) {
+    return '7E';
+  }
+  if (name.includes('kroger') || name.includes('albertsons')) {
+    return 'GR';
+  }
   return 'ST';
 };
 

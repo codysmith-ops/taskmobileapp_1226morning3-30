@@ -67,7 +67,7 @@ class SmartNotificationService {
         type: 'price_alert',
         enabled: true,
         conditions: { percentDrop: 15 },
-        message: "{item} is now {percent}% off at {store}!",
+        message: '{item} is now {percent}% off at {store}!',
       },
 
       // Expiry warnings
@@ -76,7 +76,7 @@ class SmartNotificationService {
         type: 'expiry',
         enabled: true,
         conditions: { daysBeforeExpiry: 2 },
-        message: "{count} items expiring in {days} days",
+        message: '{count} items expiring in {days} days',
       },
 
       // Deal notifications
@@ -85,7 +85,7 @@ class SmartNotificationService {
         type: 'deal',
         enabled: true,
         conditions: { distance: 2000 }, // meters
-        message: "{discount} at {store} - {distance} away",
+        message: '{discount} at {store} - {distance} away',
       },
 
       // Routine reminders
@@ -94,7 +94,7 @@ class SmartNotificationService {
         type: 'routine',
         enabled: true,
         conditions: { dayOfWeek: 'Thursday', hour: 17 },
-        message: "Your usual shopping time! {count} items on your list",
+        message: 'Your usual shopping time! {count} items on your list',
       },
 
       // Social notifications
@@ -103,7 +103,7 @@ class SmartNotificationService {
         type: 'social',
         enabled: true,
         conditions: {},
-        message: "{friend} bought {item} at {store}. Add to your list?",
+        message: '{friend} bought {item} at {store}. Add to your list?',
       },
     ];
   }
@@ -140,26 +140,34 @@ class SmartNotificationService {
    * Proximity notifications - "You're passing Costco"
    */
   private async checkProximityNotifications() {
-    if (!this.userLocation) return;
+    if (!this.userLocation) {
+      return;
+    }
 
     const rule = this.rules.find(r => r.type === 'proximity' && r.enabled);
-    if (!rule) return;
+    if (!rule) {
+      return;
+    }
 
     // Mock stores nearby - would fetch from store discovery service
     const nearbyStores = [
       { name: 'Costco', lat: 37.7749, lng: -122.4194, itemCount: 5 },
-      { name: 'Safeway', lat: 37.7750, lng: -122.4180, itemCount: 3 },
+      { name: 'Safeway', lat: 37.775, lng: -122.418, itemCount: 3 },
     ];
 
     for (const store of nearbyStores) {
-      const distance = getDistance(
-        this.userLocation,
-        { latitude: store.lat, longitude: store.lng }
-      );
+      const distance = getDistance(this.userLocation, {
+        latitude: store.lat,
+        longitude: store.lng,
+      });
 
-      if (rule.conditions.distance !== undefined && distance <= rule.conditions.distance && store.itemCount > 0) {
+      if (
+        rule.conditions.distance !== undefined &&
+        distance <= rule.conditions.distance &&
+        store.itemCount > 0
+      ) {
         const notifId = `proximity-${store.name}-${Date.now()}`;
-        
+
         if (!this.sentNotifications.has(notifId)) {
           this.sendNotification({
             id: notifId,
@@ -194,13 +202,15 @@ class SmartNotificationService {
    */
   async sendPriceAlert(item: string, oldPrice: number, newPrice: number, store: string) {
     const rule = this.rules.find(r => r.type === 'price_alert' && r.enabled);
-    if (!rule) return;
+    if (!rule) {
+      return;
+    }
 
     const percentDrop = ((oldPrice - newPrice) / oldPrice) * 100;
-    
+
     if (rule.conditions.percentDrop !== undefined && percentDrop >= rule.conditions.percentDrop) {
       const notifId = `price-${item}-${store}-${Date.now()}`;
-      
+
       this.sendNotification({
         id: notifId,
         type: 'price_alert',
@@ -231,7 +241,9 @@ class SmartNotificationService {
    */
   private async checkExpiryNotifications() {
     const rule = this.rules.find(r => r.type === 'expiry' && r.enabled);
-    if (!rule) return;
+    if (!rule) {
+      return;
+    }
 
     // Mock pantry items - would fetch from pantry service
     const pantryItems = [
@@ -242,12 +254,16 @@ class SmartNotificationService {
 
     const expiringItems = pantryItems.filter(item => {
       const daysUntilExpiry = (item.expiryDate.getTime() - Date.now()) / (24 * 60 * 60 * 1000);
-      return rule.conditions.daysBeforeExpiry !== undefined && daysUntilExpiry <= rule.conditions.daysBeforeExpiry && daysUntilExpiry > 0;
+      return (
+        rule.conditions.daysBeforeExpiry !== undefined &&
+        daysUntilExpiry <= rule.conditions.daysBeforeExpiry &&
+        daysUntilExpiry > 0
+      );
     });
 
     if (expiringItems.length > 0) {
       const notifId = `expiry-${new Date().toDateString()}`;
-      
+
       if (!this.sentNotifications.has(notifId)) {
         this.sendNotification({
           id: notifId,
@@ -279,10 +295,14 @@ class SmartNotificationService {
    * Deal notifications
    */
   private async checkDealNotifications() {
-    if (!this.userLocation) return;
+    if (!this.userLocation) {
+      return;
+    }
 
     const rule = this.rules.find(r => r.type === 'deal' && r.enabled);
-    if (!rule) return;
+    if (!rule) {
+      return;
+    }
 
     // Mock deals - would fetch from deals service
     const nearbyDeals = [
@@ -291,14 +311,11 @@ class SmartNotificationService {
     ];
 
     for (const deal of nearbyDeals) {
-      const distance = getDistance(
-        this.userLocation,
-        { latitude: deal.lat, longitude: deal.lng }
-      );
+      const distance = getDistance(this.userLocation, { latitude: deal.lat, longitude: deal.lng });
 
       if (rule.conditions.distance !== undefined && distance <= rule.conditions.distance) {
         const notifId = `deal-${deal.store}-${Date.now()}`;
-        
+
         if (!this.sentNotifications.has(notifId)) {
           this.sendNotification({
             id: notifId,
@@ -334,15 +351,25 @@ class SmartNotificationService {
    */
   private async checkTimeBasedNotifications() {
     const rule = this.rules.find(r => r.type === 'routine' && r.enabled);
-    if (!rule) return;
+    if (!rule) {
+      return;
+    }
 
     const now = new Date();
-    const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][now.getDay()];
+    const dayOfWeek = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ][now.getDay()];
     const hour = now.getHours();
 
     if (dayOfWeek === rule.conditions.dayOfWeek && hour === rule.conditions.hour) {
       const notifId = `routine-${dayOfWeek}-${hour}`;
-      
+
       if (!this.sentNotifications.has(notifId)) {
         // Mock list count - would fetch from store
         const listCount = 12;
@@ -376,10 +403,12 @@ class SmartNotificationService {
    */
   async sendSocialNotification(friend: string, item: string, store: string) {
     const rule = this.rules.find(r => r.type === 'social' && r.enabled);
-    if (!rule) return;
+    if (!rule) {
+      return;
+    }
 
     const notifId = `social-${friend}-${item}-${Date.now()}`;
-    
+
     this.sendNotification({
       id: notifId,
       type: 'social',
@@ -409,7 +438,7 @@ class SmartNotificationService {
    */
   private async sendNotification(notification: SmartNotification) {
     this.activeNotifications.push(notification);
-    
+
     // Here you would integrate with React Native's notification system
     // or a service like Firebase Cloud Messaging
     console.log('Notification:', notification.title, notification.message);
@@ -422,9 +451,7 @@ class SmartNotificationService {
    * Get active notifications
    */
   getActiveNotifications(): SmartNotification[] {
-    return this.activeNotifications.filter(n => 
-      !n.expiresAt || n.expiresAt > new Date()
-    );
+    return this.activeNotifications.filter(n => !n.expiresAt || n.expiresAt > new Date());
   }
 
   /**

@@ -46,7 +46,7 @@ class PriceHistoryService {
     const olderPrices = prices.slice(-14, -7);
     const recentAvg = recentPrices.reduce((a, b) => a + b, 0) / recentPrices.length;
     const olderAvg = olderPrices.reduce((a, b) => a + b, 0) / olderPrices.length;
-    
+
     const trend =
       recentAvg > olderAvg * 1.05
         ? 'increasing'
@@ -89,14 +89,14 @@ class PriceHistoryService {
     if (currentPrice < averagePrice * 0.9 && trend === 'increasing') {
       return {
         recommendation: 'buy_now',
-        reason: `Price is 10% below average and trending up`,
+        reason: 'Price is 10% below average and trending up',
       };
     }
 
     if (trend === 'decreasing') {
       return {
         recommendation: 'wait',
-        reason: `Price is decreasing, wait for better deal`,
+        reason: 'Price is decreasing, wait for better deal',
       };
     }
 
@@ -109,18 +109,20 @@ class PriceHistoryService {
   /**
    * Compare across stores
    */
-  async compareStores(productId: string): Promise<Array<{
-    store: string;
-    price: number;
-    distance: number;
-    savings: number;
-  }>> {
+  async compareStores(productId: string): Promise<
+    Array<{
+      store: string;
+      price: number;
+      distance: number;
+      savings: number;
+    }>
+  > {
     // Mock data - would call store APIs
     return [
       { store: 'Walmart', price: 4.49, distance: 2.5, savings: 0 },
-      { store: 'Target', price: 4.99, distance: 1.2, savings: -0.50 },
-      { store: 'Whole Foods', price: 6.99, distance: 3.8, savings: -2.50 },
-      { store: 'Costco', price: 3.99, distance: 5.5, savings: 0.50 },
+      { store: 'Target', price: 4.99, distance: 1.2, savings: -0.5 },
+      { store: 'Whole Foods', price: 6.99, distance: 3.8, savings: -2.5 },
+      { store: 'Costco', price: 3.99, distance: 5.5, savings: 0.5 },
     ].sort((a, b) => a.price - b.price);
   }
 }
@@ -183,7 +185,9 @@ class BulkBuyCalculatorService {
         considerations.push('Cutting it close on expiration');
         recommendation = 'Risky - only buy if you can use quickly';
       } else {
-        recommendation = `Excellent deal! Save $${savings.toFixed(2)} (${savingsPercent.toFixed(0)}%)`;
+        recommendation = `Excellent deal! Save $${savings.toFixed(2)} (${savingsPercent.toFixed(
+          0
+        )}%)`;
       }
     } else {
       recommendation =
@@ -278,7 +282,9 @@ class BulkBuyCalculatorService {
 
     return {
       optimalQuantity: optimal.quantity,
-      reasoning: `Best value at $${optimal.unitPrice.toFixed(2)}/unit, will use within ${shelfLife} days`,
+      reasoning: `Best value at $${optimal.unitPrice.toFixed(
+        2
+      )}/unit, will use within ${shelfLife} days`,
     };
   }
 }
@@ -298,7 +304,9 @@ class SmartCartService {
   /**
    * Analyze cart and get recommendations
    */
-  analyzeCart(cart: Array<{ name: string; price: number; quantity: number }>): CartRecommendation[] {
+  analyzeCart(
+    cart: Array<{ name: string; price: number; quantity: number }>
+  ): CartRecommendation[] {
     const recommendations: CartRecommendation[] = [];
 
     // Check for common bundles
@@ -325,7 +333,9 @@ class SmartCartService {
       if (item.quantity > 5) {
         recommendations.push({
           type: 'bundle',
-          message: `${item.name}: Bulk pack saves $${(item.price * item.quantity * 0.15).toFixed(2)}`,
+          message: `${item.name}: Bulk pack saves $${(item.price * item.quantity * 0.15).toFixed(
+            2
+          )}`,
           savings: item.price * item.quantity * 0.15,
         });
       }
@@ -367,7 +377,7 @@ class SmartCartService {
     changes: string[];
   } {
     const originalTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    
+
     // Mock optimization - would use real pricing data
     const optimizedTotal = originalTotal * 0.85; // Assume 15% savings
     const totalSavings = originalTotal - optimizedTotal;
@@ -435,9 +445,7 @@ class LoyaltyCardService {
    * Get card for store
    */
   getCardForStore(store: string): LoyaltyCard | undefined {
-    return this.cards.find(card => 
-      card.store.toLowerCase() === store.toLowerCase()
-    );
+    return this.cards.find(card => card.store.toLowerCase() === store.toLowerCase());
   }
 
   /**
@@ -449,7 +457,7 @@ class LoyaltyCardService {
     benefits: string[];
   } {
     const card = this.getCardForStore(store);
-    
+
     if (!card) {
       return { applied: false, benefits: [] };
     }
@@ -486,7 +494,9 @@ class LoyaltyCardService {
    */
   calculatePointsEarned(store: string, amount: number): number {
     const card = this.getCardForStore(store);
-    if (!card) return 0;
+    if (!card) {
+      return 0;
+    }
 
     // Typical: 1 point per $1, bonus for tier
     const basePoints = Math.floor(amount);
@@ -548,9 +558,7 @@ class FlashDealService {
    */
   getActiveDeals(): FlashDeal[] {
     const now = new Date();
-    return this.deals.filter(deal => 
-      deal.startsAt <= now && deal.endsAt >= now
-    );
+    return this.deals.filter(deal => deal.startsAt <= now && deal.endsAt >= now);
   }
 
   /**
@@ -558,14 +566,12 @@ class FlashDealService {
    */
   getRelevantDeals(): FlashDeal[] {
     const activeDeals = this.getActiveDeals();
-    
+
     if (this.userPreferences.length === 0) {
       return activeDeals;
     }
 
-    return activeDeals.filter(deal =>
-      this.userPreferences.includes(deal.category)
-    );
+    return activeDeals.filter(deal => this.userPreferences.includes(deal.category));
   }
 
   /**
@@ -576,7 +582,7 @@ class FlashDealService {
     // 1. Discount > 30%
     // 2. Category matches preferences
     // 3. Deal just started (within last hour)
-    
+
     const isRelevant = this.userPreferences.includes(deal.category);
     const isSignificant = deal.discount >= 30;
     const isNew = Date.now() - deal.startsAt.getTime() < 60 * 60 * 1000;
@@ -589,7 +595,9 @@ class FlashDealService {
    */
   formatNotification(deal: FlashDeal): string {
     const timeLeft = Math.ceil((deal.endsAt.getTime() - Date.now()) / (60 * 60 * 1000));
-    return `Flash Deal: ${deal.product} at ${deal.store} - ${deal.discount.toFixed(0)}% off! Only ${timeLeft}h left`;
+    return `Flash Deal: ${deal.product} at ${deal.store} - ${deal.discount.toFixed(
+      0
+    )}% off! Only ${timeLeft}h left`;
   }
 }
 

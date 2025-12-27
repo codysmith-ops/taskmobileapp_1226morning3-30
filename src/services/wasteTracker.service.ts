@@ -45,7 +45,7 @@ class WasteTrackingService {
     };
 
     this.wastedItems.push(wastedItem);
-    
+
     // Generate immediate suggestion
     const suggestion = this.generateSuggestion(wastedItem);
     if (suggestion) {
@@ -92,7 +92,10 @@ class WasteTrackingService {
 
     // Total stats
     const totalItemsWasted = relevantWaste.length;
-    const totalMoneyWasted = relevantWaste.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const totalMoneyWasted = relevantWaste.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
 
     // By category
     const wasteByCategory: { [key: string]: { items: number; cost: number } } = {};
@@ -146,7 +149,9 @@ class WasteTrackingService {
     };
   }
 
-  private calculateWasteTrend(period: 'week' | 'month' | 'year'): 'increasing' | 'decreasing' | 'stable' {
+  private calculateWasteTrend(
+    period: 'week' | 'month' | 'year'
+  ): 'increasing' | 'decreasing' | 'stable' {
     // Simple trend: compare last period to previous period
     const periodMs = {
       week: 7 * 24 * 60 * 60 * 1000,
@@ -163,14 +168,17 @@ class WasteTrackingService {
     ).length;
 
     const previousWaste = this.wastedItems.filter(
-      item => item.wasteDate.getTime() >= previousPeriodStart && 
-             item.wasteDate.getTime() < currentPeriodStart
+      item =>
+        item.wasteDate.getTime() >= previousPeriodStart &&
+        item.wasteDate.getTime() < currentPeriodStart
     ).length;
 
     const difference = currentWaste - previousWaste;
     const percentChange = previousWaste > 0 ? (difference / previousWaste) * 100 : 0;
 
-    if (Math.abs(percentChange) < 10) return 'stable';
+    if (Math.abs(percentChange) < 10) {
+      return 'stable';
+    }
     return percentChange > 0 ? 'increasing' : 'decreasing';
   }
 
@@ -178,38 +186,50 @@ class WasteTrackingService {
     const suggestions: string[] = [];
 
     // Analyze patterns
-    const lettucewaste = wastedItems.filter(item => 
-      item.name.toLowerCase().includes('lettuce') || 
-      item.name.toLowerCase().includes('salad')
+    const lettucewaste = wastedItems.filter(
+      item =>
+        item.name.toLowerCase().includes('lettuce') || item.name.toLowerCase().includes('salad')
     ).length;
 
     if (lettucewaste >= 3) {
-      suggestions.push(`You've thrown out lettuce ${lettucewaste} times. Try buying smaller portions or pre-washed bags`);
+      suggestions.push(
+        `You've thrown out lettuce ${lettucewaste} times. Try buying smaller portions or pre-washed bags`
+      );
     }
 
     // Check for 'too_much' reason
     const tooMuch = wastedItems.filter(item => item.reason === 'too_much');
     if (tooMuch.length >= 5) {
       const categories = [...new Set(tooMuch.map(i => i.category))];
-      suggestions.push(`You often buy too much in: ${categories.join(', ')}. Consider smaller packages`);
+      suggestions.push(
+        `You often buy too much in: ${categories.join(', ')}. Consider smaller packages`
+      );
     }
 
     // Check for expiry
     const expired = wastedItems.filter(item => item.reason === 'expired');
     if (expired.length >= 5) {
-      suggestions.push(`${expired.length} items expired. Set up expiry alerts to use items before they go bad`);
+      suggestions.push(
+        `${expired.length} items expired. Set up expiry alerts to use items before they go bad`
+      );
     }
 
     // Check for 'forgot' reason
     const forgot = wastedItems.filter(item => item.reason === 'forgot');
     if (forgot.length >= 3) {
-      suggestions.push(`You forgot about ${forgot.length} items. Try organizing your fridge better or using meal plans`);
+      suggestions.push(
+        `You forgot about ${forgot.length} items. Try organizing your fridge better or using meal plans`
+      );
     }
 
     // Money wasted
     const totalWasted = wastedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     if (totalWasted > 50) {
-      suggestions.push(`You've wasted $${totalWasted.toFixed(2)} worth of food. See recommendations below to save money`);
+      suggestions.push(
+        `You've wasted $${totalWasted.toFixed(
+          2
+        )} worth of food. See recommendations below to save money`
+      );
     }
 
     return suggestions;
@@ -221,7 +241,9 @@ class WasteTrackingService {
       return {
         type: 'portion_size',
         item: item.name,
-        suggestion: `Consider buying smaller portions of ${item.name}. You could save $${(item.price * 0.5).toFixed(2)} per trip`,
+        suggestion: `Consider buying smaller portions of ${item.name}. You could save $${(
+          item.price * 0.5
+        ).toFixed(2)} per trip`,
         potentialSavings: item.price * 0.5,
       };
     }
@@ -283,7 +305,7 @@ class WasteTrackingService {
       if (count >= 3) {
         recommendations.push({
           item,
-          recommendation: `Buy smaller portions or skip this item`,
+          recommendation: 'Buy smaller portions or skip this item',
           reasoning: `You've thrown out ${item} ${count} times`,
         });
       }
@@ -302,7 +324,7 @@ class WasteTrackingService {
   } {
     // Average waste: 1 lb food = 0.7 kg CO2
     const totalWeight = this.wastedItems.reduce((sum, item) => sum + item.quantity * 0.5, 0); // Assume 0.5 lb per item
-    
+
     return {
       co2Saved: totalWeight * 0.7, // kg CO2
       waterSaved: totalWeight * 25, // gallons

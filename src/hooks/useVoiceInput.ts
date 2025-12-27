@@ -1,8 +1,5 @@
-import {useEffect, useState, useCallback} from 'react';
-import Voice, {
-  SpeechErrorEvent,
-  SpeechResultsEvent,
-} from '@react-native-voice/voice';
+import { useEffect, useState, useCallback } from 'react';
+import Voice, { SpeechErrorEvent, SpeechResultsEvent } from '@react-native-voice/voice';
 
 export const useVoiceInput = () => {
   const [isListening, setIsListening] = useState(false);
@@ -57,5 +54,5 @@ export const useVoiceInput = () => {
     setIsListening(false);
   }, []);
 
-  return {isListening, transcript, error, start, stop, reset};
+  return { isListening, transcript, error, start, stop, reset };
 };

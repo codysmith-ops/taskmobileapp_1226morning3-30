@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "ios": "react-native run-ios",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=100",
     "start": "react-native start",
     "test": "jest",
     "pre-commit": "npm run lint",

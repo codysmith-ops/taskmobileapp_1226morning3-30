@@ -57,7 +57,7 @@ class PersonalShopperService {
         category: 'Predicted Needs',
         suggestions: upcomingNeeds.map(item => ({
           product: item.name,
-          reason: `Running low based on your usage pattern`,
+          reason: 'Running low based on your usage pattern',
           price: item.estimatedPrice,
           store: item.bestStore,
         })),
@@ -123,7 +123,9 @@ class PersonalShopperService {
   private analyzeFrequentPurchases(
     history: ShopperProfile['shoppingHistory']
   ): Array<{ name: string; frequency: number; avgPrice: number }> {
-    const itemFrequency: { [item: string]: { count: number; totalPrice: number; lastPurchase: Date } } = {};
+    const itemFrequency: {
+      [item: string]: { count: number; totalPrice: number; lastPurchase: Date };
+    } = {};
 
     history.forEach(trip => {
       trip.items.forEach(item => {
@@ -161,7 +163,10 @@ class PersonalShopperService {
   /**
    * Get real-time assistance
    */
-  getRealTimeAssistance(currentLocation: { lat: number; lon: number }, shoppingList: string[]): {
+  getRealTimeAssistance(
+    currentLocation: { lat: number; lon: number },
+    shoppingList: string[]
+  ): {
     nearbyItems: Array<{ item: string; aisle: number; distance: string }>;
     nextItem: string;
     optimizedRoute: string[];
@@ -205,13 +210,13 @@ class EnergyTimeCalculatorService {
   ): TripEfficiency {
     const fuelUsed = distance / mpg;
     const fuelCost = fuelUsed * fuelPrice;
-    
+
     // Value of time (assume $20/hour)
     const timeCost = (timeSpent / 60) * 20;
-    
+
     // Energy cost (electricity if EV)
     const energyCost = fuelCost; // Same for comparison
-    
+
     const totalCost = fuelCost + timeCost;
     const costPerDollarSpent = totalCost / purchaseAmount;
 
@@ -219,7 +224,7 @@ class EnergyTimeCalculatorService {
     let efficiency: TripEfficiency['efficiency'];
     if (costPerDollarSpent < 0.05) {
       efficiency = 'excellent';
-    } else if (costPerDollarSpent < 0.10) {
+    } else if (costPerDollarSpent < 0.1) {
       efficiency = 'good';
     } else if (costPerDollarSpent < 0.15) {
       efficiency = 'fair';
@@ -228,15 +233,15 @@ class EnergyTimeCalculatorService {
     }
 
     const suggestions: string[] = [];
-    
+
     if (distance > 10) {
       suggestions.push('Consider delivery ($5) vs. $' + fuelCost.toFixed(2) + ' fuel');
     }
-    
+
     if (timeSpent > 60) {
       suggestions.push('Combine with other errands to save time');
     }
-    
+
     if (purchaseAmount < 50) {
       suggestions.push('Small trip - consider adding items or waiting');
     }
@@ -278,7 +283,9 @@ class EnergyTimeCalculatorService {
       deliveryCost < inStoreCost
         ? `Delivery saves $${(inStoreCost - deliveryCost).toFixed(2)} and ${timeSaved} minutes`
         : inStoreCost < deliveryCost
-        ? `In-store saves $${(deliveryCost - inStoreCost).toFixed(2)} but costs ${timeSaved} minutes`
+        ? `In-store saves $${(deliveryCost - inStoreCost).toFixed(
+            2
+          )} but costs ${timeSaved} minutes`
         : 'About the same - choose based on convenience';
 
     return {
@@ -306,9 +313,7 @@ class EnergyTimeCalculatorService {
     const estimatedTime = stores.length * 20 + totalDistance * 2; // 20 min per store + drive time
 
     const recommendation =
-      stores.length > 3
-        ? 'Many stops - consider consolidating to 2-3 stores'
-        : 'Efficient route';
+      stores.length > 3 ? 'Many stops - consider consolidating to 2-3 stores' : 'Efficient route';
 
     return {
       optimalOrder,
@@ -332,11 +337,11 @@ class EnergyTimeCalculatorService {
   } {
     // Gas: 8.89 kg CO2 per gallon
     // Electric: 0.92 kg CO2 per kWh, ~0.3 kWh per mile
-    const kgCO2 = isElectric
-      ? distance * 0.3 * 0.92
-      : (distance / mpg) * 8.89;
+    const kgCO2 = isElectric ? distance * 0.3 * 0.92 : (distance / mpg) * 8.89;
 
-    const comparison = `${kgCO2.toFixed(2)} kg CO2 = ${(kgCO2 * 0.45).toFixed(0)} smartphone charges`;
+    const comparison = `${kgCO2.toFixed(2)} kg CO2 = ${(kgCO2 * 0.45).toFixed(
+      0
+    )} smartphone charges`;
     const offsetCost = kgCO2 * 0.01; // $0.01 per kg CO2
 
     return {
@@ -407,17 +412,15 @@ class HistoricalAnalyticsService {
       { category: 'Snacks', change: 25 },
       { category: 'Beverages', change: 15 },
     ];
-    const topDecreases = [
-      { category: 'Produce', change: -10 },
-    ];
+    const topDecreases = [{ category: 'Produce', change: -10 }];
 
     // Generate insights
     const insights: string[] = [];
-    
+
     if (vsLastPeriod > 10) {
       insights.push(`Spending up ${vsLastPeriod.toFixed(1)}% - review budget`);
     }
-    
+
     const topCategory = Object.entries(byCategory).sort((a, b) => b[1] - a[1])[0];
     if (topCategory) {
       insights.push(`Top category: ${topCategory[0]} ($${topCategory[1].toFixed(2)})`);
@@ -469,7 +472,8 @@ class HistoricalAnalyticsService {
     const recentAvg = recentPrices.reduce((a, b) => a + b, 0) / recentPrices.length;
     const olderAvg = olderPrices.reduce((a, b) => a + b, 0) / olderPrices.length;
 
-    const trend = recentAvg > olderAvg * 1.05 ? 'up' : recentAvg < olderAvg * 0.95 ? 'down' : 'stable';
+    const trend =
+      recentAvg > olderAvg * 1.05 ? 'up' : recentAvg < olderAvg * 0.95 ? 'down' : 'stable';
     const prediction = recentAvg + (recentAvg - olderAvg);
 
     return {
@@ -506,18 +510,20 @@ class HistoricalAnalyticsService {
     });
 
     const suggestions: string[] = [];
-    
-    if (byReason['expired'] > totalWaste * 0.3) {
+
+    if (byReason.expired > totalWaste * 0.3) {
       suggestions.push('Reduce portion sizes or buy smaller quantities');
     }
-    
-    if (byReason['forgot'] > totalWaste * 0.2) {
+
+    if (byReason.forgot > totalWaste * 0.2) {
       suggestions.push('Use shopping list app to track inventory');
     }
 
     const topWasteCategory = Object.entries(byCategory).sort((a, b) => b[1] - a[1])[0];
     if (topWasteCategory) {
-      suggestions.push(`Focus on reducing ${topWasteCategory[0]} waste ($${topWasteCategory[1].toFixed(2)})`);
+      suggestions.push(
+        `Focus on reducing ${topWasteCategory[0]} waste ($${topWasteCategory[1].toFixed(2)})`
+      );
     }
 
     return {
@@ -563,7 +569,9 @@ class HistoricalAnalyticsService {
       status === 'over_budget'
         ? `Over budget by $${(spent - budget).toFixed(2)} - reduce spending`
         : status === 'warning'
-        ? `Projected to exceed budget by $${projectedOverage.toFixed(2)} - limit to $${dailyBudget.toFixed(2)}/day`
+        ? `Projected to exceed budget by $${projectedOverage.toFixed(
+            2
+          )} - limit to $${dailyBudget.toFixed(2)}/day`
         : `On track - $${dailyBudget.toFixed(2)}/day remaining`;
 
     return {

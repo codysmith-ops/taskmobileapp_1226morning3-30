@@ -172,5 +172,5 @@ export const calculateFunctionality = (): {
     description = 'Limited - configuration needed';
   }
 
-  return {level: score, description, missingFeatures};
+  return { level: score, description, missingFeatures };
 };

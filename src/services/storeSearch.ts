@@ -60,7 +60,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['target'],
     placeTypes: ['department_store', 'store'],
     logo: 'TG',
-    searchUrl: (q) => `https://www.target.com/s?searchTerm=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.target.com/s?searchTerm=${encodeURIComponent(q)}`,
     categoryPriority: 1,
   },
   walmart: {
@@ -68,7 +68,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['walmart'],
     placeTypes: ['department_store', 'store'],
     logo: 'WM',
-    searchUrl: (q) => `https://www.walmart.com/search?q=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.walmart.com/search?q=${encodeURIComponent(q)}`,
     categoryPriority: 1,
   },
   costco: {
@@ -76,7 +76,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['costco'],
     placeTypes: ['department_store', 'store'],
     logo: 'CO',
-    searchUrl: (q) => `https://www.costco.com/CatalogSearch?keyword=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.costco.com/CatalogSearch?keyword=${encodeURIComponent(q)}`,
     categoryPriority: 2,
   },
   samsclub: {
@@ -84,7 +84,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['sams club', "sam's club"],
     placeTypes: ['department_store', 'store'],
     logo: 'SC',
-    searchUrl: (q) => `https://www.samsclub.com/s/${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.samsclub.com/s/${encodeURIComponent(q)}`,
     categoryPriority: 2,
   },
   // Grocery Stores
@@ -93,7 +93,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['whole foods'],
     placeTypes: ['grocery_or_supermarket', 'supermarket', 'food'],
     logo: 'WF',
-    searchUrl: (q) => `https://www.wholefoodsmarket.com/search?text=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.wholefoodsmarket.com/search?text=${encodeURIComponent(q)}`,
     categoryPriority: 3,
   },
   safeway: {
@@ -101,7 +101,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['safeway'],
     placeTypes: ['grocery_or_supermarket', 'supermarket'],
     logo: 'SW',
-    searchUrl: (q) => `https://www.safeway.com/shop/search-results.html?q=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.safeway.com/shop/search-results.html?q=${encodeURIComponent(q)}`,
     categoryPriority: 3,
   },
   kroger: {
@@ -109,7 +109,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['kroger'],
     placeTypes: ['grocery_or_supermarket', 'supermarket'],
     logo: 'KR',
-    searchUrl: (q) => `https://www.kroger.com/search?query=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.kroger.com/search?query=${encodeURIComponent(q)}`,
     categoryPriority: 3,
   },
   traderjoes: {
@@ -117,7 +117,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['trader joe', "trader joe's"],
     placeTypes: ['grocery_or_supermarket', 'supermarket'],
     logo: 'TJ',
-    searchUrl: (q) => `https://www.traderjoes.com/home/search?q=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.traderjoes.com/home/search?q=${encodeURIComponent(q)}`,
     categoryPriority: 3,
   },
   albertsons: {
@@ -125,7 +125,8 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['albertsons'],
     placeTypes: ['grocery_or_supermarket', 'supermarket'],
     logo: 'AB',
-    searchUrl: (q) => `https://www.albertsons.com/shop/search-results.html?q=${encodeURIComponent(q)}`,
+    searchUrl: q =>
+      `https://www.albertsons.com/shop/search-results.html?q=${encodeURIComponent(q)}`,
     categoryPriority: 3,
   },
   publix: {
@@ -133,7 +134,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['publix'],
     placeTypes: ['grocery_or_supermarket', 'supermarket'],
     logo: 'PX',
-    searchUrl: (q) => `https://www.publix.com/shop?SearchTerm=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.publix.com/shop?SearchTerm=${encodeURIComponent(q)}`,
     categoryPriority: 3,
   },
   // Convenience Stores
@@ -142,7 +143,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['7-eleven', '7 eleven'],
     placeTypes: ['convenience_store', 'store'],
     logo: '7E',
-    searchUrl: (q) => `https://www.7-eleven.com/search?q=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.7-eleven.com/search?q=${encodeURIComponent(q)}`,
     categoryPriority: 5,
   },
   circlek: {
@@ -167,7 +168,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['home depot'],
     placeTypes: ['hardware_store', 'home_goods_store'],
     logo: 'HD',
-    searchUrl: (q) => `https://www.homedepot.com/s/${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.homedepot.com/s/${encodeURIComponent(q)}`,
     categoryPriority: 4,
   },
   lowes: {
@@ -175,7 +176,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['lowes', "lowe's"],
     placeTypes: ['hardware_store', 'home_goods_store'],
     logo: 'LW',
-    searchUrl: (q) => `https://www.lowes.com/search?searchTerm=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.lowes.com/search?searchTerm=${encodeURIComponent(q)}`,
     categoryPriority: 4,
   },
   acehardware: {
@@ -183,7 +184,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['ace hardware'],
     placeTypes: ['hardware_store'],
     logo: 'AH',
-    searchUrl: (q) => `https://www.acehardware.com/search?query=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.acehardware.com/search?query=${encodeURIComponent(q)}`,
     categoryPriority: 4,
   },
   // Electronics & Tech
@@ -192,7 +193,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['best buy'],
     placeTypes: ['electronics_store', 'store'],
     logo: 'BB',
-    searchUrl: (q) => `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(q)}`,
     categoryPriority: 2,
   },
   microcenter: {
@@ -200,7 +201,8 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['micro center', 'microcenter'],
     placeTypes: ['electronics_store'],
     logo: 'MC',
-    searchUrl: (q) => `https://www.microcenter.com/search/search_results.aspx?N=&cat=&Ntt=${encodeURIComponent(q)}`,
+    searchUrl: q =>
+      `https://www.microcenter.com/search/search_results.aspx?N=&cat=&Ntt=${encodeURIComponent(q)}`,
     categoryPriority: 2,
   },
   applestore: {
@@ -208,7 +210,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['apple store', 'apple'],
     placeTypes: ['electronics_store', 'store'],
     logo: 'AP',
-    searchUrl: (q) => `https://www.apple.com/search/${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.apple.com/search/${encodeURIComponent(q)}`,
     categoryPriority: 2,
   },
   // Pharmacy/Health
@@ -217,7 +219,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['cvs'],
     placeTypes: ['pharmacy', 'drugstore', 'store'],
     logo: 'CV',
-    searchUrl: (q) => `https://www.cvs.com/search?searchTerm=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.cvs.com/search?searchTerm=${encodeURIComponent(q)}`,
     categoryPriority: 3,
   },
   walgreens: {
@@ -225,7 +227,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['walgreens'],
     placeTypes: ['pharmacy', 'drugstore', 'store'],
     logo: 'WG',
-    searchUrl: (q) => `https://www.walgreens.com/search/results.jsp?Ntt=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.walgreens.com/search/results.jsp?Ntt=${encodeURIComponent(q)}`,
     categoryPriority: 3,
   },
   riteaid: {
@@ -233,7 +235,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['rite aid'],
     placeTypes: ['pharmacy', 'drugstore'],
     logo: 'RA',
-    searchUrl: (q) => `https://www.riteaid.com/shop/catalogsearch/result/?q=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.riteaid.com/shop/catalogsearch/result/?q=${encodeURIComponent(q)}`,
     categoryPriority: 3,
   },
   // Specialty Retail
@@ -242,7 +244,8 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['petco'],
     placeTypes: ['pet_store', 'store'],
     logo: 'PC',
-    searchUrl: (q) => `https://www.petco.com/shop/en/petcostore/search?query=${encodeURIComponent(q)}`,
+    searchUrl: q =>
+      `https://www.petco.com/shop/en/petcostore/search?query=${encodeURIComponent(q)}`,
     categoryPriority: 6,
   },
   petsmart: {
@@ -250,7 +253,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['petsmart'],
     placeTypes: ['pet_store', 'store'],
     logo: 'PS',
-    searchUrl: (q) => `https://www.petsmart.com/search/?q=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.petsmart.com/search/?q=${encodeURIComponent(q)}`,
     categoryPriority: 6,
   },
   staples: {
@@ -258,7 +261,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['staples'],
     placeTypes: ['store', 'home_goods_store'],
     logo: 'ST',
-    searchUrl: (q) => `https://www.staples.com/search?query=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.staples.com/search?query=${encodeURIComponent(q)}`,
     categoryPriority: 4,
   },
   officeDepot: {
@@ -266,7 +269,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['office depot'],
     placeTypes: ['store', 'home_goods_store'],
     logo: 'OD',
-    searchUrl: (q) => `https://www.officedepot.com/catalog/search.do?Ntt=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.officedepot.com/catalog/search.do?Ntt=${encodeURIComponent(q)}`,
     categoryPriority: 4,
   },
   bedbathbeyond: {
@@ -274,7 +277,7 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['bed bath beyond', 'bed bath & beyond'],
     placeTypes: ['home_goods_store', 'store'],
     logo: 'B&B',
-    searchUrl: (q) => `https://www.bedbathandbeyond.com/store/s/${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.bedbathandbeyond.com/store/s/${encodeURIComponent(q)}`,
     categoryPriority: 4,
   },
   // Online
@@ -283,17 +286,12 @@ const STORE_TYPES: Record<string, StoreType> = {
     keywords: ['amazon'],
     placeTypes: [],
     logo: 'AZ',
-    searchUrl: (q) => `https://www.amazon.com/s?k=${encodeURIComponent(q)}`,
+    searchUrl: q => `https://www.amazon.com/s?k=${encodeURIComponent(q)}`,
     categoryPriority: 1,
   },
 };
 
-const calculateDistance = (
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number,
-): number => {
+const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
   const R = 6371; // Earth's radius in km
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLon = ((lon2 - lon1) * Math.PI) / 180;
@@ -311,15 +309,17 @@ const calculateDistance = (
 // In production, integrate with Google Places API, Yelp API, or Foursquare
 const findNearbyStores = async (
   storeType: StoreType,
-  userLocation?: {latitude: number; longitude: number},
-  radius: number = 10, // km
-): Promise<Array<{
-  name: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  distance?: number;
-}>> => {
+  userLocation?: { latitude: number; longitude: number },
+  radius: number = 10 // km
+): Promise<
+  Array<{
+    name: string;
+    address: string;
+    latitude: number;
+    longitude: number;
+    distance?: number;
+  }>
+> => {
   if (!userLocation) {
     // Return mock data if no location
     return generateMockStoreLocations(storeType.name);
@@ -361,7 +361,7 @@ const findNearbyStores = async (
         userLocation.latitude,
         userLocation.longitude,
         store.latitude,
-        store.longitude,
+        store.longitude
       ),
     }));
   } catch (error) {
@@ -372,15 +372,15 @@ const findNearbyStores = async (
 
 // Generate mock store locations (fallback when no API available)
 const generateMockStoreLocations = (
-  storeName: string,
-): Array<{name: string; address: string; latitude: number; longitude: number}> => {
+  storeName: string
+): Array<{ name: string; address: string; latitude: number; longitude: number }> => {
   // Generate 1-3 random nearby locations
   const baseLocations = [
-    {lat: 37.7749, lng: -122.4194, addr: 'Downtown'},
-    {lat: 37.7849, lng: -122.4094, addr: 'North Beach'},
-    {lat: 37.7649, lng: -122.4294, addr: 'Mission District'},
-    {lat: 37.7549, lng: -122.4094, addr: 'Bayshore'},
-    {lat: 37.7949, lng: -122.4144, addr: 'Financial District'},
+    { lat: 37.7749, lng: -122.4194, addr: 'Downtown' },
+    { lat: 37.7849, lng: -122.4094, addr: 'North Beach' },
+    { lat: 37.7649, lng: -122.4294, addr: 'Mission District' },
+    { lat: 37.7549, lng: -122.4094, addr: 'Bayshore' },
+    { lat: 37.7949, lng: -122.4144, addr: 'Financial District' },
   ];
 
   const count = Math.min(Math.floor(Math.random() * 2) + 1, 3);
@@ -401,7 +401,7 @@ const findNearestStore = (
     latitude: number;
     longitude: number;
   }>,
-  userLocation?: {latitude: number; longitude: number},
+  userLocation?: { latitude: number; longitude: number }
 ) => {
   if (!userLocation || !stores.length) {
     return stores[0];
@@ -412,7 +412,7 @@ const findNearestStore = (
     userLocation.latitude,
     userLocation.longitude,
     stores[0].latitude,
-    stores[0].longitude,
+    stores[0].longitude
   );
 
   stores.forEach(store => {
@@ -420,7 +420,7 @@ const findNearestStore = (
       userLocation.latitude,
       userLocation.longitude,
       store.latitude,
-      store.longitude,
+      store.longitude
     );
     if (distance < minDistance) {
       minDistance = distance;
@@ -428,13 +428,13 @@ const findNearestStore = (
     }
   });
 
-  return {...nearest, distance: minDistance};
+  return { ...nearest, distance: minDistance };
 };
 
 // Generic store search function that works for any store type
 const searchStoreType = async (
   storeType: StoreType,
-  params: SearchParams,
+  params: SearchParams
 ): Promise<StoreResult[]> => {
   try {
     const query = params.productBrand
@@ -454,9 +454,15 @@ const searchStoreType = async (
 
     // Generate mock pricing based on store category
     let basePrice = 10 + Math.random() * 90;
-    if (storeType.categoryPriority === 1) basePrice *= 1.2; // Big box retail
-    if (storeType.categoryPriority === 2) basePrice *= 1.5; // Electronics
-    if (storeType.categoryPriority === 5) basePrice *= 0.8; // Convenience stores
+    if (storeType.categoryPriority === 1) {
+      basePrice *= 1.2;
+    } // Big box retail
+    if (storeType.categoryPriority === 2) {
+      basePrice *= 1.5;
+    } // Electronics
+    if (storeType.categoryPriority === 5) {
+      basePrice *= 0.8;
+    } // Convenience stores
 
     return [
       {
@@ -466,8 +472,8 @@ const searchStoreType = async (
         brand: params.productBrand,
         price: Math.round(basePrice * 100) / 100,
         inStock: Math.random() > 0.2, // 80% in stock
-        availability: Math.random() > 0.2 ? 'In Stock' : 
-                      Math.random() > 0.5 ? 'Low Stock' : 'Out of Stock',
+        availability:
+          Math.random() > 0.2 ? 'In Stock' : Math.random() > 0.5 ? 'Low Stock' : 'Out of Stock',
         storeLocation: nearestStore,
         url: storeType.searchUrl(query),
       },
@@ -479,13 +485,12 @@ const searchStoreType = async (
 };
 
 // Main search function that queries all store types
-export const searchStores = async (
-  params: SearchParams,
-): Promise<StoreResult[]> => {
+export const searchStores = async (params: SearchParams): Promise<StoreResult[]> => {
   try {
     // Get all store types and prioritize based on location and category
-    const storeTypesToSearch = Object.values(STORE_TYPES)
-      .sort((a, b) => a.categoryPriority - b.categoryPriority);
+    const storeTypesToSearch = Object.values(STORE_TYPES).sort(
+      (a, b) => a.categoryPriority - b.categoryPriority
+    );
 
     // Execute all searches in parallel
     const allResults = await Promise.all(
@@ -504,8 +509,10 @@ export const searchStores = async (
     } else {
       // Sort by category priority if no location
       flatResults.sort((a, b) => {
-        const priorityA = STORE_TYPES[a.store.toLowerCase().replace(/[^a-z]/g, '')]?.categoryPriority ?? 999;
-        const priorityB = STORE_TYPES[b.store.toLowerCase().replace(/[^a-z]/g, '')]?.categoryPriority ?? 999;
+        const priorityA =
+          STORE_TYPES[a.store.toLowerCase().replace(/[^a-z]/g, '')]?.categoryPriority ?? 999;
+        const priorityB =
+          STORE_TYPES[b.store.toLowerCase().replace(/[^a-z]/g, '')]?.categoryPriority ?? 999;
         return priorityA - priorityB;
       });
     }
@@ -522,8 +529,8 @@ export const searchStores = async (
 export const checkInventory = async (
   store: string,
   productId: string,
-  zipCode?: string,
-): Promise<{inStock: boolean; availability: string}> => {
+  zipCode?: string
+): Promise<{ inStock: boolean; availability: string }> => {
   // In production, integrate with store-specific inventory APIs
   // Target: Target Inventory API
   // Walmart: Walmart Inventory API
@@ -537,8 +544,8 @@ export const checkInventory = async (
 
 // Web scraping fallback for stores without APIs
 export const scrapeStoreWebsite = async (
-  url: string,
-): Promise<{inStock: boolean; price?: number}> => {
+  url: string
+): Promise<{ inStock: boolean; price?: number }> => {
   try {
     // In production, implement with cheerio on a backend service
     // React Native doesn't support cheerio directly - need a proxy server
@@ -549,6 +556,7 @@ export const scrapeStoreWebsite = async (
     };
   } catch (error) {
     console.error('Scraping error:', error);
-    return {inStock: false};
+    // eslint-disable-next-line no-unreachable
+    return { inStock: false };
   }
 };

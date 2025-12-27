@@ -63,21 +63,21 @@ import {
 export const AppServices = {
   // Voice & AI
   voiceAssistant,
-  
+
   // Financial
   creditCardOptimizer,
-  
+
   // Notifications
   smartNotifications,
-  
+
   // Sustainability
   wasteTracker,
   carbonOffset,
-  
+
   // Social & Family
   socialProof,
   familyAllowance,
-  
+
   // Shopping Intelligence
   storeCrowding,
   storeLayout,
@@ -85,16 +85,16 @@ export const AppServices = {
   bulkBuyCalculator,
   smartCart,
   flashDeal,
-  
+
   // Subscriptions & Loyalty
   subscriptionManager,
   loyaltyCard,
-  
+
   // Health & Nutrition
   dietaryScanner,
   nutritionTracking,
   mealPlanner,
-  
+
   // Premium Features
   personalShopper,
   energyTimeCalculator,
@@ -106,12 +106,12 @@ export const AppServices = {
  */
 export const initializeServices = () => {
   console.log('Initializing all app services...');
-  
+
   // Set up default configurations
   smartNotifications.initialize();
-  
+
   console.log('All services initialized');
-  
+
   return AppServices;
 };
 

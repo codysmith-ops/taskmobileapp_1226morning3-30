@@ -1,5 +1,5 @@
-import {create} from 'zustand';
-import {nanoid} from 'nanoid/non-secure';
+import { create } from 'zustand';
+import { nanoid } from 'nanoid/non-secure';
 
 export type NavPreference = 'apple' | 'google' | 'waze';
 
@@ -56,7 +56,7 @@ type TodoStore = {
   setNavPreference: (value: NavPreference) => void;
   updateTaskLocation: (
     id: string,
-    location: {locationLabel?: string; latitude?: number; longitude?: number},
+    location: { locationLabel?: string; latitude?: number; longitude?: number }
   ) => void;
   addComment: (taskId: string, text: string) => void;
   shareTask: (taskId: string, appleId: string) => void;
@@ -90,23 +90,23 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
       comments: [],
       lastModified: Date.now(),
     };
-    set(state => ({tasks: [task, ...state.tasks]}));
+    set(state => ({ tasks: [task, ...state.tasks] }));
   },
   toggleComplete: id => {
     set(state => ({
       tasks: state.tasks.map(task =>
-        task.id === id ? {...task, completed: !task.completed, lastModified: Date.now()} : task,
+        task.id === id ? { ...task, completed: !task.completed, lastModified: Date.now() } : task
       ),
     }));
   },
   removeTask: id => {
-    set(state => ({tasks: state.tasks.filter(task => task.id !== id)}));
+    set(state => ({ tasks: state.tasks.filter(task => task.id !== id) }));
   },
-  setNavPreference: value => set({navPreference: value}),
+  setNavPreference: value => set({ navPreference: value }),
   updateTaskLocation: (id, location) => {
     set(state => ({
       tasks: state.tasks.map(task =>
-        task.id === id ? {...task, ...location, lastModified: Date.now()} : task,
+        task.id === id ? { ...task, ...location, lastModified: Date.now() } : task
       ),
     }));
   },
@@ -147,14 +147,12 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
     }));
   },
   setCurrentUser: (userId, userName) => {
-    set({currentUserId: userId, currentUserName: userName});
+    set({ currentUserId: userId, currentUserName: userName });
   },
   updateTask: (taskId, updates) => {
     set(state => ({
       tasks: state.tasks.map(task =>
-        task.id === taskId
-          ? {...task, ...updates, lastModified: Date.now()}
-          : task
+        task.id === taskId ? { ...task, ...updates, lastModified: Date.now() } : task
       ),
     }));
   },
