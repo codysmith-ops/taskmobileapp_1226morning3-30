@@ -1,8 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-# FAANG-level preflight checks for iOS builds
-# Enforces Xcode 15.4 and iPhone 15 iOS 17.5 simulator
+# Production-ready preflight checks for iOS builds
+# Compatible with macOS Sequoia 15.x + Tahoe 26.x
+# Enforces Xcode 15.4 stable (App Store compliant)
 
 REQUIRED_XCODE_PATH="/Applications/Xcode-15.4.app/Contents/Developer"
 REQUIRED_XCODE_VERSION="Xcode 15.4"
