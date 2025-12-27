@@ -7,8 +7,6 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, '16.0'
 prepare_react_native_project!
 
-flipper_config = FlipperConfiguration.disabled
-
 target 'MobileTodoList' do
   config = use_native_modules!
   
@@ -18,7 +16,6 @@ target 'MobileTodoList' do
     :path => config[:reactNativePath],
     :hermes_enabled => true,
     :fabric_enabled => false,
-    :flipper_configuration => FlipperConfiguration.disabled,
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
