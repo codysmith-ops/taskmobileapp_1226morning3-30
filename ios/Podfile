@@ -2,7 +2,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '13.0'
+platform :ios, '16.0'
 install! 'cocoapods', :deterministic_uuids => false
 
 # Force compatible versions to fix gRPC-Core template error
@@ -31,10 +31,10 @@ target 'MobileTodoList' do
   pod 'gRPC-C++', '1.44.0', :modular_headers => false
   
   # Ensure compatible Firebase versions
-  pod 'Firebase/Core', '~> 10.20.0'
-  pod 'Firebase/Auth'
-  pod 'Firebase/Firestore'
-  pod 'Firebase/Storage'
+  # pod 'Firebase/Core', '~> 10.20.0'
+  # pod 'Firebase/Auth'
+  # pod 'Firebase/Firestore'
+  # pod 'Firebase/Storage'
   
   target 'MobileTodoListTests' do
     inherit! :complete
@@ -58,7 +58,7 @@ target 'MobileTodoList' do
         config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
         
         # Fix deployment target warnings
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
         
         # Disable some warnings for third-party code
         config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
