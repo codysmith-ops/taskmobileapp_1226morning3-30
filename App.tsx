@@ -85,7 +85,8 @@ const App = (): React.JSX.Element => {
           version: Platform.Version,
         });
         
-        console.log('Firebase Analytics
+        console.log('Firebase Analytics initialized successfully');
+      } catch (error) {
         console.error('Firebase initialization error:', error);
       }
     };

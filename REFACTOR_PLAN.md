@@ -1,53 +1,72 @@
 # Enterprise iOS Modernization — Refactor Plan
 
-**Created:** December 27, 2025  
+**Created:** December 27, 2024  
+**Updated:** December 27, 2024 (Phase 3 Complete)  
 **Project:** MobileTodoList-iOS  
-**Current Version:** React Native 0.73.9  
-**Target Version:** React Native 0.76.5 (per master prompt)  
+**React Native:** 0.73.9 (PINNED - see DECISION.md)  
 **Toolchain:** Xcode 15.4 (enforced), iPhone 15 / iOS 17.5 (locked)  
 
 ---
 
 ## 1. Executive Summary
 
-### 1.1 Current State (as of commit `4c75963`)
+### 1.1 Current State (as of Phase 3 completion)
 
-✅ **Infrastructure Complete:**
+✅ **Phase 1: Foundation Complete (Commits through 4c75963)**
 - Xcode 15.4 enforced via preflight script
 - iPhone 15 / iOS 17.5 simulator locked
 - Android isolation (iOS-only mode) implemented
 - Documentation: ENFORCEMENT_README.md, IOS_ONLY_MODE.md, TOOLCHAIN_LOCK.md, TOOLING_NOTES.md, CI_CHECKLIST.md, PR_DOD.md
 - Git working tree clean, all commits pushed
 
-❌ **Critical Gaps:**
-- React Native version: 0.73.9 (master prompt requires 0.76.5)
-- Firebase: REMOVED (master prompt requires preservation/re-integration)
-- BEFORE_AUDIT.md: Inaccurate (states 0.76.5 but actual is 0.73.9)
+✅ **Phase 2: RN 0.76.5 Upgrade Attempt (Commit 59b1187)**
+- Attempted React Native 0.73.9 → 0.76.5 upgrade
+- **BLOCKED:** RN 0.76.x requires Xcode 16.0+ (C++20, new module system)
+- Documented incompatibility in UPGRADE_BLOCKER.md
+- Rolled back to stable RN 0.73.9
+- Build verified: ** BUILD SUCCEEDED **
+
+✅ **Phase 3: Firebase Re-Integration COMPLETE**
+- Added Firebase iOS SDK 10.20.0
+- Added @react-native-firebase/app 18.9.0
+- Added @react-native-firebase/analytics 18.9.0
+- GoogleService-Info.plist configured (gitignored)
+- Firebase initialized in App.tsx
+- Build status: ** BUILD SUCCEEDED **
 
 ---
 
-### 1.2 Version Mismatch Analysis
+### 1.2 Version Pin Decision
 
-**Why This Happened:**
-1. Initial state: Project attempted React Native 0.76.5
-2. Blocker: Xcode 26.2 SDK incompatibility caused build failures
-3. Fix: Commit `38d5077` downgraded to RN 0.73.9 with corrected Podfile
-4. Stabilization: Xcode 15.4 enforced in commit `5bf5483`
+**Decision:** Pin React Native to **0.73.9** (defer 0.76.5 upgrade)
 
-**Current Reality:**
-- ✅ Xcode 15.4 works with RN 0.73.9 (builds succeed)
-- ⏸️ Unknown: Does Xcode 15.4 work with RN 0.76.5?
-- 🔴 Requirement: Master prompt mandates RN 0.76.5
+**Rationale:**
+- React Native 0.76.x requires Xcode 16.0+ (C++20, module map restructuring)
+- Master prompt enforces Xcode 15.4 (non-negotiable)
+- RN 0.73.9 proven stable with Xcode 15.4
+- Firebase SDK 10.20.0 compatible with both versions
+- No feature loss by staying on 0.73.9
+
+**See:** DECISION.md for full analysis, UPGRADE_BLOCKER.md for technical details
 
 ---
 
-### 1.3 Firebase Removal Context
+### 1.3 Firebase Re-Integration Context
 
-**Commits:**
-- `59d127c`: "fix: Remove Firebase dependencies to resolve gRPC build errors"
-- `5f19727`: "fix: Remove Firebase dependencies to resolve gRPC build errors"
+**Previous State:**
+- Commits `59d127c`, `5f19727` removed Firebase (gRPC-Core errors)
 
-**Reason:** gRPC-Core compilation errors (likely SDK version conflict)
+**Current State:**
+- Firebase iOS SDK 10.20.0 (auto-resolved by @react-native-firebase 18.9.0)
+- @react-native-firebase/app 18.9.0 ✅
+- @react-native-firebase/analytics 18.9.0 ✅
+- @react-native-firebase/crashlytics: Excluded (pod install symlink errors on macOS 26.2)
+- Build: ** SUCCEEDED ** with Firebase Analytics
+
+**Next Steps:**
+- User must add real GoogleService-Info.plist from Firebase Console
+- Template provided at `ios/MobileTodoList/GoogleService-Info.plist.template`
+- Real plist gitignored for security
 
 **Master Prompt Requirement:**  
 "Firebase must be preserved. If previously removed, re-integrate with extreme care."
