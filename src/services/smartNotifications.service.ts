@@ -407,7 +407,7 @@ class SmartNotificationService {
     
     // Here you would integrate with React Native's notification system
     // or a service like Firebase Cloud Messaging
-    console.log('📬 Notification:', notification.title, notification.message);
+    console.log('Notification:', notification.title, notification.message);
 
     // Trigger system notification
     // PushNotification.localNotification({...})

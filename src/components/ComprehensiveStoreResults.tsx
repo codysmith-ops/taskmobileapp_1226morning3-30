@@ -74,7 +74,7 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
         const category = STORE_CATEGORIES.find(c => c.type === type);
         return {
           title: category?.label || type,
-          icon: category?.icon || '🏬',
+          icon: category?.icon || 'ST',
           data: stores,
         };
       });

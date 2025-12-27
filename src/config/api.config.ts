@@ -87,16 +87,16 @@ export const validateAPIConfig = () => {
 
   // Critical APIs
   if (!API_CONFIG.google.places.apiKey) {
-    warnings.push('⚠️  Google Places API key not configured - using demo store data');
+    warnings.push('Google Places API key not configured - using demo store data');
   }
 
   if (!API_CONFIG.spoonacular.apiKey) {
-    warnings.push('⚠️  Spoonacular API key not configured - meal planning limited');
+    warnings.push('Spoonacular API key not configured - meal planning limited');
   }
 
   // Optional APIs
   if (!API_CONFIG.weather.apiKey) {
-    warnings.push('ℹ️  Weather API not configured - weather suggestions disabled');
+    warnings.push('Weather API not configured - weather suggestions disabled');
   }
 
   if (!API_CONFIG.firebase.apiKey) {
@@ -161,15 +161,15 @@ export const calculateFunctionality = (): {
 
   let description = '';
   if (score >= 95) {
-    description = '🎉 Full functionality - all features enabled!';
+    description = 'Full functionality - all features enabled!';
   } else if (score >= 85) {
-    description = '✨ Excellent - most features enabled';
+    description = 'Excellent - most features enabled';
   } else if (score >= 70) {
-    description = '👍 Good - core features enabled with smart fallbacks';
+    description = 'Good - core features enabled with smart fallbacks';
   } else if (score >= 50) {
-    description = '⚡ Basic - using demo data and fallbacks';
+    description = 'Basic - using demo data and fallbacks';
   } else {
-    description = '⚠️  Limited - configuration needed';
+    description = 'Limited - configuration needed';
   }
 
   return {level: score, description, missingFeatures};

@@ -67,11 +67,11 @@ class StoreCrowdingService {
    */
   getRecommendation(crowding: StoreCrowdingData): string {
     if (crowding.currentCapacity > 80) {
-      return `🔴 Very busy now (${crowding.currentCapacity}%). Best time: ${crowding.bestTimes[0]}`;
+      return `Very busy now (${crowding.currentCapacity}%). Best time: ${crowding.bestTimes[0]}`;
     } else if (crowding.currentCapacity > 60) {
-      return `🟡 Moderately busy (${crowding.currentCapacity}%). Wait 1-2 hours for less crowds`;
+      return `Moderately busy (${crowding.currentCapacity}%). Wait 1-2 hours for less crowds`;
     } else {
-      return `🟢 Good time to shop (${crowding.currentCapacity}% full)`;
+      return `Good time to shop (${crowding.currentCapacity}% full)`;
     }
   }
 }

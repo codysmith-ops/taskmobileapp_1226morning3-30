@@ -308,13 +308,13 @@ class CreditCardOptimizationService {
     const rate = points / amount;
     
     if (rate >= 5) {
-      return `🔥 Excellent! ${rate}x points on ${category}`;
+      return `Excellent! ${rate}x points on ${category}`;
     } else if (rate >= 3) {
-      return `✨ Great choice! ${rate}x points on ${category}`;
+      return `Great choice! ${rate}x points on ${category}`;
     } else if (rate >= 2) {
-      return `👍 Good value! ${rate}x points on ${category}`;
+      return `Good value! ${rate}x points on ${category}`;
     } else {
-      return `💰 Earning ${rate}x points`;
+      return `Earning ${rate}x points`;
     }
   }
 

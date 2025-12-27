@@ -43,7 +43,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     type: 'grocery',
     label: 'Grocery Stores',
-    icon: '🛒',
+    icon: 'GR',
     chains: [
       'Whole Foods',
       'Safeway',
@@ -74,7 +74,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     type: 'pharmacy',
     label: 'Pharmacies',
-    icon: '💊',
+    icon: 'PH',
     chains: [
       'CVS',
       'Walgreens',
@@ -88,7 +88,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     type: 'convenience',
     label: 'Convenience Stores',
-    icon: '🏪',
+    icon: 'CV',
     chains: [
       '7-Eleven',
       'Circle K',
@@ -105,7 +105,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     type: 'big_box',
     label: 'Big Box Retailers',
-    icon: '🎯',
+    icon: 'BB',
     chains: [
       'Target',
       'Walmart',
@@ -117,7 +117,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     type: 'warehouse',
     label: 'Warehouse Clubs',
-    icon: '📦',
+    icon: 'WH',
     chains: [
       'Costco',
       'Sam\'s Club',
@@ -128,7 +128,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     type: 'department',
     label: 'Department Stores',
-    icon: '🏬',
+    icon: 'DP',
     chains: [
       'Macy\'s',
       'Nordstrom',
@@ -144,7 +144,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     type: 'specialty',
     label: 'Specialty Stores',
-    icon: '✨',
+    icon: 'SP',
     chains: [
       'Bed Bath & Beyond',
       'HomeGoods',
@@ -174,7 +174,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     type: 'dollar',
     label: 'Dollar Stores',
-    icon: '💵',
+    icon: 'DL',
     chains: [
       'Dollar General',
       'Dollar Tree',
@@ -186,7 +186,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   {
     type: 'online',
     label: 'Online Retailers',
-    icon: '🌐',
+    icon: 'ON',
     chains: [
       'Amazon',
       'Instacart',
@@ -591,16 +591,16 @@ const createGenericStoreResult = (
 
 const getStoreIcon = (storeName: string): string => {
   const name = storeName.toLowerCase();
-  if (name.includes('target')) return '🎯';
-  if (name.includes('walmart')) return '🟦';
-  if (name.includes('whole foods')) return '🥬';
-  if (name.includes('safeway')) return '🛒';
-  if (name.includes('cvs') || name.includes('walgreens')) return '💊';
-  if (name.includes('costco') || name.includes('sam')) return '📦';
-  if (name.includes('trader joe')) return '🔔';
-  if (name.includes('7-eleven')) return '🏪';
-  if (name.includes('kroger') || name.includes('albertsons')) return '🛒';
-  return '🏬';
+  if (name.includes('target')) return 'TG';
+  if (name.includes('walmart')) return 'WM';
+  if (name.includes('whole foods')) return 'WF';
+  if (name.includes('safeway')) return 'SW';
+  if (name.includes('cvs') || name.includes('walgreens')) return 'PH';
+  if (name.includes('costco') || name.includes('sam')) return 'WH';
+  if (name.includes('trader joe')) return 'TJ';
+  if (name.includes('7-eleven')) return '7E';
+  if (name.includes('kroger') || name.includes('albertsons')) return 'GR';
+  return 'ST';
 };
 
 // Export comprehensive search as default

@@ -276,10 +276,10 @@ class EnergyTimeCalculatorService {
 
     const recommendation =
       deliveryCost < inStoreCost
-        ? `✅ Delivery saves $${(inStoreCost - deliveryCost).toFixed(2)} and ${timeSaved} minutes`
+        ? `Delivery saves $${(inStoreCost - deliveryCost).toFixed(2)} and ${timeSaved} minutes`
         : inStoreCost < deliveryCost
-        ? `✅ In-store saves $${(deliveryCost - inStoreCost).toFixed(2)} but costs ${timeSaved} minutes`
-        : '✅ About the same - choose based on convenience';
+        ? `In-store saves $${(deliveryCost - inStoreCost).toFixed(2)} but costs ${timeSaved} minutes`
+        : 'About the same - choose based on convenience';
 
     return {
       inStoreCost,
@@ -307,8 +307,8 @@ class EnergyTimeCalculatorService {
 
     const recommendation =
       stores.length > 3
-        ? '⚠️ Many stops - consider consolidating to 2-3 stores'
-        : '✅ Efficient route';
+        ? 'Many stops - consider consolidating to 2-3 stores'
+        : 'Efficient route';
 
     return {
       optimalOrder,
@@ -415,7 +415,7 @@ class HistoricalAnalyticsService {
     const insights: string[] = [];
     
     if (vsLastPeriod > 10) {
-      insights.push(`⚠️ Spending up ${vsLastPeriod.toFixed(1)}% - review budget`);
+      insights.push(`Spending up ${vsLastPeriod.toFixed(1)}% - review budget`);
     }
     
     const topCategory = Object.entries(byCategory).sort((a, b) => b[1] - a[1])[0];
@@ -424,7 +424,7 @@ class HistoricalAnalyticsService {
     }
 
     if (topIncreases.length > 0) {
-      insights.push(`📈 Spending up on: ${topIncreases[0].category} (+${topIncreases[0].change}%)`);
+      insights.push(`Spending up on: ${topIncreases[0].category} (+${topIncreases[0].change}%)`);
     }
 
     return {
@@ -508,16 +508,16 @@ class HistoricalAnalyticsService {
     const suggestions: string[] = [];
     
     if (byReason['expired'] > totalWaste * 0.3) {
-      suggestions.push('💡 Reduce portion sizes or buy smaller quantities');
+      suggestions.push('Reduce portion sizes or buy smaller quantities');
     }
     
     if (byReason['forgot'] > totalWaste * 0.2) {
-      suggestions.push('💡 Use shopping list app to track inventory');
+      suggestions.push('Use shopping list app to track inventory');
     }
 
     const topWasteCategory = Object.entries(byCategory).sort((a, b) => b[1] - a[1])[0];
     if (topWasteCategory) {
-      suggestions.push(`💡 Focus on reducing ${topWasteCategory[0]} waste ($${topWasteCategory[1].toFixed(2)})`);
+      suggestions.push(`Focus on reducing ${topWasteCategory[0]} waste ($${topWasteCategory[1].toFixed(2)})`);
     }
 
     return {
@@ -561,10 +561,10 @@ class HistoricalAnalyticsService {
 
     const recommendation =
       status === 'over_budget'
-        ? `❌ Over budget by $${(spent - budget).toFixed(2)} - reduce spending`
+        ? `Over budget by $${(spent - budget).toFixed(2)} - reduce spending`
         : status === 'warning'
-        ? `⚠️ Projected to exceed budget by $${projectedOverage.toFixed(2)} - limit to $${dailyBudget.toFixed(2)}/day`
-        : `✅ On track - $${dailyBudget.toFixed(2)}/day remaining`;
+        ? `Projected to exceed budget by $${projectedOverage.toFixed(2)} - limit to $${dailyBudget.toFixed(2)}/day`
+        : `On track - $${dailyBudget.toFixed(2)}/day remaining`;
 
     return {
       percentUsed,

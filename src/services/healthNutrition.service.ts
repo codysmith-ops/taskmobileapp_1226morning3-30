@@ -76,7 +76,7 @@ class DietaryScannerService {
 
       if (hasIssue) {
         warnings.push(
-          `⚠️ Contains ${restriction.name} (${restriction.severity})`
+          `Contains ${restriction.name} (${restriction.severity})`
         );
         return restriction.severity === 'preference';
       }

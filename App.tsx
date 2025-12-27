@@ -92,10 +92,10 @@ const App = (): React.JSX.Element => {
           longitude: position.coords.longitude,
         };
         setCurrentPosition(coords);
-        setLocationStatus(`📍 ${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`);
+        setLocationStatus(`${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`);
       },
       error => {
-        setLocationStatus(`⚠️ Location unavailable: ${error.message}`);
+        setLocationStatus(`Location unavailable: ${error.message}`);
       },
       {enableHighAccuracy: true, timeout: 10000, maximumAge: 0},
     );
@@ -108,10 +108,10 @@ const App = (): React.JSX.Element => {
           longitude: position.coords.longitude,
         };
         setCurrentPosition(coords);
-        setLocationStatus(`📍 ${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`);
+        setLocationStatus(`${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`);
       },
       error => {
-        setLocationStatus(`⚠️ Location error: ${error.message}`);
+        setLocationStatus(`Location error: ${error.message}`);
       },
       {enableHighAccuracy: true, distanceFilter: 50, timeout: 10000},
     );
@@ -394,7 +394,7 @@ const App = (): React.JSX.Element => {
                   setProductBrand('');
                   setProductDetails('');
                 }}>
-                <Text style={styles.removeImageText}>✕</Text>
+                <Text style={styles.removeImageText}>X</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -457,15 +457,15 @@ const App = (): React.JSX.Element => {
             />
           </View>
           <GhostButton
-            label="📍 Use current location"
+            label="Use current location"
             onPress={useCurrentLocation}
           />
           <GhostButton
-            label="📸 Take photo"
+            label="Take photo"
             onPress={takePhoto}
           />
           <GhostButton
-            label={isSearchingStores ? "Searching stores..." : "🔍 Search stores"}
+            label={isSearchingStores ? "Searching stores..." : "Search stores"}
             onPress={() => handleStoreSearch()}
             disabled={isSearchingStores}
           />
@@ -514,7 +514,7 @@ const App = (): React.JSX.Element => {
                   {result.storeLocation && (
                     <View style={styles.storeLocationInfo}>
                       <Text style={styles.storeLocationName} numberOfLines={1}>
-                        📍 {result.storeLocation.name}
+                        {result.storeLocation.name}
                       </Text>
                       <Text style={styles.storeAddress} numberOfLines={1}>
                         {result.storeLocation.address}

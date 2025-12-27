@@ -49,7 +49,7 @@ class WasteTrackingService {
     // Generate immediate suggestion
     const suggestion = this.generateSuggestion(wastedItem);
     if (suggestion) {
-      console.log('💡 Suggestion:', suggestion);
+      console.log('Suggestion:', suggestion);
     }
 
     return wastedItem;

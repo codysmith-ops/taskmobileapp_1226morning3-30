@@ -105,12 +105,12 @@ export const AppServices = {
  * Initialize all services
  */
 export const initializeServices = () => {
-  console.log('🚀 Initializing all app services...');
+  console.log('Initializing all app services...');
   
   // Set up default configurations
   smartNotifications.initialize();
   
-  console.log('✅ All services initialized');
+  console.log('All services initialized');
   
   return AppServices;
 };

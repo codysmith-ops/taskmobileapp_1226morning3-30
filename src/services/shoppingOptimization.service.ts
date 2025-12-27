@@ -166,7 +166,7 @@ class BulkBuyCalculatorService {
 
     // Check if savings are significant
     if (savingsPercent < 10) {
-      considerations.push('⚠️ Savings less than 10%, may not be worth it');
+      considerations.push('Savings less than 10%, may not be worth it');
     }
 
     // Check shelf life
@@ -176,19 +176,19 @@ class BulkBuyCalculatorService {
 
       if (daysToConsume > shelfLife) {
         considerations.push(
-          `⚠️ Will take ${weeksToConsume.toFixed(1)} weeks to use but expires in ${shelfLife} days`
+          `Will take ${weeksToConsume.toFixed(1)} weeks to use but expires in ${shelfLife} days`
         );
         recommendation = 'Not recommended - will expire before use';
       } else if (daysToConsume > shelfLife * 0.8) {
-        considerations.push('⚠️ Cutting it close on expiration');
+        considerations.push('Cutting it close on expiration');
         recommendation = 'Risky - only buy if you can use quickly';
       } else {
-        recommendation = `✅ Excellent deal! Save $${savings.toFixed(2)} (${savingsPercent.toFixed(0)}%)`;
+        recommendation = `Excellent deal! Save $${savings.toFixed(2)} (${savingsPercent.toFixed(0)}%)`;
       }
     } else {
       recommendation =
         savingsPercent > 20
-          ? `✅ Excellent deal! Save $${savings.toFixed(2)}`
+          ? `Excellent deal! Save $${savings.toFixed(2)}`
           : savingsPercent > 10
           ? `Good savings at ${savingsPercent.toFixed(0)}%`
           : 'Marginal savings';
@@ -196,12 +196,12 @@ class BulkBuyCalculatorService {
 
     // Storage considerations
     if (bulkQuantity > 10) {
-      considerations.push('📦 Requires storage space');
+      considerations.push('Requires storage space');
     }
 
     // Upfront cost
     if (bulkPrice > 50) {
-      considerations.push(`💰 High upfront cost: $${bulkPrice.toFixed(2)}`);
+      considerations.push(`High upfront cost: $${bulkPrice.toFixed(2)}`);
     }
 
     return {
@@ -241,10 +241,10 @@ class BulkBuyCalculatorService {
       netSavings,
       recommendation:
         netSavings > 100
-          ? `✅ Worth it! Save $${netSavings.toFixed(2)}/year`
+          ? `Worth it! Save $${netSavings.toFixed(2)}/year`
           : netSavings > 0
           ? `Marginally worth it, save $${netSavings.toFixed(2)}/year`
-          : `❌ Not worth it, lose $${Math.abs(netSavings).toFixed(2)}/year`,
+          : `Not worth it, lose $${Math.abs(netSavings).toFixed(2)}/year`,
     };
   }
 
@@ -589,7 +589,7 @@ class FlashDealService {
    */
   formatNotification(deal: FlashDeal): string {
     const timeLeft = Math.ceil((deal.endsAt.getTime() - Date.now()) / (60 * 60 * 1000));
-    return `🔥 Flash Deal: ${deal.product} at ${deal.store} - ${deal.discount.toFixed(0)}% off! Only ${timeLeft}h left`;
+    return `Flash Deal: ${deal.product} at ${deal.store} - ${deal.discount.toFixed(0)}% off! Only ${timeLeft}h left`;
   }
 }
 
