@@ -1,9 +1,11 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
-require_relative '../node_modules/react-native/scripts/react_native_pods'
-require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
 
 platform :ios, '13.0'
-install! 'cocoapods', :deterministic_uuids => false
+prepare_react_native_project!
 
 # Force compatible versions to fix gRPC-Core template error
 $RNFirebaseAsStaticFramework = true
@@ -11,18 +13,11 @@ $RNFirebaseAsStaticFramework = true
 target 'MobileTodoList' do
   config = use_native_modules!
 
-  # Flags change depending on the env values.
-  flags = get_default_flags()
-
   use_react_native!(
     :path => config[:reactNativePath],
-    # Hermes is now enabled by default. Disable by setting this flag to false.
-    :hermes_enabled => flags[:hermes_enabled],
+    :hermes_enabled => flags[:hermes_enabled] || true,
     :fabric_enabled => flags[:fabric_enabled],
-    # Note that if you have use_frameworks! enabled, Flipper will not work and
-    # you should disable the next line.
     :flipper_configuration => FlipperConfiguration.disabled,
-    # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 

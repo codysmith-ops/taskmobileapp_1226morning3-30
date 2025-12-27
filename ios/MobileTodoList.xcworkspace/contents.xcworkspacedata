@@ -7,4 +7,46 @@
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Podfile_FIXED">
+   </FileRef>
+   <FileRef
+      location = "group:fix_ios_build.sh">
+   </FileRef>
+   <FileRef
+      location = "group:IOS_BUILD_FIX_README.md">
+   </FileRef>
+   <FileRef
+      location = "group:PODFILE_PATCH.rb">
+   </FileRef>
+   <FileRef
+      location = "group:QUICK_FIX_COMMANDS.txt">
+   </FileRef>
+   <FileRef
+      location = "group:SUMMARY.txt">
+   </FileRef>
+   <FileRef
+      location = "group:START_HERE.sh">
+   </FileRef>
+   <FileRef
+      location = "group:FILE_GUIDE.txt">
+   </FileRef>
+   <FileRef
+      location = "group:CHECKLIST.txt">
+   </FileRef>
+   <FileRef
+      location = "group:INDEX.txt">
+   </FileRef>
+   <FileRef
+      location = "group:README.md">
+   </FileRef>
+   <FileRef
+      location = "group:one_line_fix.sh">
+   </FileRef>
+   <FileRef
+      location = "group:START_HERE_READ_FIRST.txt">
+   </FileRef>
+   <FileRef
+      location = "group:fix_ios_build 2.sh">
+   </FileRef>
 </Workspace>

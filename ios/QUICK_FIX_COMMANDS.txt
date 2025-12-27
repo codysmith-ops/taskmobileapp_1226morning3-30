@@ -1,0 +1,107 @@
+# Quick Fix Commands for iOS Build Issues
+# Run these commands in your terminal from the project root
+
+# ==============================================================================
+# OPTION 1: Automatic Fix (Easiest)
+# ==============================================================================
+
+# Make script executable and run it
+chmod +x fix_ios_build.sh && ./fix_ios_build.sh
+
+
+# ==============================================================================
+# OPTION 2: Manual Step-by-Step (if automatic fails)
+# ==============================================================================
+
+# 1. Backup your current Podfile
+cp ios/Podfile ios/Podfile.backup
+
+# 2. Replace Podfile with fixed version
+cp Podfile_FIXED ios/Podfile
+
+# 3. Clean everything
+cd ios
+rm -rf Pods
+rm -rf build  
+rm Podfile.lock
+pod cache clean --all
+
+# 4. Reinstall pods
+pod repo update
+pod install --repo-update
+
+# 5. Clean Xcode derived data
+cd ..
+rm -rf ~/Library/Developer/Xcode/DerivedData/MobileTodoList-*
+rm -rf ios/build
+
+# 6. Rebuild in Xcode (open Xcode manually and build)
+
+
+# ==============================================================================
+# OPTION 3: Quick Pod Update (if you already fixed Podfile manually)
+# ==============================================================================
+
+cd ios && \
+pod deintegrate && \
+pod cache clean --all && \
+rm Podfile.lock && \
+pod install --repo-update && \
+cd ..
+
+
+# ==============================================================================
+# TROUBLESHOOTING: If you still get errors
+# ==============================================================================
+
+# Reset React Native metro bundler
+npx react-native start --reset-cache
+
+# Or kill all metro processes
+killall -9 node
+
+# Clear watchman
+watchman watch-del-all
+
+# Reinstall node modules
+rm -rf node_modules
+npm install
+# or
+yarn install
+
+# Full nuclear option - reset everything
+rm -rf node_modules
+rm -rf ios/Pods
+rm -rf ios/build
+rm -rf ~/Library/Developer/Xcode/DerivedData
+rm package-lock.json  # or yarn.lock
+npm install
+cd ios
+pod install --repo-update
+cd ..
+
+
+# ==============================================================================
+# VERIFY THE FIX
+# ==============================================================================
+
+# Build from command line (alternative to Xcode)
+cd ios
+xcodebuild -workspace MobileTodoList.xcworkspace \
+  -scheme MobileTodoList \
+  -configuration Debug \
+  -destination 'platform=iOS Simulator,name=iPhone 14' \
+  clean build
+
+
+# ==============================================================================
+# FILES CREATED BY THIS FIX
+# ==============================================================================
+#
+# Podfile_FIXED              - Complete fixed Podfile ready to use
+# fix_ios_build.sh           - Automatic fix script
+# IOS_BUILD_FIX_README.md    - Detailed documentation
+# PODFILE_PATCH.rb           - Post-install snippet to copy/paste
+# QUICK_FIX_COMMANDS.txt     - This file
+#
+# ==============================================================================

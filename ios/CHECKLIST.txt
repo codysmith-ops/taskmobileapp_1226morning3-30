@@ -1,0 +1,237 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                   iOS BUILD FIX - STEP-BY-STEP CHECKLIST                     ║
+║                         Print or Keep This Open!                             ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+PRE-FLIGHT CHECKS
+═══════════════════════════════════════════════════════════════════════════════
+
+□ I am in the project root directory (where package.json is)
+□ I have Xcode 14.0 or later installed
+□ I have CocoaPods installed (check with: pod --version)
+□ I have Node.js installed (check with: node --version)
+□ I have run npm install or yarn install
+□ I have closed Xcode (if it's open)
+
+
+AUTOMATIC FIX (Recommended - 10 minutes total)
+═══════════════════════════════════════════════════════════════════════════════
+
+□ Step 1: Make script executable
+   Command: chmod +x fix_ios_build.sh
+   
+□ Step 2: Run the fix script
+   Command: ./fix_ios_build.sh
+   Expected: Green checkmarks, no red errors
+   
+□ Step 3: Wait for completion
+   Expected: "Fix process completed successfully!" message
+   
+□ Step 4: Open workspace in Xcode
+   Command: open ios/MobileTodoList.xcworkspace
+   ⚠️ IMPORTANT: Open .xcworkspace NOT .xcodeproj
+   
+□ Step 5: Clean build folder in Xcode
+   Shortcut: Cmd + Shift + K
+   Menu: Product → Clean Build Folder
+   
+□ Step 6: Build project
+   Shortcut: Cmd + B
+   Menu: Product → Build
+   Expected: Build succeeds with no template errors
+
+
+MANUAL FIX (If automatic fails - 15 minutes total)
+═══════════════════════════════════════════════════════════════════════════════
+
+□ Step 1: Backup current Podfile
+   Command: cp ios/Podfile ios/Podfile.backup
+   
+□ Step 2: Replace with fixed Podfile
+   Command: cp Podfile_FIXED ios/Podfile
+   
+□ Step 3: Navigate to ios directory
+   Command: cd ios
+   
+□ Step 4: Clean CocoaPods cache
+   Command: pod cache clean --all
+   Expected: Cache cleaned message
+   
+□ Step 5: Remove old Pods
+   Command: rm -rf Pods build Podfile.lock
+   
+□ Step 6: Update CocoaPods repo
+   Command: pod repo update
+   Expected: Updating spec repo 'trunk'
+   Time: 2-3 minutes
+   
+□ Step 7: Install pods with fixed versions
+   Command: pod install --repo-update
+   Expected: "Pod installation complete!"
+   Time: 5-10 minutes on first run
+   
+□ Step 8: Return to project root
+   Command: cd ..
+   
+□ Step 9: Clean Xcode derived data
+   Command: rm -rf ~/Library/Developer/Xcode/DerivedData/MobileTodoList-*
+   
+□ Step 10: Clean iOS build folder
+   Command: rm -rf ios/build
+   
+□ Step 11: Open workspace in Xcode
+   Command: open ios/MobileTodoList.xcworkspace
+   
+□ Step 12: Clean and build in Xcode
+   Clean: Cmd + Shift + K
+   Build: Cmd + B
+
+
+VERIFICATION
+═══════════════════════════════════════════════════════════════════════════════
+
+□ Build log shows no template keyword errors
+□ Build log shows no "will be run during every build" warnings
+□ Build completes with "Build Succeeded" message
+□ No red errors in Xcode's issue navigator
+□ App can be run on simulator
+
+   Test command line build (optional):
+   cd ios
+   xcodebuild -workspace MobileTodoList.xcworkspace \
+     -scheme MobileTodoList -configuration Debug clean build
+
+
+ISSUES THAT SHOULD BE FIXED
+═══════════════════════════════════════════════════════════════════════════════
+
+□ ❌ gRPC-Core template argument list error          [FIXED]
+□ ⚠️  Bundle React Native code run script warning    [FIXED]
+□ ⚠️  [RNFB] Core Configuration run script warning   [FIXED]
+□ ⚠️  Hermes run script warning                      [FIXED]
+□ ⚠️  Firebase @_implementationOnly warning          [FIXED]
+□ ⚠️  fmt char_traits deprecation warning            [FIXED]
+□ ⚠️  leveldb mmap argument warning                  [FIXED]
+
+
+TROUBLESHOOTING CHECKLIST
+═══════════════════════════════════════════════════════════════════════════════
+
+If build still fails:
+
+□ I am opening .xcworkspace (not .xcodeproj)
+   Path: ios/MobileTodoList.xcworkspace
+   
+□ I ran pod install AFTER updating the Podfile
+   
+□ I cleaned the build folder (Cmd + Shift + K)
+   
+□ I deleted derived data
+   Command: rm -rf ~/Library/Developer/Xcode/DerivedData
+   
+□ I have the correct Xcode version
+   Check: Xcode → About Xcode
+   Required: 14.0 or later
+   
+□ Command line tools are installed
+   Command: xcode-select --install
+   
+□ Node modules are installed
+   Command: npm install or yarn install
+   
+□ I restarted Xcode after making changes
+   
+□ I'm building the right target
+   Xcode: Select "MobileTodoList" scheme in toolbar
+
+
+NUCLEAR OPTION (Last resort - 30 minutes)
+═══════════════════════════════════════════════════════════════════════════════
+
+If nothing else works, try full reset:
+
+□ Step 1: Delete everything
+   rm -rf node_modules
+   rm -rf ios/Pods
+   rm -rf ios/build
+   rm -rf ~/Library/Developer/Xcode/DerivedData
+   rm package-lock.json (or yarn.lock)
+   
+□ Step 2: Reinstall node modules
+   npm install (or yarn install)
+   
+□ Step 3: Apply Podfile fix
+   cp Podfile_FIXED ios/Podfile
+   
+□ Step 4: Reinstall pods
+   cd ios
+   pod install --repo-update
+   cd ..
+   
+□ Step 5: Restart Mac (yes, really!)
+   
+□ Step 6: Open and build in Xcode
+   open ios/MobileTodoList.xcworkspace
+
+
+COMMON MISTAKES
+═══════════════════════════════════════════════════════════════════════════════
+
+✗ Opening .xcodeproj instead of .xcworkspace
+✗ Not running pod install after changing Podfile
+✗ Not cleaning build folder before rebuilding
+✗ Running commands from wrong directory
+✗ Not waiting for pod install to complete
+✗ Editing files inside Pods directory (gets overwritten!)
+✗ Having Xcode open during pod install
+
+
+TIME ESTIMATES
+═══════════════════════════════════════════════════════════════════════════════
+
+pod cache clean --all          → 30 seconds
+pod repo update                → 2-3 minutes
+pod install (first time)       → 5-10 minutes
+pod install (subsequent)       → 1-2 minutes
+Xcode first build              → 10-15 minutes
+Xcode incremental build        → 30-60 seconds
+
+
+HELP RESOURCES
+═══════════════════════════════════════════════════════════════════════════════
+
+Need more info? Check these files:
+
+□ SUMMARY.txt                  → Overview of everything
+□ IOS_BUILD_FIX_README.md      → Full documentation
+□ QUICK_FIX_COMMANDS.txt       → All commands
+□ FILE_GUIDE.txt               → Which file does what
+□ PODFILE_PATCH.rb             → Code snippets
+
+
+SUCCESS INDICATORS
+═══════════════════════════════════════════════════════════════════════════════
+
+You know it worked when:
+
+✓ Terminal shows "Build Succeeded"
+✓ Xcode shows green checkmark
+✓ No red errors in issue navigator
+✓ App runs in simulator
+✓ Build completes in < 2 minutes (after first time)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                      SAVE THIS FILE FOR FUTURE REFERENCE!
+═══════════════════════════════════════════════════════════════════════════════
+
+You can always come back to this checklist if you:
+• Upgrade Xcode
+• Update CocoaPods
+• Add new dependencies
+• Clone the project on a new machine
+• Get similar build errors in the future
+
+═══════════════════════════════════════════════════════════════════════════════
+                                 GOOD LUCK! 🍀
+═══════════════════════════════════════════════════════════════════════════════
