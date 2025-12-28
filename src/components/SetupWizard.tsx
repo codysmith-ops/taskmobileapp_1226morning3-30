@@ -7,6 +7,7 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  Image,
 } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
 
@@ -20,6 +21,7 @@ export interface UserSetupData {
   company?: string;
   notificationsEnabled: boolean;
   defaultView: 'list' | 'grid';
+  authProvider?: 'apple' | 'google' | 'email';
 }
 
 export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
@@ -29,6 +31,39 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
   const [company, setCompany] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [defaultView, setDefaultView] = useState<'list' | 'grid'>('list');
+  const [authProvider, setAuthProvider] = useState<'apple' | 'google' | 'email' | undefined>();
+
+  const handleAppleSignIn = () => {
+    // Simulate Apple Sign In
+    Alert.alert('Apple Sign In', 'Would you like to sign in with Apple ID?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Sign In',
+        onPress: () => {
+          setAuthProvider('apple');
+          setName('Apple User');
+          setEmail('user@privaterelay.appleid.com');
+          setStep(2); // Skip to preferences
+        },
+      },
+    ]);
+  };
+
+  const handleGoogleSignIn = () => {
+    // Simulate Google Sign In
+    Alert.alert('Google Sign In', 'Would you like to sign in with Google?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Sign In',
+        onPress: () => {
+          setAuthProvider('google');
+          setName('Google User');
+          setEmail('user@gmail.com');
+          setStep(2); // Skip to preferences
+        },
+      },
+    ]);
+  };
 
   const steps = [
     {
@@ -36,10 +71,41 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
       subtitle: "Let's get you set up in just a few steps",
       content: (
         <View style={styles.welcomeContent}>
-          <Text style={styles.welcomeText}>📋 Manage your tasks efficiently</Text>
-          <Text style={styles.welcomeText}>📷 Scan barcodes or take photos</Text>
-          <Text style={styles.welcomeText}>🔔 Get timely reminders</Text>
-          <Text style={styles.welcomeText}>⚙️ Customize to your workflow</Text>
+          <Text style={styles.sectionTitle}>Sign in to get started</Text>
+          
+          <TouchableOpacity style={styles.appleSignInButton} onPress={handleAppleSignIn}>
+            <Text style={styles.appleIcon}></Text>
+            <Text style={styles.appleSignInText}>Sign in with Apple</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.googleSignInButton} onPress={handleGoogleSignIn}>
+            <Text style={styles.googleIcon}>G</Text>
+            <Text style={styles.googleSignInText}>Sign in with Google</Text>
+          </TouchableOpacity>
+
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>or</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <TouchableOpacity
+            style={styles.emailSignInButton}
+            onPress={() => {
+              setAuthProvider('email');
+              setStep(1);
+            }}
+          >
+            <Text style={styles.emailSignInText}>Continue with Email</Text>
+          </TouchableOpacity>
+
+          <View style={styles.featuresContainer}>
+            <Text style={styles.featuresTitle}>What you'll get:</Text>
+            <Text style={styles.welcomeText}>📋 Manage your tasks efficiently</Text>
+            <Text style={styles.welcomeText}>📷 Scan barcodes or take photos</Text>
+            <Text style={styles.welcomeText}>🔔 Get timely reminders</Text>
+            <Text style={styles.welcomeText}>⚙️ Customize to your workflow</Text>
+          </View>
         </View>
       ),
     },
@@ -109,31 +175,54 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
               <Text style={styles.preferenceSubtitle}>Choose how tasks are displayed</Text>
             </View>
           </View>
+          
           <View style={styles.viewOptions}>
             <TouchableOpacity
               style={[styles.viewOption, defaultView === 'list' && styles.viewOptionActive]}
               onPress={() => setDefaultView('list')}
             >
+              <View style={styles.viewPreview}>
+                <View style={styles.listPreviewItem} />
+                <View style={styles.listPreviewItem} />
+                <View style={styles.listPreviewItem} />
+              </View>
               <Text
                 style={[
                   styles.viewOptionText,
                   defaultView === 'list' && styles.viewOptionTextActive,
                 ]}
               >
-                📋 List
+                📋 List View
+              </Text>
+              <Text style={styles.viewOptionDescription}>
+                Tasks in a vertical list
               </Text>
             </TouchableOpacity>
+            
             <TouchableOpacity
               style={[styles.viewOption, defaultView === 'grid' && styles.viewOptionActive]}
               onPress={() => setDefaultView('grid')}
             >
+              <View style={styles.viewPreview}>
+                <View style={styles.gridPreviewRow}>
+                  <View style={styles.gridPreviewItem} />
+                  <View style={styles.gridPreviewItem} />
+                </View>
+                <View style={styles.gridPreviewRow}>
+                  <View style={styles.gridPreviewItem} />
+                  <View style={styles.gridPreviewItem} />
+                </View>
+              </View>
               <Text
                 style={[
                   styles.viewOptionText,
                   defaultView === 'grid' && styles.viewOptionTextActive,
                 ]}
               >
-                ⊞ Grid
+                ⊞ Grid View
+              </Text>
+              <Text style={styles.viewOptionDescription}>
+                Tasks in a card grid
               </Text>
             </TouchableOpacity>
           </View>
@@ -165,6 +254,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
         company,
         notificationsEnabled,
         defaultView,
+        authProvider,
       });
     }
   };
@@ -266,11 +356,93 @@ const styles = StyleSheet.create({
   welcomeContent: {
     gap: spacing.lg,
   },
-  welcomeText: {
-    ...typography.subtitle,
+  sectionTitle: {
+    ...typography.h3,
     color: palette.text,
+    marginBottom: spacing.md,
+    textAlign: 'center',
+  },
+  appleSignInButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#000000',
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
+    borderRadius: radius.button,
+    gap: spacing.sm,
+  },
+  appleIcon: {
+    fontSize: 20,
+    color: '#FFFFFF',
+  },
+  appleSignInText: {
+    ...typography.bodyBold,
+    color: '#FFFFFF',
+  },
+  googleSignInButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.button,
+    borderWidth: 1,
+    borderColor: palette.border,
+    gap: spacing.sm,
+  },
+  googleIcon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4285F4',
+  },
+  googleSignInText: {
+    ...typography.bodyBold,
+    color: palette.text,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    marginVertical: spacing.md,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: palette.border,
+  },
+  dividerText: {
+    ...typography.secondary,
+    color: palette.textSecondary,
+  },
+  emailSignInButton: {
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.button,
+    borderWidth: 1,
+    borderColor: palette.primary,
+    backgroundColor: palette.infoLight,
+    alignItems: 'center',
+  },
+  emailSignInText: {
+    ...typography.bodyBold,
+    color: palette.primary,
+  },
+  featuresContainer: {
+    marginTop: spacing.xl,
+    gap: spacing.md,
+  },
+  featuresTitle: {
+    ...typography.bodyBold,
+    color: palette.text,
+    marginBottom: spacing.sm,
+  },
+  welcomeText: {
+    ...typography.body,
+    color: palette.text,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     backgroundColor: palette.surface,
     borderRadius: radius.card,
     borderWidth: 1,
@@ -353,10 +525,33 @@ const styles = StyleSheet.create({
     borderColor: palette.border,
     backgroundColor: palette.surface,
     alignItems: 'center',
+    gap: spacing.md,
   },
   viewOptionActive: {
     borderColor: palette.primary,
     backgroundColor: palette.infoLight,
+  },
+  viewPreview: {
+    width: '100%',
+    height: 80,
+    marginBottom: spacing.sm,
+  },
+  listPreviewItem: {
+    height: 20,
+    backgroundColor: palette.border,
+    borderRadius: 4,
+    marginBottom: 6,
+  },
+  gridPreviewRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 6,
+  },
+  gridPreviewItem: {
+    flex: 1,
+    height: 35,
+    backgroundColor: palette.border,
+    borderRadius: 4,
   },
   viewOptionText: {
     ...typography.bodyBold,
@@ -364,6 +559,11 @@ const styles = StyleSheet.create({
   },
   viewOptionTextActive: {
     color: palette.primary,
+  },
+  viewOptionDescription: {
+    ...typography.secondary,
+    color: palette.textTertiary,
+    fontSize: 12,
   },
   footer: {
     flexDirection: 'row',

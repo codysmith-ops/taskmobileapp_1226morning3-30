@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
 
-export type NavigationPage = 'home' | 'account' | 'preferences' | 'integrations' | 'help' | 'chat' | 'notifications' | 'reports' | 'team' | 'receipts' | 'budget' | 'family' | 'cashback' | 'savingsdashboard' | 'weeklysummary' | 'monthlyreport' | 'insights';
+export type NavigationPage = 'home' | 'account' | 'preferences' | 'integrations' | 'help' | 'chat' | 'notifications' | 'reports' | 'team' | 'receipts' | 'budget' | 'family' | 'cashback' | 'savingsdashboard' | 'weeklysummary' | 'monthlyreport' | 'insights' | 'timeline' | 'analytics';
 
 interface NavigationMenuProps {
   currentPage: NavigationPage;
@@ -50,12 +50,14 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
 
   const menuItems = [
     { icon: '🏠', label: 'Home', page: 'home' as NavigationPage },
+    { icon: '�', label: 'Timeline', page: 'timeline' as NavigationPage },
+    { icon: '📊', label: 'Task Analytics', page: 'analytics' as NavigationPage },
     { icon: '💰', label: 'Savings Dashboard', page: 'savingsdashboard' as NavigationPage },
-    { icon: '📅', label: 'Weekly Summary', page: 'weeklysummary' as NavigationPage },
-    { icon: '📊', label: 'Monthly Report', page: 'monthlyreport' as NavigationPage },
+    { icon: '📆', label: 'Weekly Summary', page: 'weeklysummary' as NavigationPage },
+    { icon: '📈', label: 'Monthly Report', page: 'monthlyreport' as NavigationPage },
     { icon: '💡', label: 'Insights', page: 'insights' as NavigationPage },
     { icon: '🧾', label: 'Receipts', page: 'receipts' as NavigationPage },
-    { icon: '📈', label: 'Budget', page: 'budget' as NavigationPage },
+    { icon: '💵', label: 'Budget', page: 'budget' as NavigationPage },
     { icon: '👨‍👩‍👧‍👦', label: 'Family', page: 'family' as NavigationPage },
     { icon: '💳', label: 'Cashback', page: 'cashback' as NavigationPage },
     { icon: '💬', label: 'Messages', page: 'chat' as NavigationPage },

@@ -31,6 +31,10 @@ import { SavingsDashboardPage } from './src/pages/SavingsDashboardPage';
 import { WeeklySummaryPage } from './src/pages/WeeklySummaryPage';
 import { MonthlyReportPage } from './src/pages/MonthlyReportPage';
 import { InsightsPage } from './src/pages/InsightsPage';
+import { TimelinePage } from './src/pages/TimelinePage';
+import { TaskAnalyticsPage } from './src/pages/TaskAnalyticsPage';
+import { TaskMeter } from './src/components/TaskMeter';
+import { BrandPreferenceDialog, BrandPreference } from './src/components/BrandPreferenceDialog';
 import {
   getTaskIcon,
   ScannerIcon,
@@ -48,6 +52,7 @@ const App = (): React.JSX.Element => {
 
   // Navigation state
   const [currentPage, setCurrentPage] = useState<NavigationPage>('home');
+  const [taskFilter, setTaskFilter] = useState<string | null>(null);
 
   // Task input state
   const [title, setTitle] = useState('');
@@ -57,6 +62,9 @@ const App = (): React.JSX.Element => {
   const [assignedTo, setAssignedTo] = useState('');
   const [imageUri, setImageUri] = useState<string | undefined>();
   const [skuCode, setSkuCode] = useState('');
+  const [showBrandDialog, setShowBrandDialog] = useState(false);
+  const [pendingTaskData, setPendingTaskData] = useState<any>(null);
+  const [isFirstTask, setIsFirstTask] = useState(true);
 
   // Activity log state
   const [activityLog, setActivityLog] = useState<
@@ -74,14 +82,24 @@ const App = (): React.JSX.Element => {
       return;
     }
 
-    addTask({
+    const taskData = {
       title: title.trim(),
       note: note.trim() || undefined,
       quantity: parseInt(quantity) || 1,
       dueDate: dueDate ? new Date(dueDate).getTime() : undefined,
       imageUri,
       productBrand: skuCode || undefined,
-    });
+    };
+
+    // Show brand preference dialog for first few tasks
+    if (isFirstTask && tasks.length < 5) {
+      setPendingTaskData(taskData);
+      setShowBrandDialog(true);
+      return;
+    }
+
+    // Add task directly
+    addTask(taskData);
 
     // Add to activity log
     setActivityLog(prev => [
@@ -104,6 +122,46 @@ const App = (): React.JSX.Element => {
     setSkuCode('');
 
     Alert.alert('Success', 'Task added successfully');
+  };
+
+  const handleBrandPreferenceSelect = (preference: BrandPreference) => {
+    if (pendingTaskData) {
+      // Add brand preference to task
+      const taskWithBrand = {
+        ...pendingTaskData,
+        productBrand: preference.preferredBrand || pendingTaskData.productBrand,
+        note: preference.specificDetails 
+          ? `${pendingTaskData.note ? pendingTaskData.note + '\n' : ''}${preference.specificDetails}` 
+          : pendingTaskData.note,
+      };
+
+      addTask(taskWithBrand);
+
+      // Add to activity log
+      setActivityLog(prev => [
+        {
+          id: Date.now().toString(),
+          action: 'added',
+          timestamp: Date.now(),
+          taskTitle: pendingTaskData.title,
+        },
+        ...prev.slice(0, 9),
+      ]);
+
+      // Reset form
+      setTitle('');
+      setNote('');
+      setQuantity('1');
+      setDueDate('');
+      setAssignedTo('');
+      setImageUri(undefined);
+      setSkuCode('');
+      setPendingTaskData(null);
+      setShowBrandDialog(false);
+      setIsFirstTask(false);
+
+      Alert.alert('Success', 'Task added with your preferences!');
+    }
   };
 
   const handleToggle = (task: Task) => {
@@ -212,6 +270,8 @@ const App = (): React.JSX.Element => {
         {currentPage === 'weeklysummary' && <WeeklySummaryPage />}
         {currentPage === 'monthlyreport' && <MonthlyReportPage />}
         {currentPage === 'insights' && <InsightsPage />}
+        {currentPage === 'timeline' && <TimelinePage />}
+        {currentPage === 'analytics' && <TaskAnalyticsPage />}
         {currentPage === 'help' && (
           <View style={styles.placeholderPage}>
             <Text style={styles.placeholderText}>❓</Text>
@@ -248,6 +308,31 @@ const App = (): React.JSX.Element => {
             </View>
           </View>
         </View>
+
+        {/* Task Meters - Multiple timeframes */}
+        <TaskMeter
+          tasks={tasks}
+          timeframe="today"
+          onCategoryPress={category => {
+            setTaskFilter(category);
+          }}
+        />
+        
+        <TaskMeter
+          tasks={tasks}
+          timeframe="week"
+          onCategoryPress={category => {
+            setTaskFilter(category);
+          }}
+        />
+        
+        <TaskMeter
+          tasks={tasks}
+          timeframe="month"
+          onCategoryPress={category => {
+            setTaskFilter(category);
+          }}
+        />
 
         {/* Add Task Card */}
         <View style={styles.card}>
@@ -371,56 +456,140 @@ const App = (): React.JSX.Element => {
 
         {/* Tasks List */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Tasks ({pendingCount} pending)</Text>
+          <View style={styles.tasksHeader}>
+            <Text style={styles.cardTitle}>Tasks ({pendingCount} pending)</Text>
+            {taskFilter && (
+              <TouchableOpacity
+                style={styles.clearFilterButton}
+                onPress={() => setTaskFilter(null)}>
+                <Text style={styles.clearFilterText}>Clear Filter ✕</Text>
+              </TouchableOpacity>
+            )}
+          </View>
           {tasks.length === 0 ? (
             <View style={styles.emptyState}>
               <Text style={styles.emptyStateText}>No tasks yet</Text>
               <Text style={styles.emptyStateSubtext}>Add your first task above</Text>
             </View>
           ) : (
-            tasks.map(task => {
-              const TaskIcon = getTaskIcon(task.title);
-              return (
-                <View
-                  key={task.id}
-                  style={[styles.taskCard, task.completed && styles.taskCardCompleted]}
-                >
-                  <TouchableOpacity style={styles.taskCheckbox} onPress={() => handleToggle(task)}>
-                    <View style={[styles.checkbox, task.completed && styles.checkboxChecked]}>
-                      {task.completed && <Text style={styles.checkmark}>✓</Text>}
-                    </View>
-                  </TouchableOpacity>
+            (() => {
+              // Helper to detect task type
+              const getTaskType = (title: string): string => {
+                const lowerTitle = title.toLowerCase();
+                if (lowerTitle.includes('return') || lowerTitle.includes('refund')) return 'returns';
+                if (lowerTitle.includes('grocery') || lowerTitle.includes('groceries') || lowerTitle.includes('food') || lowerTitle.includes('produce')) return 'groceries';
+                if (lowerTitle.includes('hardware') || lowerTitle.includes('tool') || lowerTitle.includes('repair')) return 'hardware';
+                if (lowerTitle.includes('retail') || lowerTitle.includes('store') || lowerTitle.includes('shop')) return 'retail';
+                if (lowerTitle.includes('medical') || lowerTitle.includes('pharmacy') || lowerTitle.includes('doctor') || lowerTitle.includes('prescription')) return 'medical';
+                if (lowerTitle.includes('home') || lowerTitle.includes('house') || lowerTitle.includes('cleaning')) return 'home';
+                return 'other';
+              };
 
-                  <View style={styles.taskIcon}>
-                    <TaskIcon size={24} color={palette.primary} />
+              // Apply filter based on task type
+              const filteredTasks = taskFilter
+                ? tasks.filter(task => {
+                    if (task.completed) {
+                      return false;
+                    }
+                    return getTaskType(task.title) === taskFilter;
+                  })
+                : tasks;
+
+              if (filteredTasks.length === 0) {
+                return (
+                  <View style={styles.emptyState}>
+                    <Text style={styles.emptyStateText}>No tasks in this category</Text>
+                    <Text style={styles.emptyStateSubtext}>Try a different filter</Text>
                   </View>
+                );
+              }
 
-                  <View style={styles.taskContent}>
-                    <Text style={[styles.taskTitle, task.completed && styles.taskTitleCompleted]}>
-                      {task.title}
-                    </Text>
-                    {task.note && <Text style={styles.taskNote}>{task.note}</Text>}
-                    <View style={styles.taskMeta}>
-                      {task.quantity && task.quantity > 1 && (
-                        <Text style={styles.taskMetaItem}>Qty: {task.quantity}</Text>
-                      )}
-                      {task.dueDate && (
-                        <Text style={styles.taskMetaItem}>
-                          Due: {new Date(task.dueDate).toLocaleDateString()}
-                        </Text>
-                      )}
+              return filteredTasks.map(task => {
+                const TaskIcon = getTaskIcon(task.title);
+                return (
+                  <View
+                    key={task.id}
+                    style={[styles.taskCard, task.completed && styles.taskCardCompleted]}
+                  >
+                    <TouchableOpacity style={styles.taskCheckbox} onPress={() => handleToggle(task)}>
+                      <View style={[styles.checkbox, task.completed && styles.checkboxChecked]}>
+                        {task.completed && <Text style={styles.checkmark}>✓</Text>}
+                      </View>
+                    </TouchableOpacity>
+
+                    <View style={styles.taskIcon}>
+                      <TaskIcon size={24} color={palette.primary} />
                     </View>
-                  </View>
 
-                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(task)}>
-                    <Text style={styles.deleteButtonText}>×</Text>
-                  </TouchableOpacity>
-                </View>
-              );
-            })
+                    <View style={styles.taskContent}>
+                      <Text style={[styles.taskTitle, task.completed && styles.taskTitleCompleted]}>
+                        {task.title}
+                      </Text>
+                      {task.note && <Text style={styles.taskNote}>{task.note}</Text>}
+                      <View style={styles.taskMeta}>
+                        {task.quantity && task.quantity > 1 && (
+                          <Text style={styles.taskMetaItem}>Qty: {task.quantity}</Text>
+                        )}
+                        {task.dueDate && (
+                          <Text style={styles.taskMetaItem}>
+                            Due: {new Date(task.dueDate).toLocaleDateString()}
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+
+                    <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(task)}>
+                      <Text style={styles.deleteButtonText}>×</Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              });
+            })()
           )}
         </View>
       </ScrollView>
+
+      {/* Brand Preference Dialog */}
+      <BrandPreferenceDialog
+        visible={showBrandDialog}
+        itemName={title}
+        category={pendingTaskData ? (() => {
+          const lowerTitle = pendingTaskData.title.toLowerCase();
+          if (lowerTitle.includes('return') || lowerTitle.includes('refund')) return 'returns';
+          if (lowerTitle.includes('grocery') || lowerTitle.includes('groceries') || lowerTitle.includes('food')) return 'groceries';
+          if (lowerTitle.includes('hardware') || lowerTitle.includes('tool')) return 'hardware';
+          if (lowerTitle.includes('retail') || lowerTitle.includes('store')) return 'retail';
+          if (lowerTitle.includes('medical') || lowerTitle.includes('pharmacy')) return 'medical';
+          if (lowerTitle.includes('home') || lowerTitle.includes('house')) return 'home';
+          return 'other';
+        })() : 'other'}
+        onSelect={handleBrandPreferenceSelect}
+        onCancel={() => {
+          // Add task without brand preference
+          if (pendingTaskData) {
+            addTask(pendingTaskData);
+            setActivityLog(prev => [
+              {
+                id: Date.now().toString(),
+                action: 'added',
+                timestamp: Date.now(),
+                taskTitle: pendingTaskData.title,
+              },
+              ...prev.slice(0, 9),
+            ]);
+          }
+          setTitle('');
+          setNote('');
+          setQuantity('1');
+          setDueDate('');
+          setAssignedTo('');
+          setImageUri(undefined);
+          setSkuCode('');
+          setPendingTaskData(null);
+          setShowBrandDialog(false);
+          setIsFirstTask(false);
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -491,6 +660,23 @@ const styles = StyleSheet.create({
     ...typography.subtitle,
     color: palette.text,
     marginBottom: spacing.md,
+  },
+  tasksHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  clearFilterButton: {
+    backgroundColor: palette.border,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.button,
+  },
+  clearFilterText: {
+    ...typography.secondary,
+    color: palette.text,
+    fontWeight: '600',
   },
   quickActions: {
     flexDirection: 'row',
