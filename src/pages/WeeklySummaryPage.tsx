@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useTodoStore } from '../store';
 import { palette, spacing, typography, radius, shadow } from '../theme';
+import { ChartIcon, TargetIcon, TrendUpIcon, DollarIcon, CreditCardIcon } from '../components/Icons';
 
 export const WeeklySummaryPage: React.FC = () => {
   const { tasks } = useTodoStore();

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { palette, spacing, radius, typography } from '../theme';
-import { useTodoStore } from '../store';
+import { palette, spacing, radius, typography } from '../theme';import { ChartIcon, TargetIcon, TrendUpIcon } from '../components/Icons';import { useTodoStore } from '../store';
 
 export const TaskAnalyticsPage: React.FC = () => {
   const { tasks } = useTodoStore();

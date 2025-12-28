@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
+import { DollarIcon, StarIcon, ChartIcon, CreditCardIcon, TrendUpIcon, TargetIcon } from '../components/Icons';
 
 const { width } = Dimensions.get('window');
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
-import { palette, spacing, radius, typography } from '../theme';
-
+import { palette, spacing, radius, typography } from '../theme';import { LightbulbIcon, ChartIcon, ClockIcon, DollarIcon } from '../components/Icons';
 const { width } = Dimensions.get('window');
 
 export const InsightsPage: React.FC = () => {
