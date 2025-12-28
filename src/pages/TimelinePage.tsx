@@ -57,12 +57,12 @@ export const TimelinePage: React.FC = () => {
       <View style={styles.timeline}>
         {sortedDates.length === 0 ? (
           <View style={styles.emptyState}>
-            <MailOpenIcon size={64} color={palette.textTertiary} />
+            <CalendarIcon size={64} color={palette.textTertiary} />
             <Text style={styles.emptyText}>No upcoming tasks with due dates</Text>
             <Text style={styles.emptySubtext}>Add due dates to your tasks to see them here</Text>
           </View>
         ) : (
-          sortedDates.map((dateString, index) => {
+          sortedDates.map((dateString) => {
             const taskList = groupedTasks[dateString];
             const date = new Date(dateString);
             const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });

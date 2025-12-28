@@ -14,7 +14,6 @@ import {
 
 export const WeeklySummaryPage: React.FC = () => {
   const { tasks } = useTodoStore();
-  const [timeframe] = useState<'week' | 'month'>('week');
 
   // Calculate weekly metrics
   const now = new Date();

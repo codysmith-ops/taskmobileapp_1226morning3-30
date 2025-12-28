@@ -209,7 +209,7 @@ export const ReceiptScannerPage: React.FC = () => {
           onPress={handleChoosePhoto}
           disabled={scanning}
         >
-          <ImageIcon size={32} color={palette.surface} />
+          <CameraIcon size={32} color={palette.surface} />
           <Text style={styles.scanButtonText}>Choose Photo</Text>
         </TouchableOpacity>
       </View>
@@ -231,7 +231,7 @@ export const ReceiptScannerPage: React.FC = () => {
             onPress={() => setSelectedReceipt(receipt)}
           >
             <View style={styles.receiptIcon}>
-              <ReceiptIcon size={24} color={palette.primary} />
+              <CameraIcon size={24} color={palette.primary} />
             </View>
             <View style={styles.receiptInfo}>
               <Text style={styles.receiptStoreName}>{receipt.storeName}</Text>

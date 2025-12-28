@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
 import { LightbulbIcon, DollarIcon, StarIcon, TargetIcon } from '../components/Icons';
 
