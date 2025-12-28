@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -9,7 +9,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Platform,
 } from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import { useTodoStore, Task } from './src/store';
@@ -42,8 +41,6 @@ import {
   getTaskIcon,
   ScannerIcon,
   CameraIcon,
-  CalendarIcon,
-  AssignIcon,
 } from './src/components/TaskTypeIcons';
 
 // Helper to detect task type from title
@@ -98,7 +95,6 @@ const App = (): React.JSX.Element => {
     addTask,
     toggleComplete,
     removeTask,
-    storePreferences,
     categoriesWithStorePrefs,
     setStorePreferences,
     setUserPreferences,
@@ -159,10 +155,10 @@ const App = (): React.JSX.Element => {
     const goalMessages = {
       'save-money': 'deal alerts and price comparisons',
       'credit-points': 'smart card recommendations',
-      'budget': 'budget tracking and spending alerts',
-      'collaborate': 'team collaboration features',
-      'organize': 'advanced organization tools',
-      'efficiency': 'smart routing and time optimization',
+      budget: 'budget tracking and spending alerts',
+      collaborate: 'team collaboration features',
+      organize: 'advanced organization tools',
+      efficiency: 'smart routing and time optimization',
     };
 
     const features = userData.goals.map(g => goalMessages[g]).join(', ');
@@ -181,7 +177,7 @@ const App = (): React.JSX.Element => {
     const taskData = {
       title: title.trim(),
       note: note.trim() || undefined,
-      quantity: parseInt(quantity) || 1,
+      quantity: parseInt(quantity, 10) || 1,
       dueDate: dueDate ? new Date(dueDate).getTime() : undefined,
       imageUri,
       productBrand: skuCode || undefined,
@@ -238,8 +234,10 @@ const App = (): React.JSX.Element => {
       const taskWithBrand = {
         ...pendingTaskData,
         productBrand: preference.preferredBrand || pendingTaskData.productBrand,
-        note: preference.specificDetails 
-          ? `${pendingTaskData.note ? pendingTaskData.note + '\n' : ''}${preference.specificDetails}` 
+        note: preference.specificDetails
+          ? `${pendingTaskData.note ? pendingTaskData.note + '\n' : ''}${
+              preference.specificDetails
+            }`
           : pendingTaskData.note,
       };
 
@@ -347,9 +345,9 @@ const App = (): React.JSX.Element => {
     }
   };
 
-  const handleTasksNearby = (tasks: Task[]) => {
-    if (tasks.length > 0) {
-      setNearbyTasks(tasks);
+  const handleTasksNearby = (nearbyTaskList: Task[]) => {
+    if (nearbyTaskList.length > 0) {
+      setNearbyTasks(nearbyTaskList);
       setShowCompletionDialog(true);
     }
   };
@@ -528,23 +526,23 @@ const App = (): React.JSX.Element => {
         <TaskMeter
           tasks={tasks}
           timeframe="today"
-          onCategoryPress={category => {
+          onCategoryPress={(category: string) => {
             setTaskFilter(category);
           }}
         />
-        
+
         <TaskMeter
           tasks={tasks}
           timeframe="week"
-          onCategoryPress={category => {
+          onCategoryPress={(category: string) => {
             setTaskFilter(category);
           }}
         />
-        
+
         <TaskMeter
           tasks={tasks}
           timeframe="month"
-          onCategoryPress={category => {
+          onCategoryPress={(category: string) => {
             setTaskFilter(category);
           }}
         />
@@ -712,9 +710,15 @@ const App = (): React.JSX.Element => {
                 return (
                   <View
                     key={task.id}
-                    style={[styles.taskCard, task.completed && styles.taskCardCompleted]}
+                    style={[
+                      styles.taskCard,
+                      task.completed && styles.taskCardCompleted,
+                    ]}
                   >
-                    <TouchableOpacity style={styles.taskCheckbox} onPress={() => handleToggle(task)}>
+                    <TouchableOpacity
+                      style={styles.taskCheckbox}
+                      onPress={() => handleToggle(task)}
+                    >
                       <View style={[styles.checkbox, task.completed && styles.checkboxChecked]}>
                         {task.completed && <Text style={styles.checkmark}>✓</Text>}
                       </View>
@@ -741,7 +745,10 @@ const App = (): React.JSX.Element => {
                       </View>
                     </View>
 
-                    <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(task)}>
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => handleDelete(task)}
+                    >
                       <Text style={styles.deleteButtonText}>×</Text>
                     </TouchableOpacity>
                   </View>
@@ -756,16 +763,36 @@ const App = (): React.JSX.Element => {
       <BrandPreferenceDialog
         visible={showBrandDialog}
         itemName={title}
-        category={pendingTaskData ? (() => {
-          const lowerTitle = pendingTaskData.title.toLowerCase();
-          if (lowerTitle.includes('return') || lowerTitle.includes('refund')) return 'returns';
-          if (lowerTitle.includes('grocery') || lowerTitle.includes('groceries') || lowerTitle.includes('food')) return 'groceries';
-          if (lowerTitle.includes('hardware') || lowerTitle.includes('tool')) return 'hardware';
-          if (lowerTitle.includes('retail') || lowerTitle.includes('store')) return 'retail';
-          if (lowerTitle.includes('medical') || lowerTitle.includes('pharmacy')) return 'medical';
-          if (lowerTitle.includes('home') || lowerTitle.includes('house')) return 'home';
-          return 'other';
-        })() : 'other'}
+        category={
+          pendingTaskData
+            ? (() => {
+                const lowerTitle = pendingTaskData.title.toLowerCase();
+                if (lowerTitle.includes('return') || lowerTitle.includes('refund')) {
+                  return 'returns';
+                }
+                if (
+                  lowerTitle.includes('grocery') ||
+                  lowerTitle.includes('groceries') ||
+                  lowerTitle.includes('food')
+                ) {
+                  return 'groceries';
+                }
+                if (lowerTitle.includes('hardware') || lowerTitle.includes('tool')) {
+                  return 'hardware';
+                }
+                if (lowerTitle.includes('retail') || lowerTitle.includes('store')) {
+                  return 'retail';
+                }
+                if (lowerTitle.includes('medical') || lowerTitle.includes('pharmacy')) {
+                  return 'medical';
+                }
+                if (lowerTitle.includes('home') || lowerTitle.includes('house')) {
+                  return 'home';
+                }
+                return 'other';
+              })()
+            : 'other'
+        }
         onSelect={handleBrandPreferenceSelect}
         onCancel={() => {
           // Add task without brand preference
