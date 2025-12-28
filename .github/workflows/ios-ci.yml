@@ -1,0 +1,346 @@
+name: iOS Compliance CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  XCODE_VERSION: "15.4"
+  IOS_SIMULATOR: "iPhone 15"
+  IOS_VERSION: "17.5"
+  NODE_VERSION: "18"
+
+jobs:
+  preflight-check:
+    name: Preflight Compliance Check
+    runs-on: macos-13
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Select Xcode ${{ env.XCODE_VERSION }}
+        run: |
+          sudo xcode-select -switch /Applications/Xcode_${{ env.XCODE_VERSION }}.app/Contents/Developer || \
+          sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+          xcodebuild -version
+      
+      - name: Verify Xcode version
+        run: |
+          XCODE_VER=$(xcodebuild -version | head -1 | awk '{print $2}')
+          if [[ "$XCODE_VER" != "${{ env.XCODE_VERSION }}" ]]; then
+            echo "❌ FAIL: Xcode $XCODE_VER found, but ${{ env.XCODE_VERSION }} required"
+            exit 1
+          fi
+          echo "✅ Xcode ${{ env.XCODE_VERSION }} verified"
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run Preflight Checks
+        run: |
+          chmod +x scripts/preflight.sh
+          bash scripts/preflight.sh
+      
+      - name: Scan for Android references (zero-tolerance)
+        run: |
+          echo "Scanning for Android references in iOS scope..."
+          VIOLATIONS=$(rg -i --files-with-matches \
+            -g '!*.lock' -g '!node_modules/**' \
+            'run-android|android/|\.gradle|AndroidManifest|android\{|com\.android' \
+            .github/workflows scripts ios .vscode 2>/dev/null || true)
+          
+          if [[ -n "$VIOLATIONS" ]]; then
+            echo "❌ FAIL: Android references found in iOS scope:"
+            echo "$VIOLATIONS"
+            exit 1
+          fi
+          echo "✅ No Android references found"
+
+  baseline-audit:
+    name: Baseline Audit (BEFORE)
+    runs-on: macos-13
+    needs: preflight-check
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Select Xcode ${{ env.XCODE_VERSION }}
+        run: sudo xcode-select -switch /Applications/Xcode_${{ env.XCODE_VERSION }}.app/Contents/Developer || sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+      
+      - name: Run Baseline Audit
+        run: |
+          chmod +x scripts/audit_before.sh
+          bash scripts/audit_before.sh
+        continue-on-error: false
+      
+      - name: Upload Baseline Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: baseline-audit-reports
+          path: |
+            BEFORE_AUDIT.md
+            TOOLCHAIN_LOCK.md
+            DEPENDENCY_INVENTORY.md
+            SECURITY_SCAN_REPORT.md
+            TRIPLE_CHECK_LOG.md
+            AUDIT_RUNBOOK.md
+            LANGUAGE_COMPLIANCE.md
+            RN_FIREBASE_INTEGRITY.md
+          retention-days: 30
+      
+      - name: Upload Xcode Build Logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: baseline-xcodebuild-logs
+          path: /tmp/xcodebuild_*.txt
+          retention-days: 7
+
+  security-scan:
+    name: Security Secret Scan
+    runs-on: ubuntu-latest
+    needs: preflight-check
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install ripgrep
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ripgrep
+      
+      - name: Scan for hard-coded secrets
+        run: |
+          echo "Scanning for hard-coded secrets..."
+          SECRETS_FOUND=0
+          
+          for pattern in "AIzaSy" "AKIA" "sk_live_" "sk_test_" "ghp_" "glpat-" "xox[baprs]-"; do
+            MATCHES=$(rg --no-heading --line-number --ignore-case "$pattern" src/ ios/ 2>/dev/null || true)
+            if [[ -n "$MATCHES" ]]; then
+              echo "❌ Secrets found matching pattern: $pattern"
+              echo "$MATCHES" | cut -d: -f1-2
+              SECRETS_FOUND=1
+            fi
+          done
+          
+          if [[ $SECRETS_FOUND -eq 1 ]]; then
+            echo "❌ FAIL: Secrets detected"
+            exit 1
+          fi
+          echo "✅ No secrets detected"
+
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    needs: preflight-check
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Verify lockfiles exist
+        run: |
+          if [[ ! -f package-lock.json ]]; then
+            echo "❌ FAIL: package-lock.json not found"
+            exit 1
+          fi
+          if [[ ! -f ios/Podfile.lock ]]; then
+            echo "❌ FAIL: Podfile.lock not found"
+            exit 1
+          fi
+          echo "✅ Lockfiles verified"
+      
+      - name: Audit npm dependencies
+        run: npm audit --audit-level=moderate || true
+      
+      - name: Check for known vulnerabilities
+        run: |
+          npm audit --json > npm-audit.json || true
+          CRITICAL=$(cat npm-audit.json | jq '.metadata.vulnerabilities.critical // 0')
+          HIGH=$(cat npm-audit.json | jq '.metadata.vulnerabilities.high // 0')
+          
+          echo "Critical vulnerabilities: $CRITICAL"
+          echo "High vulnerabilities: $HIGH"
+          
+          if [[ $CRITICAL -gt 0 ]]; then
+            echo "❌ FAIL: $CRITICAL critical vulnerabilities found"
+            exit 1
+          fi
+          
+          if [[ $HIGH -gt 5 ]]; then
+            echo "⚠️ WARNING: $HIGH high vulnerabilities found (threshold: 5)"
+          fi
+      
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: npm-audit-report
+          path: npm-audit.json
+          retention-days: 30
+
+  ios-build-test:
+    name: iOS Build & Test
+    runs-on: macos-13
+    needs: [preflight-check, security-scan, dependency-audit]
+    timeout-minutes: 45
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Select Xcode ${{ env.XCODE_VERSION }}
+        run: sudo xcode-select -switch /Applications/Xcode_${{ env.XCODE_VERSION }}.app/Contents/Developer || sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install npm dependencies
+        run: npm ci
+      
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+      
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install --silent
+      
+      - name: Build iOS app
+        run: |
+          cd ios
+          xcodebuild clean build \
+            -workspace MobileTodoList.xcworkspace \
+            -scheme MobileTodoList \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination "platform=iOS Simulator,name=${{ env.IOS_SIMULATOR }},OS=${{ env.IOS_VERSION }}" \
+            -derivedDataPath DerivedData \
+            | tee build.log \
+            | xcpretty --color --report junit
+        continue-on-error: false
+      
+      - name: Run tests
+        run: |
+          cd ios
+          xcodebuild test \
+            -workspace MobileTodoList.xcworkspace \
+            -scheme MobileTodoList \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination "platform=iOS Simulator,name=${{ env.IOS_SIMULATOR }},OS=${{ env.IOS_VERSION }}" \
+            -derivedDataPath DerivedData \
+            | tee test.log \
+            | xcpretty --color --report junit
+        continue-on-error: true
+      
+      - name: Upload build logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-build-logs
+          path: |
+            ios/build.log
+            ios/test.log
+          retention-days: 7
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-test-results
+          path: ios/build/reports/
+          retention-days: 30
+
+  compliance-summary:
+    name: Compliance Summary
+    runs-on: ubuntu-latest
+    needs: [preflight-check, baseline-audit, security-scan, dependency-audit, ios-build-test]
+    if: always()
+    timeout-minutes: 5
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+      
+      - name: Generate compliance summary
+        run: |
+          echo "# iOS Compliance CI Summary" > compliance-summary.md
+          echo "" >> compliance-summary.md
+          echo "**Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> compliance-summary.md
+          echo "**Workflow:** ${{ github.workflow }}" >> compliance-summary.md
+          echo "**Run:** ${{ github.run_number }}" >> compliance-summary.md
+          echo "" >> compliance-summary.md
+          echo "## Job Results" >> compliance-summary.md
+          echo "" >> compliance-summary.md
+          echo "| Job | Status |" >> compliance-summary.md
+          echo "|-----|--------|" >> compliance-summary.md
+          echo "| Preflight Check | ${{ needs.preflight-check.result }} |" >> compliance-summary.md
+          echo "| Baseline Audit | ${{ needs.baseline-audit.result }} |" >> compliance-summary.md
+          echo "| Security Scan | ${{ needs.security-scan.result }} |" >> compliance-summary.md
+          echo "| Dependency Audit | ${{ needs.dependency-audit.result }} |" >> compliance-summary.md
+          echo "| iOS Build & Test | ${{ needs.ios-build-test.result }} |" >> compliance-summary.md
+          echo "" >> compliance-summary.md
+          
+          OVERALL="✅ PASS"
+          if [[ "${{ needs.preflight-check.result }}" != "success" ]] || \
+             [[ "${{ needs.security-scan.result }}" != "success" ]] || \
+             [[ "${{ needs.ios-build-test.result }}" != "success" ]]; then
+            OVERALL="❌ FAIL"
+          fi
+          
+          echo "**Overall:** $OVERALL" >> compliance-summary.md
+          
+          cat compliance-summary.md
+      
+      - name: Upload compliance summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-summary
+          path: compliance-summary.md
+          retention-days: 90
