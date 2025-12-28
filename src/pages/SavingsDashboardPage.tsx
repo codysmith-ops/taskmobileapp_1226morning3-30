@@ -8,6 +8,8 @@ import {
   CreditCardIcon,
   TrendUpIcon,
   TargetIcon,
+  CheckmarkIcon,
+  LightbulbIcon,
 } from '../components/Icons';
 
 const { width } = Dimensions.get('window');

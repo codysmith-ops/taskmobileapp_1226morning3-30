@@ -10,6 +10,9 @@ import {
   LocationIcon,
   StarIcon,
   BagIcon,
+  CheckmarkIcon,
+  LightbulbIcon,
+  CalendarIcon,
 } from '../components/Icons';
 
 const { width } = Dimensions.get('window');

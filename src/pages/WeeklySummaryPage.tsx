@@ -8,6 +8,10 @@ import {
   TrendUpIcon,
   DollarIcon,
   CreditCardIcon,
+  ClockIcon,
+  CheckmarkIcon,
+  WarningIcon,
+  LightbulbIcon,
 } from '../components/Icons';
 
 export const WeeklySummaryPage: React.FC = () => {

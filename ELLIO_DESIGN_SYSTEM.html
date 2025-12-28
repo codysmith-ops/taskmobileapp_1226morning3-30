@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ellio Design System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1E293B;
+            background: #F8FAFC;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 64px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+        
+        header svg {
+            margin-bottom: 24px;
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            color: #5159B0;
+            margin-bottom: 16px;
+        }
+        
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1E293B;
+            margin: 48px 0 24px 0;
+        }
+        
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1E293B;
+            margin: 32px 0 16px 0;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #64748B;
+            font-weight: 500;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #E2E8F0;
+        }
+        
+        .card-dark {
+            background: #1E293B;
+            color: #F1F5F9;
+        }
+        
+        .color-swatch {
+            width: 100%;
+            height: 100px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        .color-label {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: #1E293B;
+        }
+        
+        .color-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #64748B;
+        }
+        
+        .card-dark .color-label {
+            color: #F1F5F9;
+        }
+        
+        .card-dark .color-value {
+            color: #94A3B8;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 1px solid;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .button-primary {
+            background: #5159B0;
+            color: white;
+            border-color: #5159B0;
+        }
+        
+        .button-secondary {
+            background: transparent;
+            color: #5159B0;
+            border-color: #5159B0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-primary {
+            background: #5159B0;
+            color: white;
+        }
+        
+        .badge-info {
+            background: #818CF8;
+            color: #1E293B;
+        }
+        
+        .badge-success {
+            background: #059669;
+            color: white;
+        }
+        
+        .badge-warning {
+            background: #D97706;
+            color: white;
+        }
+        
+        .badge-critical {
+            background: #DC2626;
+            color: white;
+        }
+        
+        .alert {
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .alert-info {
+            background: rgba(129, 140, 248, 0.1);
+            border-color: #818CF8;
+            color: #1E293B;
+        }
+        
+        .alert-success {
+            background: rgba(5, 150, 105, 0.1);
+            border-color: #059669;
+            color: #1E293B;
+        }
+        
+        .alert-warning {
+            background: rgba(217, 119, 6, 0.1);
+            border-color: #D97706;
+            color: #1E293B;
+        }
+        
+        .alert-critical {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: #DC2626;
+            color: #1E293B;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .icon-card {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .icon-card svg {
+            margin-bottom: 12px;
+        }
+        
+        .icon-label {
+            font-size: 12px;
+            color: #64748B;
+            font-weight: 500;
+        }
+        
+        .typography-sample {
+            margin-bottom: 24px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .sample-text {
+            margin-bottom: 8px;
+        }
+        
+        .type-spec {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #64748B;
+        }
+        
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: #F1F5F9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .rule-box {
+            background: #FEF3C7;
+            border: 1px solid #D97706;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 24px 0;
+        }
+        
+        .rule-box h4 {
+            color: #92400E;
+            margin-bottom: 8px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .rule-box ul {
+            margin-left: 20px;
+            color: #78350F;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <svg width="280" height="80" viewBox="0 0 280 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="32" stroke="#5159B0" stroke-width="2.5" fill="none"/>
+                <circle cx="40" cy="40" r="23" stroke="#5159B0" stroke-width="2" fill="none"/>
+                <circle cx="40" cy="40" r="14" stroke="#5159B0" stroke-width="2" fill="none"/>
+                <circle cx="40" cy="40" r="5" fill="#5159B0"/>
+                <line x1="40" y1="8" x2="40" y2="16" stroke="#5159B0" stroke-width="2" stroke-linecap="round"/>
+                <line x1="40" y1="64" x2="40" y2="72" stroke="#5159B0" stroke-width="2" stroke-linecap="round"/>
+                <line x1="8" y1="40" x2="16" y2="40" stroke="#5159B0" stroke-width="2" stroke-linecap="round"/>
+                <line x1="64" y1="40" x2="72" y2="40" stroke="#5159B0" stroke-width="2" stroke-linecap="round"/>
+                <text x="105" y="50" font-family="Montserrat" font-weight="800" font-size="38" fill="#5159B0">Ellio</text>
+            </svg>
+            <h1>Design System</h1>
+            <p class="subtitle">Complete visual language and component library for Ellio mobile app</p>
+        </header>
+
+        <div class="rule-box">
+            <h4>🎨 Critical Design Rules</h4>
+            <ul>
+                <li><strong>NO EMOJIS</strong> - Always use SVG icons from this system</li>
+                <li>Use <code>#1E293B</code> for dark backgrounds (NOT pure black)</li>
+                <li>Alert colors (#DC2626, #D97706, #059669) are ONLY for notifications and status indicators</li>
+                <li>All borders are <code>1px</code> only - never 2px or 3px</li>
+                <li>Icon stroke width: <code>2.5-3px</code> for consistency</li>
+                <li>Labels on dark backgrounds always use <code>#818CF8</code></li>
+            </ul>
+        </div>
+
+        <h2>Brand Colors</h2>
+        <p style="color: #64748B; margin-bottom: 24px;">Primary brand colors for UI elements, text, and backgrounds.</p>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="color-swatch" style="background: #5159B0;"></div>
+                <div class="color-label">Primary Indigo</div>
+                <div class="color-value">#5159B0</div>
+                <p style="font-size: 13px; color: #64748B; margin-top: 8px;">Primary brand color for buttons, links, active states</p>
+            </div>
+            
+            <div class="card">
+                <div class="color-swatch" style="background: #818CF8;"></div>
+                <div class="color-label">Indigo Light</div>
+                <div class="color-value">#818CF8</div>
+                <p style="font-size: 13px; color: #64748B; margin-top: 8px;">Secondary brand color, labels on dark, hover states</p>
+            </div>
+            
+            <div class="card card-dark">
+                <div class="color-swatch" style="background: #1E293B;"></div>
+                <div class="color-label">Dark Slate</div>
+                <div class="color-value">#1E293B</div>
+                <p style="font-size: 13px; color: #94A3B8; margin-top: 8px;">Dark mode backgrounds, navigation bars</p>
+            </div>
+            
+            <div class="card">
+                <div class="color-swatch" style="background: #F1F5F9;"></div>
+                <div class="color-label">White on Dark</div>
+                <div class="color-value">#F1F5F9</div>
+                <p style="font-size: 13px; color: #64748B; margin-top: 8px;">Primary text on dark backgrounds</p>
+            </div>
+            
+            <div class="card">
+                <div class="color-swatch" style="background: #94A3B8;"></div>
+                <div class="color-label">Slate Gray</div>
+                <div class="color-value">#94A3B8</div>
+                <p style="font-size: 13px; color: #64748B; margin-top: 8px;">Secondary text on dark backgrounds</p>
+            </div>
+            
+            <div class="card">
+                <div class="color-swatch" style="background: #64748B;"></div>
+                <div class="color-label">Muted Gray</div>
+                <div class="color-value">#64748B</div>
+                <p style="font-size: 13px; color: #64748B; margin-top: 8px;">Tertiary text, captions, metadata</p>
+            </div>
+        </div>
+
+        <h2>Alert Colors</h2>
+        <p style="color: #64748B; margin-bottom: 24px;"><strong>⚠️ Use ONLY for alerts, notifications, and status indicators - not for general UI elements.</strong></p>
+        
+        <div class="grid">
+            <div class="card">
+                <div class="color-swatch" style="background: #DC2626;"></div>
+                <div class="color-label">Critical Alert</div>
+                <div class="color-value">#DC2626</div>
+                <p style="font-size: 13px; color: #64748B; margin-top: 8px;">Errors, deletions, critical warnings</p>
+            </div>
+            
+            <div class="card">
+                <div class="color-swatch" style="background: #D97706;"></div>
+                <div class="color-label">Warning Alert</div>
+                <div class="color-value">#D97706</div>
+                <p style="font-size: 13px; color: #64748B; margin-top: 8px;">Warnings, caution notices</p>
+            </div>
+            
+            <div class="card">
+                <div class="color-swatch" style="background: #059669;"></div>
+                <div class="color-label">Success Alert</div>
+                <div class="color-value">#059669</div>
+                <p style="font-size: 13px; color: #64748B; margin-top: 8px;">Success messages, confirmations</p>
+            </div>
+            
+            <div class="card">
+                <div class="color-swatch" style="background: #818CF8;"></div>
+                <div class="color-label">Info Alert</div>
+                <div class="color-value">#818CF8</div>
+                <p style="font-size: 13px; color: #64748B; margin-top: 8px;">Information notices, tips</p>
+            </div>
+        </div>
+
+        <h2>Typography</h2>
+        
+        <div class="typography-sample">
+            <div class="sample-text" style="font-family: 'Montserrat', sans-serif; font-size: 42px; font-weight: 700;">
+                The quick brown fox jumps over the lazy dog
+            </div>
+            <div class="type-spec">Heading 1: Montserrat Bold, 42px, #1E293B</div>
+        </div>
+        
+        <div class="typography-sample">
+            <div class="sample-text" style="font-family: 'Montserrat', sans-serif; font-size: 32px; font-weight: 700;">
+                The quick brown fox jumps over the lazy dog
+            </div>
+            <div class="type-spec">Heading 2: Montserrat Bold, 32px, #1E293B</div>
+        </div>
+        
+        <div class="typography-sample">
+            <div class="sample-text" style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700;">
+                The quick brown fox jumps over the lazy dog
+            </div>
+            <div class="type-spec">Heading 3: Montserrat Bold, 24px, #1E293B</div>
+        </div>
+        
+        <div class="typography-sample">
+            <div class="sample-text" style="font-size: 18px; font-weight: 600;">
+                The quick brown fox jumps over the lazy dog
+            </div>
+            <div class="type-spec">Subtitle: Inter Semibold, 18px, #1E293B</div>
+        </div>
+        
+        <div class="typography-sample">
+            <div class="sample-text" style="font-size: 16px;">
+                The quick brown fox jumps over the lazy dog. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </div>
+            <div class="type-spec">Body: Inter Regular, 16px, #1E293B</div>
+        </div>
+        
+        <div class="typography-sample">
+            <div class="sample-text" style="font-size: 14px; color: #64748B;">
+                The quick brown fox jumps over the lazy dog
+            </div>
+            <div class="type-spec">Secondary: Inter Regular, 14px, #64748B</div>
+        </div>
+        
+        <div class="typography-sample">
+            <div class="sample-text" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; color: #64748B;">
+                The quick brown fox
+            </div>
+            <div class="type-spec">Label: Inter Semibold, 12px, Uppercase, #64748B</div>
+        </div>
+        
+        <div class="typography-sample">
+            <div class="sample-text" style="font-family: 'JetBrains Mono', monospace; font-size: 14px;">
+                const greeting = "Hello, World!";
+            </div>
+            <div class="type-spec">Code: JetBrains Mono, 14px, #1E293B</div>
+        </div>
+
+        <h2>Icons</h2>
+        <p style="color: #64748B; margin-bottom: 24px;">All icons use <code>stroke-width: 2.5-3</code> and <code>color: #5159B0</code> (or #818CF8 on dark backgrounds).</p>
+        
+        <div class="icon-grid">
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="24" r="20" stroke="#5159B0" stroke-width="2.5"/>
+                    <circle cx="24" cy="24" r="14" stroke="#5159B0" stroke-width="2"/>
+                    <circle cx="24" cy="24" r="8" stroke="#5159B0" stroke-width="2"/>
+                    <circle cx="24" cy="24" r="3" fill="#5159B0"/>
+                </svg>
+                <div class="icon-label">Target</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 4L27.6 17.4L41 21L27.6 24.6L24 38L20.4 24.6L7 21L20.4 17.4L24 4Z" stroke="#5159B0" stroke-width="2.5" stroke-linejoin="round"/>
+                </svg>
+                <div class="icon-label">Star</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 8L28 28L38 40" stroke="#5159B0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 24H20L24 8L28 28L38 28" stroke="#5159B0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="icon-label">Lightning</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="24" r="18" stroke="#5159B0" stroke-width="2.5"/>
+                    <path d="M24 10V24L32 28" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <div class="icon-label">Clock</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="8" y="32" width="8" height="10" stroke="#5159B0" stroke-width="2.5"/>
+                    <rect x="20" y="24" width="8" height="18" stroke="#5159B0" stroke-width="2.5"/>
+                    <rect x="32" y="16" width="8" height="26" stroke="#5159B0" stroke-width="2.5"/>
+                </svg>
+                <div class="icon-label">Chart</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 40L18 30L28 36L40 20" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="8,40 8,6" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                    <polyline points="8,40 42,40" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <div class="icon-label">Analytics</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="8,28 20,16 28,24 40,12" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="32,12 40,12 40,20" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="icon-label">Trend Up</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="8,12 20,24 28,16 40,28" stroke="#DC2626" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="32,28 40,28 40,20" stroke="#DC2626" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="icon-label">Trend Down</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="18" r="8" stroke="#5159B0" stroke-width="2.5"/>
+                    <path d="M8 40C8 32 14 28 24 28C34 28 40 32 40 40" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <div class="icon-label">User</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="18" cy="18" r="6" stroke="#5159B0" stroke-width="2.5"/>
+                    <circle cx="32" cy="18" r="6" stroke="#5159B0" stroke-width="2.5"/>
+                    <path d="M6 38C6 32 10 28 18 28C20 28 22 28.5 24 29" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M24 38C24 32 28 28 32 28C38 28 42 32 42 38" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <div class="icon-label">Users</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 12C20 12 18 14 18 18C18 22 24 24 24 30" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="24" cy="36" r="2" fill="#5159B0"/>
+                    <circle cx="24" cy="24" r="18" stroke="#5159B0" stroke-width="2.5"/>
+                </svg>
+                <div class="icon-label">Help</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="20" r="6" stroke="#5159B0" stroke-width="2.5"/>
+                    <path d="M24 8V14M24 26V32M16 12L19 16M29 24L32 28M12 20H18M30 20H36M16 28L19 24M29 12L32 16" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <div class="icon-label">Settings</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 40C32.8366 40 40 32.8366 40 24C40 15.1634 32.8366 8 24 8C15.1634 8 8 15.1634 8 24C8 26.5 8.5 28.8 9.4 31L8 40L17 38.6C19.2 39.5 21.5 40 24 40Z" stroke="#5159B0" stroke-width="2.5" stroke-linejoin="round"/>
+                </svg>
+                <div class="icon-label">Chat</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 40C24 40 38 32 38 20C38 12 32 8 24 8C16 8 10 12 10 20C10 32 24 40 24 40Z" stroke="#5159B0" stroke-width="2.5" stroke-linejoin="round"/>
+                    <circle cx="24" cy="20" r="4" stroke="#5159B0" stroke-width="2.5"/>
+                </svg>
+                <div class="icon-label">Location</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="8" width="28" height="32" rx="2" stroke="#5159B0" stroke-width="2.5"/>
+                    <path d="M10 16H38" stroke="#5159B0" stroke-width="2.5"/>
+                    <circle cx="18" cy="24" r="1.5" fill="#5159B0"/>
+                    <circle cx="24" cy="24" r="1.5" fill="#5159B0"/>
+                    <circle cx="30" cy="24" r="1.5" fill="#5159B0"/>
+                    <circle cx="18" cy="30" r="1.5" fill="#5159B0"/>
+                    <circle cx="24" cy="30" r="1.5" fill="#5159B0"/>
+                    <circle cx="30" cy="30" r="1.5" fill="#5159B0"/>
+                </svg>
+                <div class="icon-label">Calendar</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 18C12 18 14 12 24 12C34 12 36 18 36 18V38C36 38 34 44 24 44C14 44 12 38 12 38V18Z" stroke="#5159B0" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M12 18C12 18 14 24 24 24C34 24 36 18 36 18" stroke="#5159B0" stroke-width="2.5"/>
+                    <path d="M18 12V8C18 8 18 4 24 4C30 4 30 8 30 8V12" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <div class="icon-label">Bag</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 12L12 40H36L40 12H8Z" stroke="#5159B0" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M16 12V10C16 6 18 4 24 4C30 4 32 6 32 10V12" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <div class="icon-label">Cart</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="24" r="18" stroke="#5159B0" stroke-width="2.5"/>
+                    <path d="M24 14L24 24L32 24" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <div class="icon-label">Time</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 8V18M24 30V40M40 24H30M18 24H8" stroke="#5159B0" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <div class="icon-label">Plus</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="12,24 20,32 36,16" stroke="#059669" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="icon-label">Checkmark</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M34 14L14 34M14 14L34 34" stroke="#DC2626" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <div class="icon-label">Close</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24 38V10M24 10L14 20M24 10L34 20" stroke="#5159B0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="icon-label">Upload</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="16" r="6" stroke="#5159B0" stroke-width="2.5"/>
+                    <path d="M14 40V36C14 32 16 28 24 28C32 28 34 32 34 36V40" stroke="#5159B0" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="24" cy="24" r="2" fill="#5159B0"/>
+                </svg>
+                <div class="icon-label">Profile</div>
+            </div>
+            
+            <div class="icon-card">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M38 24C38 31.732 31.732 38 24 38C16.268 38 10 31.732 10 24C10 16.268 16.268 10 24 10" stroke="#5159B0" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M38 10V24H24" stroke="#5159B0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="icon-label">Refresh</div>
+            </div>
+        </div>
+
+        <h2>Buttons</h2>
+        
+        <div class="card" style="margin-bottom: 24px;">
+            <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+                <button class="button button-primary">Primary Button</button>
+                <button class="button button-secondary">Secondary Button</button>
+            </div>
+            <p style="color: #64748B; margin-top: 16px; font-size: 13px;">
+                <strong>Specs:</strong> Padding 12px 24px, Border Radius 8px, Font Weight 600, Font Size 16px
+            </p>
+        </div>
+
+        <h2>Badges</h2>
+        
+        <div class="card" style="margin-bottom: 24px;">
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                <span class="badge badge-primary">Primary</span>
+                <span class="badge badge-info">Info</span>
+                <span class="badge badge-success">Success</span>
+                <span class="badge badge-warning">Warning</span>
+                <span class="badge badge-critical">Critical</span>
+            </div>
+            <p style="color: #64748B; margin-top: 16px; font-size: 13px;">
+                <strong>Specs:</strong> Padding 6px 12px, Border Radius 6px, Font Size 12px, Font Weight 600, Uppercase
+            </p>
+        </div>
+
+        <h2>Alerts</h2>
+        
+        <div class="alert alert-info">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="#818CF8" stroke-width="2"/>
+                <path d="M12 8V12M12 16H12.01" stroke="#818CF8" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div>
+                <strong>Info:</strong> This is an informational message for the user.
+            </div>
+        </div>
+        
+        <div class="alert alert-success">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="6,12 10,16 18,8" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="12" cy="12" r="10" stroke="#059669" stroke-width="2"/>
+            </svg>
+            <div>
+                <strong>Success:</strong> Your action was completed successfully.
+            </div>
+        </div>
+        
+        <div class="alert alert-warning">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 20H22L12 2Z" stroke="#D97706" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M12 9V13M12 17H12.01" stroke="#D97706" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div>
+                <strong>Warning:</strong> Please review this information carefully.
+            </div>
+        </div>
+        
+        <div class="alert alert-critical">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="#DC2626" stroke-width="2"/>
+                <path d="M15 9L9 15M9 9L15 15" stroke="#DC2626" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div>
+                <strong>Error:</strong> There was a problem processing your request.
+            </div>
+        </div>
+
+        <h2>Spacing & Sizing</h2>
+        
+        <div class="card">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 12px 0; font-weight: 600;">Property</td>
+                    <td style="padding: 12px 0; font-weight: 600;">Value</td>
+                    <td style="padding: 12px 0; font-weight: 600;">Usage</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 12px 0;">Border Radius (Badge)</td>
+                    <td style="padding: 12px 0;"><code>6px</code></td>
+                    <td style="padding: 12px 0; color: #64748B;">Small UI elements</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 12px 0;">Border Radius (Button)</td>
+                    <td style="padding: 12px 0;"><code>8px</code></td>
+                    <td style="padding: 12px 0; color: #64748B;">Interactive elements</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 12px 0;">Border Radius (Card)</td>
+                    <td style="padding: 12px 0;"><code>12px</code></td>
+                    <td style="padding: 12px 0; color: #64748B;">Content containers</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 12px 0;">Border Width</td>
+                    <td style="padding: 12px 0;"><code>1px</code></td>
+                    <td style="padding: 12px 0; color: #64748B;">All borders (NEVER 2px or 3px)</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 12px 0;">Icon Stroke Width</td>
+                    <td style="padding: 12px 0;"><code>2.5-3px</code></td>
+                    <td style="padding: 12px 0; color: #64748B;">All SVG icons</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 12px 0;">Icon Size (Default)</td>
+                    <td style="padding: 12px 0;"><code>48x48</code></td>
+                    <td style="padding: 12px 0; color: #64748B;">Standard icon size</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 12px 0;">Shadow (Light)</td>
+                    <td style="padding: 12px 0;"><code>0 2px 8px</code></td>
+                    <td style="padding: 12px 0; color: #64748B;">Subtle elevation</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                    <td style="padding: 12px 0;">Shadow (Elevated)</td>
+                    <td style="padding: 12px 0;"><code>0 4px 16px</code></td>
+                    <td style="padding: 12px 0; color: #64748B;">Medium elevation</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px 0;">Shadow (Featured)</td>
+                    <td style="padding: 12px 0;"><code>0 8px 32px</code></td>
+                    <td style="padding: 12px 0; color: #64748B;">High elevation, modals</td>
+                </tr>
+            </table>
+        </div>
+
+        <h2 style="margin-top: 64px;">Implementation Notes</h2>
+        
+        <div class="card">
+            <h3 style="margin-top: 0;">React Native Styles</h3>
+            <pre style="background: #F1F5F9; padding: 16px; border-radius: 8px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6;"><code>const palette = {
+  primary: '#5159B0',
+  secondary: '#818CF8',
+  darkBg: '#1E293B',
+  textPrimary: '#F1F5F9',
+  textSecondary: '#94A3B8',
+  textTertiary: '#64748B',
+  
+  // Alert colors - use ONLY for notifications
+  critical: '#DC2626',
+  warning: '#D97706',
+  success: '#059669',
+  info: '#818CF8',
+};
+
+const typography = {
+  h1: {
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 42,
+    color: palette.darkBg,
+  },
+  body: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 16,
+    color: palette.darkBg,
+  },
+  // ... more styles
+};
+
+const components = {
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  card: {
+    padding: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    backgroundColor: 'white',
+  },
+};</code></pre>
+        </div>
+
+        <footer style="margin-top: 64px; padding-top: 32px; border-top: 1px solid #E2E8F0; text-align: center; color: #64748B;">
+            <p>Ellio Design System v1.0 • Updated December 2025</p>
+            <p style="margin-top: 8px; font-size: 14px;">For questions or updates, refer to the development team.</p>
+        </footer>
+    </div>
+</body>
+</html>
