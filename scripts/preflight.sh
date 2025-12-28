@@ -192,12 +192,19 @@ check_working_tree() {
     fi
     
     if [[ -n "$status" ]]; then
-        log_error "Working tree is dirty:"
-        git status --short
-        log_fatal "Commit or stash changes before running compliance pipeline" $EXIT_WORKING_TREE_DIRTY
+        # In CI, enforce strictly. Locally, warn but allow.
+        if [[ "${CI:-false}" == "true" ]] || [[ "${GITHUB_ACTIONS:-false}" == "true" ]]; then
+            log_error "Working tree is dirty in CI environment:"
+            git status --short
+            log_fatal "CI requires clean working tree for reproducibility" $EXIT_WORKING_TREE_DIRTY
+        else
+            log_warn "Working tree has uncommitted changes (allowed locally):"
+            git status --short | head -10
+            log_warn "For reproducible builds, commit changes before audit"
+        fi
+    else
+        log_info "✅ Working tree clean"
     fi
-    
-    log_info "✅ Working tree clean"
 }
 
 # =============================================================================
