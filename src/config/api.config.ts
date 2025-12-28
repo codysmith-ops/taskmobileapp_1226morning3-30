@@ -100,11 +100,11 @@ export const validateAPIConfig = () => {
   }
 
   if (!API_CONFIG.firebase.apiKey) {
-    warnings.push('ℹ️  Firebase not configured - cloud sync disabled');
+    warnings.push('Firebase not configured - cloud sync disabled');
   }
 
   if (!API_CONFIG.stripe.publishableKey) {
-    warnings.push('ℹ️  Stripe not configured - payment features limited');
+    warnings.push('Stripe not configured - payment features limited');
   }
 
   return {

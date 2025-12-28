@@ -292,7 +292,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
             </View>
 
             <View style={styles.summaryCard}>
-              <Text style={styles.summaryTitle}>✨ You're all set!</Text>
+              <Text style={styles.summaryTitle}>You're all set!</Text>
               <Text style={styles.summaryText}>Based on your selections, we've configured:</Text>
               <View style={styles.summaryList}>
                 {preferences.enableReceiptScanning && (

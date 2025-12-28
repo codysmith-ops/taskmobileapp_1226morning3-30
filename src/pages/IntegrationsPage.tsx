@@ -65,7 +65,7 @@ export const IntegrationsPage: React.FC = () => {
     {
       id: 'google-drive',
       name: 'Google Drive',
-      icon: '☁icon',
+      icon: 'cloud',
       description: 'Store task files in Google Drive',
       connected: false,
       category: 'storage',
