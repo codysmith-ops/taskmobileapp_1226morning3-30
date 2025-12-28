@@ -89,7 +89,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
                 { value: 'save-money', icon: 'money', label: 'Save Money' },
                 { value: 'track-spending', icon: 'chart', label: 'Track Spending' },
                 { value: 'maximize-rewards', icon: 'gift', label: 'Maximize Rewards' },
-                { value: 'family-budget', icon: 'family', label: 'Family Budget' },
+                { value: 'family-budget', icon: '👨‍👩‍👧‍👦', label: 'Family Budget' },
               ].map(goal => (
                 <TouchableOpacity
                   key={goal.value}
@@ -138,7 +138,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
                   trackColor={{ false: palette.border, true: palette.primary }}
                 />
                 <View style={styles.featureInfo}>
-                  <Text style={styles.featureTitle}>Receipt Scanning</Text>
+                  <Text style={styles.featureTitle}>📷 Receipt Scanning</Text>
                   <Text style={styles.featureDescription}>
                     Automatically extract purchase details and categorize spending
                   </Text>
@@ -152,7 +152,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
                   trackColor={{ false: palette.border, true: palette.primary }}
                 />
                 <View style={styles.featureInfo}>
-                  <Text style={styles.featureTitle}>icon Cashback Optimization</Text>
+                  <Text style={styles.featureTitle}>💳 Cashback Optimization</Text>
                   <Text style={styles.featureDescription}>
                     AI suggests the best credit card for each purchase
                   </Text>
@@ -166,7 +166,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
                   trackColor={{ false: palette.border, true: palette.primary }}
                 />
                 <View style={styles.featureInfo}>
-                  <Text style={styles.featureTitle}>Smart Budgeting</Text>
+                  <Text style={styles.featureTitle}>📊 Smart Budgeting</Text>
                   <Text style={styles.featureDescription}>
                     Automatic budget recommendations based on your habits
                   </Text>
@@ -209,7 +209,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
 
             <View style={styles.privacyNote}>
               <Text style={styles.privacyText}>
-                Your location data stays private and is never sold
+                🔒 Your location data stays private and is never sold
               </Text>
             </View>
           </View>
@@ -254,7 +254,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
 
             <View style={styles.infoBox}>
               <Text style={styles.infoText}>
-                You can always change these settings later in Preferences
+                💡 You can always change these settings later in Preferences
               </Text>
             </View>
           </View>

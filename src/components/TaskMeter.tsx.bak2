@@ -61,11 +61,11 @@ const getTaskType = (title: string): string => {
 // Task categories with colors
 export const TASK_CATEGORIES = {
   groceries: { label: 'Groceries', color: '#10B981', icon: 'grocery' },
-  returns: { label: 'Returns', color: '#EF4444', icon: 'iconicon' },
-  hardware: { label: 'Hardware', color: '#F59E0B', icon: 'tools' },
-  retail: { label: 'Retail', color: '#3B82F6', icon: 'store' },
-  medical: { label: 'Medical', color: '#8B5CF6', icon: 'iconicon' },
-  home: { label: 'Home', color: '#14B8A6', icon: 'home' },
+  returns: { label: 'Returns', color: '#EF4444', icon: '↩️' },
+  hardware: { label: 'Hardware', color: '#F59E0B', icon: '🔨' },
+  retail: { label: 'Retail', color: '#3B82F6', icon: '🏪' },
+  medical: { label: 'Medical', color: '#8B5CF6', icon: '⚕️' },
+  home: { label: 'Home', color: '#14B8A6', icon: '🏠' },
   other: { label: 'Other', color: '#6B7280', icon: 'list' },
 };
 

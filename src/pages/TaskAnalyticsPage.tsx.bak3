@@ -96,8 +96,8 @@ export const TaskAnalyticsPage: React.FC = () => {
           {productivityScore >= 80
             ? '<StarIcon /> Excellent!'
             : productivityScore >= 60
-            ? 'icon Good work!'
-            : 'icon Keep going!'}
+            ? '👍 Good work!'
+            : '💪 Keep going!'}
         </Text>
       </View>
 
@@ -131,7 +131,7 @@ export const TaskAnalyticsPage: React.FC = () => {
         </View>
 
         <View style={styles.metricCard}>
-          <Text style={styles.metricIcon}>icon</Text>
+          <Text style={styles.metricIcon}>🔴</Text>
           <Text style={styles.metricValue}>{overdueTasks}</Text>
           <Text style={styles.metricLabel}>Overdue</Text>
         </View>
@@ -200,7 +200,7 @@ export const TaskAnalyticsPage: React.FC = () => {
 
         {onTimeRate >= 80 && (
           <View style={styles.insightItem}>
-            <Text style={styles.insightIcon}>icon</Text>
+            <Text style={styles.insightIcon}>⭐</Text>
             <Text style={styles.insightText}>
               Excellent! You complete {onTimeRate.toFixed(0)}% of tasks on time.
             </Text>
@@ -209,7 +209,7 @@ export const TaskAnalyticsPage: React.FC = () => {
 
         {activeTasks > 10 && (
           <View style={styles.insightItem}>
-            <Text style={styles.insightIcon}>icon</Text>
+            <Text style={styles.insightIcon}>📌</Text>
             <Text style={styles.insightText}>
               You have {activeTasks} active tasks. Focus on completing high-priority items first.
             </Text>
@@ -218,7 +218,7 @@ export const TaskAnalyticsPage: React.FC = () => {
 
         {completionRate < 50 && (
           <View style={styles.insightItem}>
-            <Text style={styles.insightIcon}>icon</Text>
+            <Text style={styles.insightIcon}>💪</Text>
             <Text style={styles.insightText}>
               Try breaking large tasks into smaller, achievable steps to boost your completion rate.
             </Text>

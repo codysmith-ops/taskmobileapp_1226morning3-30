@@ -68,12 +68,16 @@ export const radius = {
   badge: 6, // 6px - Badges, pills per design system
   button: 8, // 8px - Buttons, small cards per design system
   card: 12, // 12px - Cards, containers per design system
+  input: 8, // 8px - Input fields
   xs: 4,
   sm: 8,
   md: 12,
   lg: 16,
   xl: 24,
   full: 9999,
+  small: 8,
+  medium: 12,
+  large: 16,
 };
 
 export const typography = {
@@ -135,6 +139,14 @@ export const shadow = {
     shadowOpacity: 0.2,
     shadowRadius: 32,
     elevation: 8,
+  },
+  // Large shadow for modals and overlays
+  large: {
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 6,
   },
   // Legacy support
   shadowColor: '#0F172A',

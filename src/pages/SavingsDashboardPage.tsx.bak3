@@ -295,14 +295,14 @@ export const SavingsDashboardPage: React.FC = () => {
           {parseFloat(percentageSaved) >= 30
             ? "<StarIcon /> Excellent! You're a savings superstar!"
             : parseFloat(percentageSaved) >= 20
-            ? 'icon Great job! Keep up the good work!'
-            : 'icon Good start! You can save even more!'}
+            ? '👍 Great job! Keep up the good work!'
+            : '💪 Good start! You can save even more!'}
         </Text>
       </View>
 
       {/* Achievements */}
       <View style={styles.achievementsCard}>
-        <Text style={styles.sectionTitle}>icon Recent Wins</Text>
+        <Text style={styles.sectionTitle}>🏆 Recent Wins</Text>
 
         <View style={styles.achievement}>
           <Text style={styles.achievementIcon}>

@@ -32,11 +32,13 @@ import { MonthlyReportPage } from './src/pages/MonthlyReportPage';
 import { InsightsPage } from './src/pages/InsightsPage';
 import { TimelinePage } from './src/pages/TimelinePage';
 import { TaskAnalyticsPage } from './src/pages/TaskAnalyticsPage';
+import { TaskMeter } from './src/components/TaskMeter';
 import { BrandPreferenceDialog, BrandPreference } from './src/components/BrandPreferenceDialog';
 import { StorePreferenceDialog } from './src/components/StorePreferenceDialog';
 import { TaskCompletionDialog } from './src/components/TaskCompletionDialog';
 import { GeofenceMonitor } from './src/components/GeofenceMonitor';
 import { getTaskIcon, ScannerIcon, CameraIcon } from './src/components/TaskTypeIcons';
+import { TrashIcon } from './src/components/Icons';
 
 // Helper to detect task type from title
 const getTaskType = (title: string): string => {
@@ -569,7 +571,10 @@ const App = (): React.JSX.Element => {
 
           {imageUri ? (
             <View style={styles.imagePreview}>
-              <Text style={styles.imagePreviewText}>📷 Photo attached</Text>
+              <View style={styles.imagePreviewContent}>
+                <CameraIcon size={16} color={palette.textSecondary} />
+                <Text style={styles.imagePreviewText}>Photo attached</Text>
+              </View>
               <TouchableOpacity onPress={() => setImageUri(undefined)}>
                 <Text style={styles.imageRemove}>✕</Text>
               </TouchableOpacity>
@@ -641,12 +646,12 @@ const App = (): React.JSX.Element => {
             <View style={styles.activityList}>
               {activityLog.slice(0, 5).map(activity => (
                 <View key={activity.id} style={styles.activityItem}>
-                  <Text style={styles.activityIcon}>
-                    {activity.action === 'added' && '➕'}
-                    {activity.action === 'completed' && '✅'}
-                    {activity.action === 'uncompleted' && '↩️'}
-                    {activity.action === 'deleted' && '🗑️'}
-                  </Text>
+                  <View style={styles.activityIconContainer}>
+                    {activity.action === 'added' && <Text style={styles.activityIcon}>➕</Text>}
+                    {activity.action === 'completed' && <Text style={styles.activityIcon}>✅</Text>}
+                    {activity.action === 'uncompleted' && <Text style={styles.activityIcon}>↩️</Text>}
+                    {activity.action === 'deleted' && <TrashIcon size={18} color={palette.error} />}
+                  </View>
                   <View style={styles.activityInfo}>
                     <Text style={styles.activityText}>
                       <Text style={styles.activityAction}>{activity.action}</Text>{' '}
@@ -981,6 +986,11 @@ const styles = StyleSheet.create({
     borderRadius: radius.badge,
     marginBottom: spacing.md,
   },
+  imagePreviewContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
   imagePreviewText: {
     ...typography.body,
     color: palette.primary,
@@ -1049,6 +1059,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.md,
     paddingVertical: spacing.sm,
+    alignItems: 'center',
+  },
+  activityIconContainer: {
+    width: 20,
+    alignItems: 'center',
   },
   activityIcon: {
     fontSize: 20,

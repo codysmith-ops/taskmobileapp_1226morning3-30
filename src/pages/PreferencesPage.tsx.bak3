@@ -157,7 +157,7 @@ export const PreferencesPage: React.FC = () => {
                   sortBy === 'priority' && styles.optionButtonTextActive,
                 ]}
               >
-                icon Priority
+                ⭐ Priority
               </Text>
             </TouchableOpacity>
             <TouchableOpacity

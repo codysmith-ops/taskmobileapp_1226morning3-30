@@ -101,11 +101,11 @@ export const NotificationsPage: React.FC = () => {
       case 'task':
         return '✓';
       case 'chat':
-        return 'chat';
+        return '💬';
       case 'system':
-        return 'settings';
+        return '⚙️';
       case 'reminder':
-        return 'bell';
+        return '🔔';
       default:
         return '•';
     }

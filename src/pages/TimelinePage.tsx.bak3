@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
-import { CalendarIcon, MailOpenIcon } from '../components/icons';
+import { CalendarIcon } from '../components/Icons';
 import { useTodoStore } from '../store';
 
 export const TimelinePage: React.FC = () => {
@@ -57,7 +57,7 @@ export const TimelinePage: React.FC = () => {
       <View style={styles.timeline}>
         {sortedDates.length === 0 ? (
           <View style={styles.emptyState}>
-            <MailOpenIcon size={64} color={palette.textTertiary} />
+            <Text style={styles.emptyIcon}>📭</Text>
             <Text style={styles.emptyText}>No upcoming tasks with due dates</Text>
             <Text style={styles.emptySubtext}>Add due dates to your tasks to see them here</Text>
           </View>

@@ -26,7 +26,7 @@ export const BudgetPage: React.FC = () => {
     {
       id: '1',
       name: 'Groceries',
-      icon: 'icon',
+      icon: '🛒',
       budgeted: 600,
       spent: 427.45,
       remaining: 172.55,
@@ -42,7 +42,7 @@ export const BudgetPage: React.FC = () => {
     {
       id: '3',
       name: 'Transportation',
-      icon: 'icon',
+      icon: '🚗',
       budgeted: 200,
       spent: 145.0,
       remaining: 55.0,
@@ -50,7 +50,7 @@ export const BudgetPage: React.FC = () => {
     {
       id: '4',
       name: 'Entertainment',
-      icon: 'icon',
+      icon: '🎬',
       budgeted: 150,
       spent: 89.5,
       remaining: 60.5,

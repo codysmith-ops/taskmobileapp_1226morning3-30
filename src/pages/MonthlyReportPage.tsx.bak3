@@ -267,7 +267,7 @@ export const MonthlyReportPage: React.FC = () => {
         </View>
 
         <View style={styles.achievementBadge}>
-          <Text style={styles.achievementText}>icon Perfect Month! You tracked every purchase!</Text>
+          <Text style={styles.achievementText}>🏆 Perfect Month! You tracked every purchase!</Text>
         </View>
       </View>
 
@@ -356,7 +356,7 @@ export const MonthlyReportPage: React.FC = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.exportButton, styles.exportButtonSecondary]}>
-          <Text style={styles.exportButtonTextSecondary}>icon Share Summary</Text>
+          <Text style={styles.exportButtonTextSecondary}>📤 Share Summary</Text>
         </TouchableOpacity>
       </View>
 

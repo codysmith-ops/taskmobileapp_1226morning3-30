@@ -122,7 +122,7 @@ export const BrandPreferenceDialog: React.FC<BrandPreferenceDialogProps> = ({
                     showCustomInput && styles.brandOptionTextSelected,
                   ]}
                 >
-                  iconicon Other Brand
+                  ✏️ Other Brand
                 </Text>
               </TouchableOpacity>
             </View>

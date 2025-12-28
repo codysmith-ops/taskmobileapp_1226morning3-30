@@ -241,7 +241,7 @@ export const CashbackAccountsPage: React.FC = () => {
         ))}
 
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>icon Secure & Private</Text>
+          <Text style={styles.infoTitle}>🔐 Secure & Private</Text>
           <Text style={styles.infoText}>• Bank-level 256-bit encryption</Text>
           <Text style={styles.infoText}>• Read-only access to transactions</Text>
           <Text style={styles.infoText}>• Your credentials are never stored</Text>

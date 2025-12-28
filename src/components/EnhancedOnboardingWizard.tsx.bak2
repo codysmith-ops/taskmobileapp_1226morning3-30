@@ -78,7 +78,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
       case 0:
         return (
           <View style={styles.stepContent}>
-            <Text style={styles.stepIcon}>Target</Text>
+            <Text style={styles.stepIcon}>🎯</Text>
             <Text style={styles.stepTitle}>What's your primary goal?</Text>
             <Text style={styles.stepDescription}>
               We'll customize your experience based on what matters most to you
@@ -86,10 +86,10 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
 
             <View style={styles.optionsGrid}>
               {[
-                { value: 'save-money', icon: 'money', label: 'Save Money' },
-                { value: 'track-spending', icon: 'chart', label: 'Track Spending' },
-                { value: 'maximize-rewards', icon: 'gift', label: 'Maximize Rewards' },
-                { value: 'family-budget', icon: 'family', label: 'Family Budget' },
+                { value: 'save-money', icon: '💰', label: 'Save Money' },
+                { value: 'track-spending', icon: '📊', label: 'Track Spending' },
+                { value: 'maximize-rewards', icon: '🎁', label: 'Maximize Rewards' },
+                { value: 'family-budget', icon: '👨‍👩‍👧‍👦', label: 'Family Budget' },
               ].map(goal => (
                 <TouchableOpacity
                   key={goal.value}
@@ -117,7 +117,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
       case 1:
         return (
           <View style={styles.stepContent}>
-            <Text style={styles.stepIcon}>AI</Text>
+            <Text style={styles.stepIcon}>🧠</Text>
             <Text style={styles.stepTitle}>Smart Features</Text>
             <Text style={styles.stepDescription}>
               Our AI learns your spending patterns to help you save automatically
@@ -138,7 +138,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
                   trackColor={{ false: palette.border, true: palette.primary }}
                 />
                 <View style={styles.featureInfo}>
-                  <Text style={styles.featureTitle}>Receipt Scanning</Text>
+                  <Text style={styles.featureTitle}>📷 Receipt Scanning</Text>
                   <Text style={styles.featureDescription}>
                     Automatically extract purchase details and categorize spending
                   </Text>
@@ -152,7 +152,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
                   trackColor={{ false: palette.border, true: palette.primary }}
                 />
                 <View style={styles.featureInfo}>
-                  <Text style={styles.featureTitle}>icon Cashback Optimization</Text>
+                  <Text style={styles.featureTitle}>💳 Cashback Optimization</Text>
                   <Text style={styles.featureDescription}>
                     AI suggests the best credit card for each purchase
                   </Text>
@@ -166,7 +166,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
                   trackColor={{ false: palette.border, true: palette.primary }}
                 />
                 <View style={styles.featureInfo}>
-                  <Text style={styles.featureTitle}>Smart Budgeting</Text>
+                  <Text style={styles.featureTitle}>📊 Smart Budgeting</Text>
                   <Text style={styles.featureDescription}>
                     Automatic budget recommendations based on your habits
                   </Text>
@@ -179,7 +179,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
       case 2:
         return (
           <View style={styles.stepContent}>
-            <Text style={styles.stepIcon}>Location</Text>
+            <Text style={styles.stepIcon}>📍</Text>
             <Text style={styles.stepTitle}>Location Features</Text>
             <Text style={styles.stepDescription}>Get helpful prompts when you're shopping</Text>
 
@@ -209,7 +209,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
 
             <View style={styles.privacyNote}>
               <Text style={styles.privacyText}>
-                Your location data stays private and is never sold
+                🔒 Your location data stays private and is never sold
               </Text>
             </View>
           </View>
@@ -218,7 +218,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
       case 3:
         return (
           <View style={styles.stepContent}>
-            <Text style={styles.stepIcon}>Tip</Text>
+            <Text style={styles.stepIcon}>💡</Text>
             <Text style={styles.stepTitle}>Learning Experience</Text>
             <Text style={styles.stepDescription}>How would you like to discover features?</Text>
 
@@ -254,7 +254,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
 
             <View style={styles.infoBox}>
               <Text style={styles.infoText}>
-                You can always change these settings later in Preferences
+                💡 You can always change these settings later in Preferences
               </Text>
             </View>
           </View>
@@ -263,7 +263,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
       case 4:
         return (
           <View style={styles.stepContent}>
-            <Text style={styles.stepIcon}>Family</Text>
+            <Text style={styles.stepIcon}>👨‍👩‍👧‍👦</Text>
             <Text style={styles.stepTitle}>Family Setup</Text>
             <Text style={styles.stepDescription}>How many people are in your household?</Text>
 
@@ -347,7 +347,7 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
       <FeatureTip
         visible={showMLExplanation}
         title="Machine Learning Explained"
-        icon="brain"
+        icon="🧠"
         message={`Our AI analyzes your spending patterns to help you:
 
 • Identify where you spend the most
