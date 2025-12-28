@@ -1,0 +1,39 @@
+{
+  "files.exclude": {
+    "**/platforms/android": true,
+    "**/.gradle": true,
+    "**/android/**": false
+  },
+  "search.exclude": {
+    "**/platforms/android": true,
+    "**/.gradle": true,
+    "**/node_modules": true,
+    "**/ios/Pods": true,
+    "**/ios/build": true,
+    "**/ios/DerivedData": true
+  },
+  "files.watcherExclude": {
+    "**/platforms/android/**": true,
+    "**/.gradle/**": true,
+    "**/node_modules/**": true,
+    "**/ios/Pods/**": true,
+    "**/ios/build/**": true
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
+}

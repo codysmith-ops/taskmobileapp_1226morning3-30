@@ -66,6 +66,47 @@
         "reveal": "always",
         "panel": "new"
       }
+    },
+    {
+      "label": "Compliance: Audit BEFORE (Baseline)",
+      "type": "shell",
+      "command": "bash scripts/audit_before.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "runOptions": {
+        "runOn": "never"
+      }
+    },
+    {
+      "label": "Compliance: Audit AFTER (Post-Change)",
+      "type": "shell",
+      "command": "bash scripts/audit_after.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "runOptions": {
+        "runOn": "never"
+      }
+    },
+    {
+      "label": "Compliance: Full Audit Cycle (BEFORE → Code → AFTER)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Compliance: Audit BEFORE (Baseline)",
+        "Compliance: Audit AFTER (Post-Change)"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
     }
   ]
 }
