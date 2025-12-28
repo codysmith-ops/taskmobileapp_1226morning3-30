@@ -19,7 +19,7 @@
         "kind": "build",
         "isDefault": true
       },
-      "problemMatcher": ["$gcc"],
+      "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
@@ -30,7 +30,7 @@
       "type": "shell",
       "command": "./scripts/preflight.sh && cd ios && xcodebuild build -workspace MobileTodoList.xcworkspace -scheme MobileTodoList -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5'",
       "group": "build",
-      "problemMatcher": ["$gcc"],
+      "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
@@ -41,7 +41,7 @@
       "type": "shell",
       "command": "./scripts/preflight.sh && cd ios && xcodebuild test -workspace MobileTodoList.xcworkspace -scheme MobileTodoList -configuration Debug -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5'",
       "group": "test",
-      "problemMatcher": ["$gcc"],
+      "problemMatcher": [],
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
@@ -76,9 +76,6 @@
         "reveal": "always",
         "panel": "dedicated",
         "showReuseMessage": false
-      },
-      "runOptions": {
-        "runOn": "never"
       }
     },
     {
@@ -93,10 +90,7 @@
       },
       "runOptions": {
         "runOn": "never"
-      }
-    },
-    {
-      "label": "Compliance: Full Audit Cycle (BEFORE → Code → AFTER)",
+      }label": "Compliance: Full Audit Cycle (BEFORE → Code → AFTER)",
       "dependsOrder": "sequence",
       "dependsOn": [
         "Compliance: Audit BEFORE (Baseline)",
