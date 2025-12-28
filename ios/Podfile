@@ -35,6 +35,25 @@ target 'MobileTodoList' do
       :mac_catalyst_enabled => false
     )
     
+    # Fix rsync sandbox errors when embedding Hermes framework
+    installer.target_installation_results.pod_target_installation_results.each do |pod_name, target_installation_result|
+      target_installation_result.native_target.build_configurations.each do |config|
+        xcconfig_path = config.base_configuration_reference.real_path
+        xcconfig = File.read(xcconfig_path)
+        
+        # Disable sandbox for framework embedding to fix rsync permission errors
+        new_xcconfig = xcconfig.sub(
+          'OTHER_CODE_SIGN_FLAGS = --generate-entitlement-der',
+          'OTHER_CODE_SIGN_FLAGS = --generate-entitlement-der
+ENABLE_USER_SCRIPT_SANDBOXING = NO'
+        )
+        
+        if new_xcconfig != xcconfig
+          File.write(xcconfig_path, new_xcconfig)
+        end
+      end
+    end
+    
     # Fix gRPC-Core basic_seq.h template error
     basic_seq_path = File.join(installer.sandbox.root, 'gRPC-Core/src/core/lib/promise/detail/basic_seq.h')
     if File.exist?(basic_seq_path)

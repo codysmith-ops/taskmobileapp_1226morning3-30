@@ -127,4 +127,43 @@
    <FileRef
       location = "group:xcode_auditor 2.py">
    </FileRef>
+   <FileRef
+      location = "group:fix_duplicate_lc++.py">
+   </FileRef>
+   <FileRef
+      location = "group:fix_duplicate_lc++.sh">
+   </FileRef>
+   <FileRef
+      location = "group:FIX_DUPLICATE_LC++_README.md">
+   </FileRef>
+   <FileRef
+      location = "group:run_lc++_fix.sh">
+   </FileRef>
+   <FileRef
+      location = "group:SOLUTION_SUMMARY.md">
+   </FileRef>
+   <FileRef
+      location = "group:QUICK_REFERENCE.txt">
+   </FileRef>
+   <FileRef
+      location = "group:FIX_BUILD_ERRORS.md">
+   </FileRef>
+   <FileRef
+      location = "group:fix_all_build_issues.sh">
+   </FileRef>
+   <FileRef
+      location = "group:Podfile.recommended">
+   </FileRef>
+   <FileRef
+      location = "group:QUICK_FIX.md">
+   </FileRef>
+   <FileRef
+      location = "group:check_environment.sh">
+   </FileRef>
+   <FileRef
+      location = "group:README 2.md">
+   </FileRef>
+   <FileRef
+      location = "group:VISUAL_GUIDE.md">
+   </FileRef>
 </Workspace>

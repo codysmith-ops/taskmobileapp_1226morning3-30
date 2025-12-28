@@ -1,753 +1,416 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
-  FlatList,
-  Image,
-  KeyboardAvoidingView,
-  Linking,
-  Platform,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
-import Geolocation from '@react-native-community/geolocation';
-import { getDistance } from 'geolib';
 import { launchCamera } from 'react-native-image-picker';
-import { useTodoStore, NavPreference, Task } from './src/store';
-import { palette, radius, shadow, spacing } from './src/theme';
-import { useVoiceInput } from './src/hooks/useVoiceInput';
-import { searchStores, StoreResult } from './src/services/storeSearch';
-
-const SPEED_MPS = 9; // roughly 32 km/h city driving
+import { useTodoStore, Task } from './src/store';
+import { palette, radius, shadow, spacing, typography } from './src/theme';
+import { SetupWizard, UserSetupData } from './src/components/SetupWizard';
+import { NavigationMenu, NavigationPage } from './src/components/NavigationMenu';
+import { AccountPage } from './src/pages/AccountPage';
+import { PreferencesPage } from './src/pages/PreferencesPage';
+import { IntegrationsPage } from './src/pages/IntegrationsPage';
+import {
+  getTaskIcon,
+  ScannerIcon,
+  CameraIcon,
+  CalendarIcon,
+  AssignIcon,
+} from './src/components/TaskTypeIcons';
 
 const App = (): React.JSX.Element => {
-  const { tasks, addTask, toggleComplete, removeTask, setNavPreference, navPreference } =
-    useTodoStore();
+  const { tasks, addTask, toggleComplete, removeTask } = useTodoStore();
 
+  // Setup wizard state
+  const [setupComplete, setSetupComplete] = useState(false);
+  const [userName, setUserName] = useState('User');
+
+  // Navigation state
+  const [currentPage, setCurrentPage] = useState<NavigationPage>('home');
+
+  // Task input state
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
-  const [locationLabel, setLocationLabel] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
+  const [quantity, setQuantity] = useState('1');
+  const [dueDate, setDueDate] = useState('');
+  const [assignedTo, setAssignedTo] = useState('');
   const [imageUri, setImageUri] = useState<string | undefined>();
-  const [productBrand, setProductBrand] = useState('');
-  const [productDetails, setProductDetails] = useState('');
-  const [routePlan, setRoutePlan] = useState<Task[]>([]);
-  const [routeMessage, setRouteMessage] = useState<string | null>(null);
-  const [currentPosition, setCurrentPosition] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
-  const [locationStatus, setLocationStatus] = useState<string>('Detecting location...');
-  const [storeResults, setStoreResults] = useState<StoreResult[]>([]);
-  const [isSearchingStores, setIsSearchingStores] = useState(false);
-  const alertedRef = useRef<Record<string, number>>({});
+  const [skuCode, setSkuCode] = useState('');
 
-  const { isListening, transcript, error: voiceError, start, stop, reset } = useVoiceInput();
+  // Activity log state
+  const [activityLog, setActivityLog] = useState<
+    Array<{ id: string; action: string; timestamp: number; taskTitle: string }>
+  >([]);
 
-  useEffect(() => {
-    if (transcript) {
-      setTitle(transcript);
-    }
-  }, [transcript]);
+  const handleSetupComplete = (userData: UserSetupData) => {
+    setUserName(userData.name);
+    setSetupComplete(true);
+  };
 
-  useEffect(() => {
-    if (Platform.OS === 'ios') {
-      Geolocation.requestAuthorization?.();
-    }
-
-    // Get initial position immediately
-    Geolocation.getCurrentPosition(
-      position => {
-        const coords = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
-        setCurrentPosition(coords);
-        setLocationStatus(`${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`);
-      },
-      error => {
-        setLocationStatus(`Location unavailable: ${error.message}`);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
-
-    // Continue watching for updates
-    const watchId = Geolocation.watchPosition(
-      position => {
-        const coords = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
-        setCurrentPosition(coords);
-        setLocationStatus(`${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`);
-      },
-      error => {
-        setLocationStatus(`Location error: ${error.message}`);
-      },
-      { enableHighAccuracy: true, distanceFilter: 50, timeout: 10000 }
-    );
-
-    return () => {
-      if (watchId != null) {
-        Geolocation.clearWatch?.(watchId);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!currentPosition) {
-      return;
-    }
-    const now = Date.now();
-    tasks.forEach(task => {
-      if (!task.latitude || !task.longitude || task.completed) {
-        return;
-      }
-      const meters = getDistance(
-        {
-          latitude: currentPosition.latitude,
-          longitude: currentPosition.longitude,
-        },
-        { latitude: task.latitude, longitude: task.longitude }
-      );
-      const etaMinutes = Math.max(1, Math.round(meters / SPEED_MPS / 60));
-      if (etaMinutes <= 10 && etaMinutes >= 5) {
-        const last = alertedRef.current[task.id];
-        if (!last || now - last > 10 * 60 * 1000) {
-          alertedRef.current[task.id] = now;
-          Alert.alert('Nearby reminder', `${task.title} is about ${etaMinutes} minutes away.`, [
-            { text: 'Ignore', style: 'cancel' },
-            { text: 'Confirm', onPress: () => openNavigation(task, navPreference) },
-          ]);
-        }
-      }
-    });
-  }, [tasks, currentPosition, navPreference]);
-
-  const pendingCount = useMemo(() => tasks.filter(task => !task.completed).length, [tasks]);
-
-  const handleAdd = useCallback(() => {
+  const handleAdd = () => {
     if (!title.trim()) {
+      Alert.alert('Required', 'Please enter what you need');
       return;
     }
-    const latNum = latitude ? Number(latitude) : undefined;
-    const lngNum = longitude ? Number(longitude) : undefined;
 
     addTask({
       title: title.trim(),
       note: note.trim() || undefined,
-      locationLabel: locationLabel.trim() || undefined,
-      latitude: Number.isFinite(latNum) ? latNum : undefined,
-      longitude: Number.isFinite(lngNum) ? lngNum : undefined,
+      quantity: parseInt(quantity) || 1,
+      dueDate: dueDate ? new Date(dueDate).getTime() : undefined,
       imageUri,
-      productBrand: productBrand.trim() || undefined,
-      productDetails: productDetails.trim() || undefined,
+      productBrand: skuCode || undefined,
     });
 
+    // Add to activity log
+    setActivityLog(prev => [
+      {
+        id: Date.now().toString(),
+        action: 'added',
+        timestamp: Date.now(),
+        taskTitle: title.trim(),
+      },
+      ...prev.slice(0, 9), // Keep last 10 activities
+    ]);
+
+    // Reset form
     setTitle('');
     setNote('');
-    setLocationLabel('');
-    setLatitude('');
-    setLongitude('');
+    setQuantity('1');
+    setDueDate('');
+    setAssignedTo('');
     setImageUri(undefined);
-    setProductBrand('');
-    setProductDetails('');
-    reset();
-  }, [
-    title,
-    note,
-    latitude,
-    longitude,
-    locationLabel,
-    imageUri,
-    productBrand,
-    productDetails,
-    addTask,
-    reset,
-  ]);
+    setSkuCode('');
 
-  const handleVoiceToggle = useCallback(() => {
-    if (isListening) {
-      stop();
-    } else {
-      start();
-    }
-  }, [isListening, start, stop]);
+    Alert.alert('Success', 'Task added successfully');
+  };
 
-  const useCurrentLocation = useCallback(() => {
-    if (currentPosition) {
-      setLatitude(currentPosition.latitude.toString());
-      setLongitude(currentPosition.longitude.toString());
-      Alert.alert('Location added', 'Current position set for this task');
-    } else {
-      Alert.alert('Location unavailable', 'Waiting for GPS signal...');
-    }
-  }, [currentPosition]);
+  const handleToggle = (task: Task) => {
+    toggleComplete(task.id);
+    setActivityLog(prev => [
+      {
+        id: Date.now().toString(),
+        action: task.completed ? 'uncompleted' : 'completed',
+        timestamp: Date.now(),
+        taskTitle: task.title,
+      },
+      ...prev.slice(0, 9),
+    ]);
+  };
 
-  const takePhoto = useCallback(async () => {
-    try {
-      const result = await launchCamera({
+  const handleDelete = (task: Task) => {
+    Alert.alert('Delete Task', `Delete "${task.title}"?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          removeTask(task.id);
+          setActivityLog(prev => [
+            {
+              id: Date.now().toString(),
+              action: 'deleted',
+              timestamp: Date.now(),
+              taskTitle: task.title,
+            },
+            ...prev.slice(0, 9),
+          ]);
+        },
+      },
+    ]);
+  };
+
+  const handleCamera = () => {
+    launchCamera(
+      {
         mediaType: 'photo',
+        cameraType: 'back',
         saveToPhotos: false,
-        quality: 0.8,
-      });
-
-      if (result.didCancel || !result.assets?.[0]?.uri) {
-        return;
-      }
-
-      const photoUri = result.assets[0].uri;
-      setImageUri(photoUri);
-
-      // Note: OCR functionality removed (was using react-native-mlkit-ocr)
-      // Image is saved but text extraction is disabled
-      // Can manually enter product details
-    } catch (error) {
-      console.error('Camera error:', error);
-      Alert.alert('Error', 'Failed to process image');
-    }
-  }, []);
-
-  const handleStoreSearch = useCallback(
-    async (brand?: string, details?: string) => {
-      const searchTerm = title || brand || details;
-      if (!searchTerm?.trim()) {
-        Alert.alert('Search required', 'Please enter a product name or take a photo');
-        return;
-      }
-
-      setIsSearchingStores(true);
-      try {
-        const results = await searchStores({
-          productBrand: productBrand || brand,
-          productDetails: productDetails || details,
-          searchTerm: searchTerm.trim(),
-          userLocation: currentPosition || undefined,
-        });
-        setStoreResults(results);
-
-        if (results.length === 0) {
-          Alert.alert('No results', 'No stores found for this product');
+      },
+      response => {
+        if (response.didCancel) {
+          return;
         }
-      } catch (error) {
-        console.error('Store search error:', error);
-        Alert.alert('Search failed', 'Could not search stores at this time');
-      } finally {
-        setIsSearchingStores(false);
+        if (response.errorCode) {
+          Alert.alert('Error', response.errorMessage || 'Camera error');
+          return;
+        }
+        if (response.assets && response.assets[0]) {
+          setImageUri(response.assets[0].uri);
+        }
       }
-    },
-    [title, productBrand, productDetails, currentPosition]
-  );
-
-  const clearImage = useCallback(() => {
-    setImageUri(undefined);
-    setProductBrand('');
-    setProductDetails('');
-    setStoreResults([]);
-  }, []);
-
-  const optimizeRoute = useCallback(() => {
-    if (!currentPosition) {
-      setRoutePlan([]);
-      setRouteMessage('Need current location to plan a route.');
-      return;
-    }
-
-    const remaining = tasks.filter(
-      task =>
-        !task.completed && typeof task.latitude === 'number' && typeof task.longitude === 'number'
     );
+  };
 
-    if (!remaining.length) {
-      setRoutePlan([]);
-      setRouteMessage('Add lat/lng on tasks to plan a route.');
-      return;
-    }
+  const handleScanner = () => {
+    // Placeholder for barcode scanner
+    Alert.alert('Scanner', 'Barcode scanner will open here', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Simulate Scan',
+        onPress: () => {
+          const mockSku = `SKU-${Math.floor(Math.random() * 100000)}`;
+          setSkuCode(mockSku);
+          setTitle(`Product ${mockSku}`);
+        },
+      },
+    ]);
+  };
 
-    const ordered: Task[] = [];
-    let cursor = {
-      latitude: currentPosition.latitude,
-      longitude: currentPosition.longitude,
-    };
+  const pendingCount = tasks.filter(t => !t.completed).length;
+  const completedCount = tasks.filter(t => t.completed).length;
 
-    while (remaining.length) {
-      let bestIndex = 0;
-      let bestDistance = Number.MAX_SAFE_INTEGER;
+  // Show setup wizard if not complete
+  if (!setupComplete) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <StatusBar barStyle="dark-content" backgroundColor={palette.background} />
+        <SetupWizard onComplete={handleSetupComplete} />
+      </SafeAreaView>
+    );
+  }
 
-      remaining.forEach((task, idx) => {
-        const distance = getDistance(cursor, {
-          latitude: task.latitude!,
-          longitude: task.longitude!,
-        });
-        if (distance < bestDistance) {
-          bestDistance = distance;
-          bestIndex = idx;
-        }
-      });
+  // Show different pages based on navigation
+  if (currentPage !== 'home') {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <StatusBar barStyle="dark-content" backgroundColor={palette.background} />
+        <NavigationMenu currentPage={currentPage} onNavigate={setCurrentPage} userName={userName} />
+        {currentPage === 'account' && <AccountPage />}
+        {currentPage === 'preferences' && <PreferencesPage />}
+        {currentPage === 'integrations' && <IntegrationsPage />}
+        {currentPage === 'help' && (
+          <View style={styles.placeholderPage}>
+            <Text style={styles.placeholderText}>❓</Text>
+            <Text style={styles.placeholderTitle}>Help & Support</Text>
+            <Text style={styles.placeholderSubtitle}>Documentation and support coming soon</Text>
+          </View>
+        )}
+      </SafeAreaView>
+    );
+  }
 
-      const [next] = remaining.splice(bestIndex, 1);
-      ordered.push(next);
-      cursor = { latitude: next.latitude!, longitude: next.longitude! };
-    }
-
-    setRoutePlan(ordered);
-    setRouteMessage(`Optimized ${ordered.length} stop${ordered.length === 1 ? '' : 's'}.`);
-  }, [currentPosition, tasks]);
-
-  const renderTask = useCallback(
-    ({ item }: { item: Task }) => (
-      <TaskCard
-        task={item}
-        onToggle={() => toggleComplete(item.id)}
-        onDelete={() => removeTask(item.id)}
-        onNavigate={() => openNavigation(item, navPreference)}
-      />
-    ),
-    [navPreference, removeTask, toggleComplete]
-  );
-
+  // Home page
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={palette.primary} />
-      <KeyboardAvoidingView
+      <StatusBar barStyle="dark-content" backgroundColor={palette.background} />
+      <NavigationMenu currentPage={currentPage} onNavigate={setCurrentPage} userName={userName} />
+
+      <ScrollView
         style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
       >
+        {/* Hero Section */}
         <View style={styles.hero}>
-          <Text style={styles.title}>Mobile Todo</Text>
-          <Text style={styles.subtitle}>
-            Voice-first, location-aware reminders in Deadstock Zero indigo.
-          </Text>
-          <Text style={styles.locationStatus}>{locationStatus}</Text>
-          <View style={styles.heroRow}>
-            <Metric label="Pending" value={pendingCount} />
-            <Metric label="Completed" value={tasks.length - pendingCount} />
-            <Metric label="Nearby" value="5-10 min" />
+          <Text style={styles.heroTitle}>Welcome back, {userName}!</Text>
+          <View style={styles.statsRow}>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{pendingCount}</Text>
+              <Text style={styles.statLabel}>Pending</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{completedCount}</Text>
+              <Text style={styles.statLabel}>Done</Text>
+            </View>
           </View>
         </View>
 
+        {/* Add Task Card */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Add item</Text>
-          {imageUri && (
-            <View style={styles.imagePreview}>
-              <Image
-                source={{ uri: imageUri }}
-                style={styles.previewImage}
-                accessible={true}
-                accessibilityLabel="Product photo preview"
-                accessibilityRole="image"
-              />
-              <TouchableOpacity
-                style={styles.removeImage}
-                onPress={() => {
-                  setImageUri(undefined);
-                  setProductBrand('');
-                  setProductDetails('');
-                }}
-                accessibilityRole="button"
-                accessibilityLabel="Remove photo"
-                accessibilityHint="Double tap to remove the captured photo"
-              >
-                <Text style={styles.removeImageText}>X</Text>
+          <Text style={styles.cardTitle}>What do you need?</Text>
+
+          {/* Scanner and Camera Buttons */}
+          <View style={styles.quickActions}>
+            <TouchableOpacity style={styles.quickAction} onPress={handleScanner}>
+              <ScannerIcon size={24} color={palette.primary} />
+              <Text style={styles.quickActionText}>Scan SKU</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.quickAction} onPress={handleCamera}>
+              <CameraIcon size={24} color={palette.primary} />
+              <Text style={styles.quickActionText}>Take Photo</Text>
+            </TouchableOpacity>
+          </View>
+
+          {skuCode ? (
+            <View style={styles.skuBadge}>
+              <Text style={styles.skuBadgeText}>SKU: {skuCode}</Text>
+              <TouchableOpacity onPress={() => setSkuCode('')}>
+                <Text style={styles.skuClear}>✕</Text>
               </TouchableOpacity>
             </View>
-          )}
+          ) : null}
+
+          {imageUri ? (
+            <View style={styles.imagePreview}>
+              <Text style={styles.imagePreviewText}>📷 Photo attached</Text>
+              <TouchableOpacity onPress={() => setImageUri(undefined)}>
+                <Text style={styles.imageRemove}>✕</Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
+
           <TextInput
-            placeholder="What do you need?"
-            placeholderTextColor={palette.muted}
+            style={styles.input}
+            placeholder="Item name or description"
             value={title}
             onChangeText={setTitle}
-            style={styles.input}
-            accessibilityLabel="Task title"
-            accessibilityHint="Enter what you need to buy or do"
+            placeholderTextColor={palette.textTertiary}
           />
+
           <TextInput
+            style={[styles.input, styles.textArea]}
             placeholder="Notes (optional)"
-            placeholderTextColor={palette.muted}
             value={note}
             onChangeText={setNote}
-            style={styles.input}
-            accessibilityLabel="Task notes"
-            accessibilityHint="Add optional notes or details"
-          />
-          {productBrand ? (
-            <TextInput
-              placeholder="Product brand"
-              placeholderTextColor={palette.muted}
-              value={productBrand}
-              onChangeText={setProductBrand}
-              style={styles.input}
-              accessibilityLabel="Product brand name"
-              accessibilityHint="Detected from photo, you can edit this"
-            />
-          ) : null}
-          {productDetails ? (
-            <TextInput
-              placeholder="Product details"
-              placeholderTextColor={palette.muted}
-              value={productDetails}
-              onChangeText={setProductDetails}
-              style={styles.input}
-              multiline
-              accessibilityLabel="Product details"
-              accessibilityHint="Additional product information detected from photo"
-            />
-          ) : null}
-          <TextInput
-            placeholder="Location label (store, service)"
-            placeholderTextColor={palette.muted}
-            value={locationLabel}
-            onChangeText={setLocationLabel}
-            style={styles.input}
-            accessibilityLabel="Location label"
-            accessibilityHint="Name of store or service location"
-          />
-          <View style={styles.row}>
-            <TextInput
-              placeholder="Lat"
-              placeholderTextColor={palette.muted}
-              value={latitude}
-              onChangeText={setLatitude}
-              style={[styles.input, styles.halfInput]}
-              keyboardType="numeric"
-              accessibilityLabel="Latitude coordinate"
-              accessibilityHint="GPS latitude for this location"
-            />
-            <TextInput
-              placeholder="Lng"
-              placeholderTextColor={palette.muted}
-              value={longitude}
-              onChangeText={setLongitude}
-              style={[styles.input, styles.halfInput]}
-              keyboardType="numeric"
-              accessibilityLabel="Longitude coordinate"
-              accessibilityHint="GPS longitude for this location"
-            />
-          </View>
-          <GhostButton label="Use current location" onPress={useCurrentLocation} />
-          <GhostButton label="Take photo" onPress={takePhoto} />
-          <GhostButton
-            label={isSearchingStores ? 'Searching stores...' : 'Search stores'}
-            onPress={() => handleStoreSearch()}
-            disabled={isSearchingStores}
+            multiline
+            numberOfLines={2}
+            placeholderTextColor={palette.textTertiary}
           />
 
-          <View style={styles.row}>
-            <PrimaryButton label="Add" onPress={handleAdd} />
-            <GhostButton
-              label={isListening ? 'Stop voice' : 'Voice add'}
-              onPress={handleVoiceToggle}
+          <View style={styles.formRow}>
+            <View style={styles.formHalf}>
+              <Text style={styles.fieldLabel}>Quantity</Text>
+              <TextInput
+                style={styles.inputSmall}
+                placeholder="1"
+                value={quantity}
+                onChangeText={setQuantity}
+                keyboardType="number-pad"
+                placeholderTextColor={palette.textTertiary}
+              />
+            </View>
+            <View style={styles.formHalf}>
+              <Text style={styles.fieldLabel}>Due Date</Text>
+              <TextInput
+                style={styles.inputSmall}
+                placeholder="YYYY-MM-DD"
+                value={dueDate}
+                onChangeText={setDueDate}
+                placeholderTextColor={palette.textTertiary}
+              />
+            </View>
+          </View>
+
+          <View style={styles.formField}>
+            <Text style={styles.fieldLabel}>Assign To</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Team member name"
+              value={assignedTo}
+              onChangeText={setAssignedTo}
+              placeholderTextColor={palette.textTertiary}
             />
           </View>
-          {voiceError ? <Text style={styles.errorText}>{voiceError}</Text> : null}
+
+          <TouchableOpacity style={styles.primaryButton} onPress={handleAdd}>
+            <Text style={styles.primaryButtonText}>+ Add Task</Text>
+          </TouchableOpacity>
         </View>
 
-        {storeResults.length > 0 && (
+        {/* Activity Log */}
+        {activityLog.length > 0 && (
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Store Availability</Text>
-            <Text style={styles.helperText}>
-              {storeResults.length} store{storeResults.length === 1 ? '' : 's'} found
-              {currentPosition ? ' - sorted by distance' : ''}
-            </Text>
-            <View style={styles.storeList}>
-              {storeResults.map((result, idx) => (
-                <TouchableOpacity
-                  key={idx}
-                  style={styles.storeCard}
-                  onPress={() => result.url && Linking.openURL(result.url)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${result.store}, ${result.productName}, $${
-                    result.price?.toFixed(2) || 'price unknown'
-                  }, ${result.availability}${
-                    result.storeLocation?.distance
-                      ? ', ' +
-                        (result.storeLocation.distance < 1
-                          ? (result.storeLocation.distance * 1000).toFixed(0) + ' meters away'
-                          : result.storeLocation.distance.toFixed(1) + ' kilometers away')
-                      : ''
-                  }`}
-                  accessibilityHint="Double tap to view store details and get directions"
-                >
-                  <View style={styles.storeHeader}>
-                    <View style={styles.storeNameRow}>
-                      <Text style={styles.storeLogo}>{result.storeLogo}</Text>
-                      <Text style={styles.storeName}>{result.store}</Text>
-                    </View>
-                    <View
-                      style={[
-                        styles.availabilityBadge,
-                        result.inStock ? styles.inStockBadge : styles.outOfStockBadge,
-                      ]}
-                    >
-                      <Text style={styles.availabilityText}>{result.availability}</Text>
-                    </View>
-                  </View>
-                  <Text style={styles.productName} numberOfLines={1}>
-                    {result.productName}
+            <Text style={styles.cardTitle}>Recent Activity</Text>
+            <View style={styles.activityList}>
+              {activityLog.slice(0, 5).map(activity => (
+                <View key={activity.id} style={styles.activityItem}>
+                  <Text style={styles.activityIcon}>
+                    {activity.action === 'added' && '➕'}
+                    {activity.action === 'completed' && '✅'}
+                    {activity.action === 'uncompleted' && '↩️'}
+                    {activity.action === 'deleted' && '🗑️'}
                   </Text>
-                  {result.price && <Text style={styles.price}>${result.price.toFixed(2)}</Text>}
-                  {result.storeLocation && (
-                    <View style={styles.storeLocationInfo}>
-                      <Text style={styles.storeLocationName} numberOfLines={1}>
-                        {result.storeLocation.name}
-                      </Text>
-                      <Text style={styles.storeAddress} numberOfLines={1}>
-                        {result.storeLocation.address}
-                      </Text>
-                      {result.storeLocation.distance !== undefined && (
-                        <Text style={styles.distance}>
-                          {result.storeLocation.distance < 1
-                            ? `${(result.storeLocation.distance * 1000).toFixed(0)}m away`
-                            : `${result.storeLocation.distance.toFixed(1)}km away`}
-                        </Text>
-                      )}
-                    </View>
-                  )}
-                </TouchableOpacity>
+                  <View style={styles.activityInfo}>
+                    <Text style={styles.activityText}>
+                      <Text style={styles.activityAction}>{activity.action}</Text>{' '}
+                      {activity.taskTitle}
+                    </Text>
+                    <Text style={styles.activityTime}>
+                      {formatRelativeTime(activity.timestamp)}
+                    </Text>
+                  </View>
+                </View>
               ))}
             </View>
           </View>
         )}
 
+        {/* Tasks List */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Navigation preference</Text>
-          <View style={styles.navRow}>
-            <Chip
-              label="Apple Maps"
-              active={navPreference === 'apple'}
-              onPress={() => setNavPreference('apple')}
-            />
-            <Chip
-              label="Google Maps"
-              active={navPreference === 'google'}
-              onPress={() => setNavPreference('google')}
-            />
-            <Chip
-              label="Waze"
-              active={navPreference === 'waze'}
-              onPress={() => setNavPreference('waze')}
-            />
-          </View>
-        </View>
-
-        <View style={styles.card}>
-          <View style={styles.routeHeader}>
-            <Text style={styles.cardTitle}>Route for today</Text>
-            <GhostButton label="Plan route" onPress={optimizeRoute} />
-          </View>
-          {routeMessage ? <Text style={styles.helperText}>{routeMessage}</Text> : null}
-          {routePlan.length ? (
-            <View style={styles.routeList}>
-              {routePlan.map((task, idx) => (
-                <RouteStep
-                  key={task.id}
-                  index={idx}
-                  task={task}
-                  previous={idx === 0 ? currentPosition : routePlan[idx - 1]}
-                />
-              ))}
+          <Text style={styles.cardTitle}>Tasks ({pendingCount} pending)</Text>
+          {tasks.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyStateText}>No tasks yet</Text>
+              <Text style={styles.emptyStateSubtext}>Add your first task above</Text>
             </View>
-          ) : null}
-        </View>
+          ) : (
+            tasks.map(task => {
+              const TaskIcon = getTaskIcon(task.title);
+              return (
+                <View
+                  key={task.id}
+                  style={[styles.taskCard, task.completed && styles.taskCardCompleted]}
+                >
+                  <TouchableOpacity style={styles.taskCheckbox} onPress={() => handleToggle(task)}>
+                    <View style={[styles.checkbox, task.completed && styles.checkboxChecked]}>
+                      {task.completed && <Text style={styles.checkmark}>✓</Text>}
+                    </View>
+                  </TouchableOpacity>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Your list</Text>
-          <FlatList
-            data={tasks}
-            keyExtractor={item => item.id}
-            renderItem={renderTask}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-            ListEmptyComponent={
-              <Text style={styles.emptyText}>Add text or use voice to capture a todo.</Text>
-            }
-            scrollEnabled={false}
-          />
+                  <View style={styles.taskIcon}>
+                    <TaskIcon size={24} color={palette.primary} />
+                  </View>
+
+                  <View style={styles.taskContent}>
+                    <Text style={[styles.taskTitle, task.completed && styles.taskTitleCompleted]}>
+                      {task.title}
+                    </Text>
+                    {task.note && <Text style={styles.taskNote}>{task.note}</Text>}
+                    <View style={styles.taskMeta}>
+                      {task.quantity && task.quantity > 1 && (
+                        <Text style={styles.taskMetaItem}>Qty: {task.quantity}</Text>
+                      )}
+                      {task.dueDate && (
+                        <Text style={styles.taskMetaItem}>
+                          Due: {new Date(task.dueDate).toLocaleDateString()}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+
+                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(task)}>
+                    <Text style={styles.deleteButtonText}>×</Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })
+          )}
         </View>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
-const Metric = ({ label, value }: { label: string; value: string | number }) => (
-  <View style={styles.metric}>
-    <Text style={styles.metricValue}>{value}</Text>
-    <Text style={styles.metricLabel}>{label}</Text>
-  </View>
-);
-
-const PrimaryButton = ({ label, onPress }: { label: string; onPress: () => void }) => (
-  <TouchableOpacity
-    style={styles.primaryButton}
-    onPress={onPress}
-    accessibilityRole="button"
-    accessibilityLabel={label}
-    accessibilityHint="Double tap to activate"
-  >
-    <Text style={styles.primaryButtonText}>{label}</Text>
-  </TouchableOpacity>
-);
-
-const GhostButton = ({
-  label,
-  onPress,
-  disabled,
-}: {
-  label: string;
-  onPress: () => void;
-  disabled?: boolean;
-}) => (
-  <TouchableOpacity
-    style={[styles.ghostButton, disabled && styles.ghostButtonDisabled]}
-    onPress={onPress}
-    disabled={disabled}
-    accessibilityRole="button"
-    accessibilityLabel={label}
-    accessibilityState={{ disabled: disabled || false }}
-    accessibilityHint={disabled ? 'Button is disabled' : 'Double tap to activate'}
-  >
-    <Text style={[styles.ghostButtonText, disabled && styles.ghostButtonTextDisabled]}>
-      {label}
-    </Text>
-  </TouchableOpacity>
-);
-
-const Chip = ({
-  label,
-  active,
-  onPress,
-}: {
-  label: string;
-  active: boolean;
-  onPress: () => void;
-}) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[styles.chip, active && styles.chipActive]}
-    accessibilityRole="button"
-    accessibilityLabel={label}
-    accessibilityState={{ selected: active }}
-    accessibilityHint={active ? 'Double tap to deselect' : 'Double tap to select'}
-  >
-    <Text style={[styles.chipText, active && styles.chipTextActive]}>{label}</Text>
-  </TouchableOpacity>
-);
-
-const TaskCard = ({
-  task,
-  onToggle,
-  onDelete,
-  onNavigate,
-}: {
-  task: Task;
-  onToggle: () => void;
-  onDelete: () => void;
-  onNavigate: () => void;
-}) => {
-  return (
-    <View style={styles.taskCard}>
-      <View style={styles.taskHeader}>
-        <Text style={[styles.taskTitle, task.completed && styles.completed]}>{task.title}</Text>
-        <View style={styles.badgeRow}>
-          {task.locationLabel ? <Text style={styles.badge}>{task.locationLabel}</Text> : null}
-          {task.latitude && task.longitude ? <Text style={styles.badge}>GPS saved</Text> : null}
-        </View>
-      </View>
-      {task.note ? <Text style={styles.taskNote}>{task.note}</Text> : null}
-      <View style={styles.taskActions}>
-        <Chip
-          label={task.completed ? 'Completed' : 'Mark done'}
-          active={task.completed}
-          onPress={onToggle}
-        />
-        <GhostButton label="Navigate" onPress={onNavigate} />
-        <TouchableOpacity
-          onPress={onDelete}
-          style={styles.deleteButton}
-          accessibilityRole="button"
-          accessibilityLabel={`Delete ${task.title}`}
-          accessibilityHint="Double tap to remove this task permanently"
-        >
-          <Text style={styles.deleteText}>Delete</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-
-const formatDistance = (meters: number) => {
-  if (!Number.isFinite(meters)) {
-    return '';
-  }
-  const km = meters / 1000;
-  if (km >= 10) {
-    return `${Math.round(km)} km`;
-  }
-  return `${km.toFixed(1)} km`;
-};
-
-const RouteStep = ({
-  index,
-  task,
-  previous,
-}: {
-  index: number;
-  task: Task;
-  previous: { latitude: number; longitude: number } | Task | null | undefined;
-}) => {
-  const hasPrev = previous && 'latitude' in previous && 'longitude' in previous;
-  const legMeters = hasPrev
-    ? getDistance(
-        { latitude: (previous as any).latitude, longitude: (previous as any).longitude },
-        { latitude: task.latitude!, longitude: task.longitude! }
-      )
-    : undefined;
-
-  return (
-    <View style={styles.routeStep}>
-      <View style={styles.routeBadge}>
-        <Text style={styles.routeBadgeText}>{index + 1}</Text>
-      </View>
-      <View style={styles.routeContent}>
-        <Text style={styles.routeTitle}>{task.title}</Text>
-        <Text style={styles.routeMeta}>
-          {task.locationLabel ?? 'No label'}
-          {legMeters !== undefined ? ` • ${formatDistance(legMeters)} from previous` : ''}
-        </Text>
-      </View>
-    </View>
-  );
-};
-
-const openNavigation = (task: Task, preference: NavPreference) => {
-  const hasCoords = task.latitude && task.longitude;
-  const coordsQuery = hasCoords ? `${task.latitude},${task.longitude}` : undefined;
-  const label = encodeURIComponent(task.locationLabel ?? task.title);
-
-  let url = '';
-
-  if (preference === 'google') {
-    url = coordsQuery
-      ? `comgooglemaps://?daddr=${coordsQuery}&directionsmode=driving`
-      : `comgooglemaps://?q=${label}`;
-  } else if (preference === 'waze') {
-    url = coordsQuery ? `waze://?ll=${coordsQuery}&navigate=yes` : `waze://?q=${label}`;
-  } else {
-    url = coordsQuery
-      ? `http://maps.apple.com/?daddr=${coordsQuery}`
-      : `http://maps.apple.com/?q=${label}`;
-  }
-
-  Linking.openURL(url).catch(() => {
-    const fallback = coordsQuery
-      ? `https://www.google.com/maps/dir/?api=1&destination=${coordsQuery}`
-      : `https://www.google.com/maps/search/?api=1&query=${label}`;
-    Linking.openURL(fallback);
-  });
+// Helper function for relative time
+const formatRelativeTime = (timestamp: number): string => {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  if (seconds < 60) return 'just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
 };
 
 const styles = StyleSheet.create({
@@ -758,364 +421,294 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  scrollContent: {
+    paddingBottom: spacing.xl,
+  },
   hero: {
     backgroundColor: palette.primary,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xl,
   },
-  title: {
-    color: '#FFFFFF',
-    fontSize: 26,
-    fontWeight: '700',
-    marginBottom: spacing.sm,
+  heroTitle: {
+    ...typography.h3,
+    color: palette.surface,
+    marginBottom: spacing.lg,
   },
-  subtitle: {
-    color: '#EEF2FF',
-    fontSize: 15,
-    lineHeight: 22,
-  },
-  locationStatus: {
-    color: '#C7D2FE',
-    fontSize: 13,
-    marginTop: spacing.xs,
-    fontWeight: '600',
-  },
-  heroRow: {
+  statsRow: {
     flexDirection: 'row',
-    marginTop: spacing.lg,
-    gap: spacing.sm,
+    gap: spacing.md,
   },
-  metric: {
+  statCard: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: radius.card,
     padding: spacing.md,
-    borderRadius: radius.md,
+    alignItems: 'center',
   },
-  metricValue: {
-    color: '#FFFFFF',
-    fontSize: 20,
-    fontWeight: '700',
+  statValue: {
+    ...typography.h2,
+    color: palette.surface,
+    marginBottom: 4,
   },
-  metricLabel: {
-    color: '#E0E7FF',
-    fontSize: 12,
-    marginTop: 4,
+  statLabel: {
+    ...typography.secondary,
+    color: palette.labelOnDark,
   },
   card: {
     backgroundColor: palette.surface,
-    marginHorizontal: spacing.xl,
+    marginHorizontal: spacing.lg,
     marginTop: spacing.lg,
-    borderRadius: radius.lg,
     padding: spacing.lg,
-    borderColor: palette.border,
-    borderWidth: 1,
-    ...shadow.card,
+    borderRadius: radius.card,
+    ...shadow,
   },
   cardTitle: {
-    fontSize: 18,
-    fontWeight: '700',
+    ...typography.subtitle,
     color: palette.text,
     marginBottom: spacing.md,
   },
-  imagePreview: {
-    position: 'relative',
+  quickActions: {
+    flexDirection: 'row',
+    gap: spacing.md,
     marginBottom: spacing.md,
   },
-  previewImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: radius.md,
-    resizeMode: 'cover',
+  quickAction: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.md,
+    backgroundColor: palette.infoLight,
+    borderRadius: radius.button,
+    borderWidth: 1,
+    borderColor: palette.primary,
   },
-  removeImage: {
-    position: 'absolute',
-    top: spacing.xs,
-    right: spacing.xs,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+  quickActionText: {
+    ...typography.body,
+    color: palette.primary,
+  },
+  skuBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: palette.successLight,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.badge,
+    marginBottom: spacing.md,
+  },
+  skuBadgeText: {
+    ...typography.body,
+    color: palette.success,
+  },
+  skuClear: {
+    ...typography.bodyBold,
+    color: palette.success,
+    fontSize: 20,
+  },
+  imagePreview: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: palette.infoLight,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.badge,
+    marginBottom: spacing.md,
+  },
+  imagePreviewText: {
+    ...typography.body,
+    color: palette.primary,
+  },
+  imageRemove: {
+    ...typography.bodyBold,
+    color: palette.primary,
+    fontSize: 20,
+  },
+  input: {
+    ...typography.body,
+    backgroundColor: palette.background,
+    borderWidth: 1,
+    borderColor: palette.border,
+    borderRadius: radius.button,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    marginBottom: spacing.md,
+    color: palette.text,
+  },
+  textArea: {
+    height: 60,
+    textAlignVertical: 'top',
+  },
+  formRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginBottom: spacing.md,
+  },
+  formHalf: {
+    flex: 1,
+  },
+  formField: {
+    marginBottom: spacing.md,
+  },
+  fieldLabel: {
+    ...typography.secondary,
+    color: palette.textSecondary,
+    marginBottom: spacing.sm,
+  },
+  inputSmall: {
+    ...typography.body,
+    backgroundColor: palette.background,
+    borderWidth: 1,
+    borderColor: palette.border,
+    borderRadius: radius.button,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    color: palette.text,
+  },
+  primaryButton: {
+    backgroundColor: palette.primary,
+    paddingVertical: spacing.md,
+    borderRadius: radius.button,
+    alignItems: 'center',
+    marginTop: spacing.sm,
+  },
+  primaryButtonText: {
+    ...typography.bodyBold,
+    color: palette.surface,
+  },
+  activityList: {
+    gap: spacing.md,
+  },
+  activityItem: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  activityIcon: {
+    fontSize: 20,
+  },
+  activityInfo: {
+    flex: 1,
+  },
+  activityText: {
+    ...typography.body,
+    color: palette.text,
+  },
+  activityAction: {
+    ...typography.bodyBold,
+    color: palette.primary,
+  },
+  activityTime: {
+    ...typography.secondary,
+    color: palette.textSecondary,
+    marginTop: 2,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: spacing.xl,
+  },
+  emptyStateText: {
+    ...typography.subtitle,
+    color: palette.textSecondary,
+    marginBottom: 4,
+  },
+  emptyStateSubtext: {
+    ...typography.secondary,
+    color: palette.textTertiary,
+  },
+  taskCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    paddingVertical: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: palette.border,
+  },
+  taskCardCompleted: {
+    opacity: 0.6,
+  },
+  taskCheckbox: {
+    padding: spacing.xs,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: palette.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  removeImageText: {
-    color: '#FFF',
-    fontSize: 18,
+  checkboxChecked: {
+    backgroundColor: palette.success,
+    borderColor: palette.success,
+  },
+  checkmark: {
+    color: palette.surface,
+    fontSize: 16,
     fontWeight: '700',
   },
-  input: {
-    backgroundColor: '#F8FAFC',
-    borderColor: palette.border,
-    borderWidth: 1,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+  taskIcon: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  taskContent: {
+    flex: 1,
+  },
+  taskTitle: {
+    ...typography.body,
+    color: palette.text,
+    marginBottom: 2,
+  },
+  taskTitleCompleted: {
+    textDecorationLine: 'line-through',
+    color: palette.textSecondary,
+  },
+  taskNote: {
+    ...typography.secondary,
+    color: palette.textSecondary,
+    marginBottom: 4,
+  },
+  taskMeta: {
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  taskMetaItem: {
+    ...typography.secondary,
+    color: palette.textTertiary,
+  },
+  deleteButton: {
+    padding: spacing.sm,
+  },
+  deleteButtonText: {
+    fontSize: 28,
+    color: palette.error,
+    lineHeight: 28,
+  },
+  placeholderPage: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.xl,
+  },
+  placeholderText: {
+    fontSize: 64,
+    marginBottom: spacing.lg,
+  },
+  placeholderTitle: {
+    ...typography.h2,
     color: palette.text,
     marginBottom: spacing.sm,
   },
-  halfInput: {
-    flex: 1,
-    marginRight: spacing.sm,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  primaryButton: {
-    flex: 1,
-    backgroundColor: palette.primary,
-    paddingVertical: spacing.md, // 16pt padding = 32pt + text height ≈ 44pt minimum
-    paddingHorizontal: spacing.md,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    minHeight: 44, // WCAG AA minimum touch target
-  },
-  primaryButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  ghostButton: {
-    flex: 1,
-    paddingVertical: spacing.md, // 16pt padding = 32pt + text height ≈ 44pt minimum
-    paddingHorizontal: spacing.md,
-    borderRadius: radius.md,
-    borderColor: palette.primary,
-    borderWidth: 1,
-    alignItems: 'center',
-    minHeight: 44, // WCAG AA minimum touch target
-  },
-  ghostButtonText: {
-    color: palette.primary,
-    fontWeight: '700',
-  },
-  ghostButtonDisabled: {
-    opacity: 0.5,
-  },
-  ghostButtonTextDisabled: {
-    color: palette.muted,
-  },
-  navRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    flexWrap: 'wrap',
-  },
-  chip: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: radius.lg,
-    borderColor: palette.border,
-    borderWidth: 1,
-    minHeight: 36, // Smaller chips acceptable for non-critical actions
-  },
-  chipActive: {
-    backgroundColor: palette.primary,
-    borderColor: palette.primary,
-  },
-  chipText: {
-    color: palette.text,
-    fontWeight: '600',
-  },
-  chipTextActive: {
-    color: '#FFFFFF',
-  },
-  routeHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  routeList: {
-    marginTop: spacing.sm,
-    gap: spacing.xs,
-  },
-  routeStep: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingVertical: spacing.xs,
-  },
-  routeBadge: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: palette.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  routeBadgeText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  routeContent: {
-    flex: 1,
-  },
-  routeTitle: {
-    color: palette.text,
-    fontWeight: '700',
-  },
-  routeMeta: {
-    color: palette.muted,
-    marginTop: 2,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: palette.border,
-    marginVertical: spacing.sm,
-  },
-  emptyText: {
-    color: palette.muted,
+  placeholderSubtitle: {
+    ...typography.body,
+    color: palette.textSecondary,
     textAlign: 'center',
-    paddingVertical: spacing.sm,
-  },
-  taskCard: {
-    borderRadius: radius.md,
-    borderColor: palette.border,
-    borderWidth: 1,
-    padding: spacing.md,
-  },
-  taskHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  taskTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: palette.text,
-    flex: 1,
-  },
-  badgeRow: {
-    flexDirection: 'row',
-    gap: spacing.xs,
-    marginLeft: spacing.sm,
-  },
-  badge: {
-    backgroundColor: palette.primaryLight,
-    color: '#FFFFFF',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: radius.sm,
-    overflow: 'hidden',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  taskNote: {
-    color: palette.muted,
-    marginTop: spacing.xs,
-    lineHeight: 20,
-  },
-  taskActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    marginTop: spacing.sm,
-    flexWrap: 'wrap',
-  },
-  deleteButton: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.md,
-    borderColor: '#DC2626',
-    borderWidth: 1,
-    minHeight: 36, // Minimum touch target
-  },
-  deleteText: {
-    color: '#DC2626',
-    fontWeight: '700',
-  },
-  completed: {
-    textDecorationLine: 'line-through',
-    color: palette.muted,
-  },
-  errorText: {
-    color: '#DC2626',
-    marginTop: spacing.xs,
-  },
-  helperText: {
-    color: palette.muted,
-    marginTop: spacing.xs,
-  },
-  storeList: {
-    marginTop: spacing.md,
-    gap: spacing.md,
-  },
-  storeCard: {
-    backgroundColor: palette.surface,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    borderWidth: 1,
-    borderColor: palette.border,
-    ...shadow,
-  },
-  storeHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.xs,
-  },
-  storeNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    flex: 1,
-  },
-  storeLogo: {
-    fontSize: 24,
-  },
-  storeName: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: palette.text,
-  },
-  availabilityBadge: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-    borderRadius: radius.sm,
-  },
-  inStockBadge: {
-    backgroundColor: '#10B981',
-  },
-  outOfStockBadge: {
-    backgroundColor: '#DC2626',
-  },
-  availabilityText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  productName: {
-    fontSize: 14,
-    color: palette.text,
-    marginBottom: spacing.xs,
-  },
-  price: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: palette.primary,
-    marginBottom: spacing.xs,
-  },
-  storeLocationInfo: {
-    marginTop: spacing.xs,
-    paddingTop: spacing.xs,
-    borderTopWidth: 1,
-    borderTopColor: palette.border,
-  },
-  storeLocationName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: palette.text,
-    marginBottom: 2,
-  },
-  storeAddress: {
-    fontSize: 12,
-    color: palette.muted,
-    marginBottom: 2,
-  },
-  distance: {
-    fontSize: 12,
-    color: palette.primary,
-    fontWeight: '600',
   },
 });
 

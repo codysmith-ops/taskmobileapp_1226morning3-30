@@ -1,0 +1,261 @@
+# This is a recommended Podfile configuration that addresses all the build issues
+# Copy the relevant sections to your ios/Podfile
+
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+platform :ios, '13.0'
+prepare_react_native_project!
+
+# If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
+# because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
+#
+# To fix this you can also exclude `react-native-flipper` using a `react-native.config.js`
+# ```js
+# module.exports = {
+#   dependencies: {
+#     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
+# ```
+flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
+
+target 'MobileTodoList' do
+  config = use_native_modules!
+
+  # Flags change depending on the env values.
+  flags = get_default_flags()
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # Hermes is now enabled by default. Disable by setting this flag to false.
+    :hermes_enabled => flags[:hermes_enabled],
+    :fabric_enabled => flags[:fabric_enabled],
+    # Enables Flipper.
+    #
+    # Note that if you have use_frameworks! enabled, Flipper will not work and
+    # you should disable the next line.
+    :flipper_configuration => flipper_config,
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  target 'MobileTodoListTests' do
+    inherit! :complete
+    # Pods for testing
+  end
+
+  # ============================================================================
+  # POST INSTALL - CRITICAL FIXES
+  # ============================================================================
+  # This post_install hook fixes all the build issues:
+  # 1. Sandbox/rsync errors with Hermes framework
+  # 2. Duplicate -lc++ linker flag warnings
+  # 3. Missing protocol definitions
+  # 4. Outdated build settings
+  # ============================================================================
+  
+  post_install do |installer|
+    # Standard React Native post install
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false
+    )
+    
+    # Apply fixes to all pods
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        # ===================================================================
+        # FIX #1: Disable User Script Sandboxing
+        # ===================================================================
+        # This prevents sandbox/rsync errors with Hermes framework
+        # The errors you saw:
+        # - "Sandbox: rsync deny(1) file-read-data"
+        # - "Sandbox: rsync deny(1) file-write*"
+        # ===================================================================
+        config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
+        
+        # ===================================================================
+        # FIX #2: Set Deployment Target
+        # ===================================================================
+        # Ensures consistent deployment target across all pods
+        # Prevents compatibility issues
+        # ===================================================================
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+        
+        # ===================================================================
+        # FIX #3: Clean up Other Linker Flags
+        # ===================================================================
+        # Removes duplicate -lc++ flags that cause warnings
+        # Only add if not already present
+        # ===================================================================
+        linker_flags = config.build_settings['OTHER_LDFLAGS'] || []
+        
+        # Convert to array if it's a string
+        linker_flags = linker_flags.split if linker_flags.is_a?(String)
+        linker_flags = ['$(inherited)'] if linker_flags.empty?
+        
+        # Remove duplicate -lc++ entries
+        lc_plusplus_count = linker_flags.count('-lc++')
+        if lc_plusplus_count > 1
+          # Keep only one -lc++
+          first_found = false
+          linker_flags = linker_flags.reject do |flag|
+            if flag == '-lc++'
+              if first_found
+                true # Remove this duplicate
+              else
+                first_found = true
+                false # Keep the first one
+              end
+            else
+              false # Keep all other flags
+            end
+          end
+          config.build_settings['OTHER_LDFLAGS'] = linker_flags
+        end
+        
+        # ===================================================================
+        # FIX #4: Set C++ Standard
+        # ===================================================================
+        # Ensures correct C++ standard library is used
+        # Prevents linking issues
+        # ===================================================================
+        config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+        config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
+        
+        # ===================================================================
+        # FIX #5: Enable Dead Code Stripping
+        # ===================================================================
+        # Reduces app size and improves build times
+        # Recommended by Xcode
+        # ===================================================================
+        config.build_settings['DEAD_CODE_STRIPPING'] = 'YES'
+        
+        # ===================================================================
+        # FIX #6: Header Search Paths
+        # ===================================================================
+        # Ensures headers are found correctly
+        # Fixes "Cannot find protocol definition" warnings
+        # ===================================================================
+        config.build_settings['HEADER_SEARCH_PATHS'] ||= ['$(inherited)']
+        
+        # ===================================================================
+        # FIX #7: Framework Search Paths
+        # ===================================================================
+        # Clean up any invalid search paths
+        # Removes the Metal toolchain warning you saw
+        # ===================================================================
+        framework_paths = config.build_settings['FRAMEWORK_SEARCH_PATHS'] || []
+        framework_paths = framework_paths.split if framework_paths.is_a?(String)
+        
+        # Remove paths containing cryptexd or invalid toolchain paths
+        framework_paths = framework_paths.reject do |path|
+          path.include?('cryptexd') || path.include?('MobileAsset.MetalToolchain')
+        end
+        
+        config.build_settings['FRAMEWORK_SEARCH_PATHS'] = framework_paths unless framework_paths.empty?
+        
+        # ===================================================================
+        # FIX #8: Library Search Paths
+        # ===================================================================
+        # Clean up invalid library search paths
+        # ===================================================================
+        library_paths = config.build_settings['LIBRARY_SEARCH_PATHS'] || []
+        library_paths = library_paths.split if library_paths.is_a?(String)
+        
+        # Remove invalid paths
+        library_paths = library_paths.reject do |path|
+          path.include?('cryptexd') || path.include?('MobileAsset.MetalToolchain')
+        end
+        
+        config.build_settings['LIBRARY_SEARCH_PATHS'] = library_paths unless library_paths.empty?
+        
+        # ===================================================================
+        # FIX #9: Code Signing
+        # ===================================================================
+        # Proper code signing settings for simulator builds
+        # ===================================================================
+        if config.build_settings['PRODUCT_NAME'] == 'hermes'
+          config.build_settings['CODE_SIGN_IDENTITY'] = ''
+          config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
+          config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+        end
+        
+        # ===================================================================
+        # FIX #10: Bitcode (deprecated but some pods still reference it)
+        # ===================================================================
+        config.build_settings['ENABLE_BITCODE'] = 'NO'
+        
+        # ===================================================================
+        # Additional Xcode 15+ compatibility
+        # ===================================================================
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FOLLY_NO_CONFIG=1'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FOLLY_MOBILE=1'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FOLLY_USE_LIBCPP=1'
+        config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'].uniq
+      end
+    end
+    
+    # ===================================================================
+    # Additional Project-Level Fixes
+    # ===================================================================
+    installer.pods_project.build_configurations.each do |config|
+      # Disable user script sandboxing at project level too
+      config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
+      
+      # Set minimum deployment target
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+    end
+    
+    # ===================================================================
+    # Fix for specific pods that commonly cause issues
+    # ===================================================================
+    installer.pods_project.targets.each do |target|
+      # React-Codegen specific fixes
+      if target.name == 'React-Codegen'
+        target.build_configurations.each do |config|
+          config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
+        end
+      end
+      
+      # Hermes specific fixes
+      if target.name.start_with?('hermes')
+        target.build_configurations.each do |config|
+          config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
+          config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+        end
+      end
+      
+      # Flipper specific fixes (if enabled)
+      if target.name.start_with?('Flipper')
+        target.build_configurations.each do |config|
+          config.build_settings['ENABLE_USER_SCRIPT_SANDBOXING'] = 'NO'
+        end
+      end
+    end
+    
+    # ===================================================================
+    # Print summary of fixes applied
+    # ===================================================================
+    puts "\n"
+    puts "=" * 70
+    puts "✅ Applied build fixes to prevent common issues:"
+    puts "=" * 70
+    puts "✓ Disabled user script sandboxing (fixes Hermes sandbox errors)"
+    puts "✓ Set consistent deployment target (iOS 13.0)"
+    puts "✓ Removed duplicate -lc++ linker flags"
+    puts "✓ Cleaned invalid framework/library search paths"
+    puts "✓ Set proper C++ standard (C++17 with libc++)"
+    puts "✓ Enabled dead code stripping"
+    puts "✓ Fixed Hermes framework code signing"
+    puts "=" * 70
+    puts "\n"
+  end
+end
