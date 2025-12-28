@@ -34,10 +34,6 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to remind you of nearby tasks</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We need your location to remind you of nearby tasks even in the background</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We need your location to remind you of nearby tasks even in the background</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Take photos of products to add to your shopping list</string>
 	<key>UILaunchStoryboardName</key>
