@@ -457,7 +457,13 @@ export const ReceiptIcon: React.FC<IconProps> = ({
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <Path d="M14 2V8H20M16 13H8M16 17H8M10 9H8" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
+    <Path
+      d="M14 2V8H20M16 13H8M16 17H8M10 9H8"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </Svg>
 );
 
@@ -580,7 +586,13 @@ export const PackageIcon: React.FC<IconProps> = ({
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <Path d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
+    <Path
+      d="M3.27 6.96L12 12.01L20.73 6.96M12 22.08V12"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </Svg>
 );
 

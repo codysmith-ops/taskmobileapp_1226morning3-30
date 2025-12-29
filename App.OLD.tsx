@@ -320,63 +320,60 @@ const App = (): React.JSX.Element => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
-        <ScrollView 
-          style={styles.flex} 
+        <ScrollView
+          style={styles.flex}
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-        <View style={styles.hero}>
-          <Text style={styles.title}>Mobile Todo</Text>
-          <Text style={styles.subtitle}>Simple task management</Text>
-          <Text style={styles.locationStatus}>{locationStatus}</Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Add Task</Text>
-          <TextInput
-            placeholder="What do you need?"
-            placeholderTextColor={palette.muted}
-            value={title}
-            onChangeText={setTitle}
-            style={styles.input}
-            accessibilityLabel="Task title"
-          />
-          <TextInput
-            placeholder="Notes (optional)"
-            placeholderTextColor={palette.muted}
-            value={note}
-            onChangeText={setNote}
-            style={styles.input}
-            multiline
-            numberOfLines={2}
-            accessibilityLabel="Task notes"
-          />
-          <View style={styles.row}>
-            <PrimaryButton label="Add Task" onPress={handleAdd} />
-            <GhostButton
-              label={isListening ? 'Stop' : 'Voice'}
-              onPress={handleVoiceToggle}
-            />
+          <View style={styles.hero}>
+            <Text style={styles.title}>Mobile Todo</Text>
+            <Text style={styles.subtitle}>Simple task management</Text>
+            <Text style={styles.locationStatus}>{locationStatus}</Text>
           </View>
-          {voiceError ? <Text style={styles.errorText}>{voiceError}</Text> : null}
-        </View>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Tasks ({pendingCount} pending)</Text>
-          {tasks.length === 0 ? (
-            <Text style={styles.emptyText}>No tasks yet. Add one above!</Text>
-          ) : (
-            tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onToggle={() => toggleComplete(task.id)}
-                onDelete={() => removeTask(task.id)}
-                onNavigate={() => openNavigation(task, navPreference)}
-              />
-            ))
-          )}
-        </View>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Add Task</Text>
+            <TextInput
+              placeholder="What do you need?"
+              placeholderTextColor={palette.muted}
+              value={title}
+              onChangeText={setTitle}
+              style={styles.input}
+              accessibilityLabel="Task title"
+            />
+            <TextInput
+              placeholder="Notes (optional)"
+              placeholderTextColor={palette.muted}
+              value={note}
+              onChangeText={setNote}
+              style={styles.input}
+              multiline
+              numberOfLines={2}
+              accessibilityLabel="Task notes"
+            />
+            <View style={styles.row}>
+              <PrimaryButton label="Add Task" onPress={handleAdd} />
+              <GhostButton label={isListening ? 'Stop' : 'Voice'} onPress={handleVoiceToggle} />
+            </View>
+            {voiceError ? <Text style={styles.errorText}>{voiceError}</Text> : null}
+          </View>
+
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Tasks ({pendingCount} pending)</Text>
+            {tasks.length === 0 ? (
+              <Text style={styles.emptyText}>No tasks yet. Add one above!</Text>
+            ) : (
+              tasks.map(task => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onToggle={() => toggleComplete(task.id)}
+                  onDelete={() => removeTask(task.id)}
+                  onNavigate={() => openNavigation(task, navPreference)}
+                />
+              ))
+            )}
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

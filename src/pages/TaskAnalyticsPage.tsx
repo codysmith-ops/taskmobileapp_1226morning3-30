@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
-import { ChartIcon, TrendUpIcon, CheckmarkIcon, ClockIcon, LightbulbIcon, WarningIcon } from '../components/Icons';
+import {
+  ChartIcon,
+  TrendUpIcon,
+  CheckmarkIcon,
+  ClockIcon,
+  LightbulbIcon,
+  WarningIcon,
+} from '../components/Icons';
 import { useTodoStore } from '../store';
 
 export const TaskAnalyticsPage: React.FC = () => {

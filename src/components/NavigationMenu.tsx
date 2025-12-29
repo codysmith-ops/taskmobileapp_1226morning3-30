@@ -9,10 +9,41 @@ import {
   Animated,
 } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
-import { ChartIcon, DollarIcon, TrendUpIcon, LightbulbIcon, CreditCardIcon, BellIcon, UsersIcon, CalendarIcon, CheckmarkIcon, LocationIcon, CameraIcon } from './Icons';
+import {
+  ChartIcon,
+  DollarIcon,
+  TrendUpIcon,
+  LightbulbIcon,
+  CreditCardIcon,
+  BellIcon,
+  UsersIcon,
+  CalendarIcon,
+  CheckmarkIcon,
+  LocationIcon,
+  CameraIcon,
+} from './Icons';
 import { EllioLogo } from './EllioLogo';
 
-export type NavigationPage = 'home' | 'account' | 'preferences' | 'integrations' | 'help' | 'chat' | 'notifications' | 'reports' | 'team' | 'receipts' | 'budget' | 'family' | 'cashback' | 'savingsdashboard' | 'weeklysummary' | 'monthlyreport' | 'insights' | 'timeline' | 'analytics';
+export type NavigationPage =
+  | 'home'
+  | 'account'
+  | 'preferences'
+  | 'integrations'
+  | 'help'
+  | 'chat'
+  | 'notifications'
+  | 'reports'
+  | 'team'
+  | 'receipts'
+  | 'budget'
+  | 'family'
+  | 'cashback'
+  | 'savingsdashboard'
+  | 'weeklysummary'
+  | 'monthlyreport'
+  | 'insights'
+  | 'timeline'
+  | 'analytics';
 
 interface NavigationMenuProps {
   currentPage: NavigationPage;
@@ -53,27 +84,46 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
   const getIconForPage = (page: NavigationPage, isActive: boolean) => {
     const color = isActive ? palette.primary : palette.textSecondary;
     const size = 20;
-    
+
     switch (page) {
-      case 'home': return <CheckmarkIcon size={size} color={color} />;
-      case 'timeline': return <CalendarIcon size={size} color={color} />;
-      case 'analytics': return <ChartIcon size={size} color={color} />;
-      case 'savingsdashboard': return <DollarIcon size={size} color={color} />;
-      case 'weeklysummary': return <CalendarIcon size={size} color={color} />;
-      case 'monthlyreport': return <TrendUpIcon size={size} color={color} />;
-      case 'insights': return <LightbulbIcon size={size} color={color} />;
-      case 'receipts': return <CameraIcon size={size} color={color} />;
-      case 'budget': return <DollarIcon size={size} color={color} />;
-      case 'family': return <UsersIcon size={size} color={color} />;
-      case 'cashback': return <CreditCardIcon size={size} color={color} />;
-      case 'chat': return <UsersIcon size={size} color={color} />;
-      case 'notifications': return <BellIcon size={size} color={color} />;
-      case 'team': return <UsersIcon size={size} color={color} />;
-      case 'account': return <CheckmarkIcon size={size} color={color} />;
-      case 'preferences': return <CheckmarkIcon size={size} color={color} />;
-      case 'integrations': return <CheckmarkIcon size={size} color={color} />;
-      case 'help': return <LightbulbIcon size={size} color={color} />;
-      default: return <CheckmarkIcon size={size} color={color} />;
+      case 'home':
+        return <CheckmarkIcon size={size} color={color} />;
+      case 'timeline':
+        return <CalendarIcon size={size} color={color} />;
+      case 'analytics':
+        return <ChartIcon size={size} color={color} />;
+      case 'savingsdashboard':
+        return <DollarIcon size={size} color={color} />;
+      case 'weeklysummary':
+        return <CalendarIcon size={size} color={color} />;
+      case 'monthlyreport':
+        return <TrendUpIcon size={size} color={color} />;
+      case 'insights':
+        return <LightbulbIcon size={size} color={color} />;
+      case 'receipts':
+        return <CameraIcon size={size} color={color} />;
+      case 'budget':
+        return <DollarIcon size={size} color={color} />;
+      case 'family':
+        return <UsersIcon size={size} color={color} />;
+      case 'cashback':
+        return <CreditCardIcon size={size} color={color} />;
+      case 'chat':
+        return <UsersIcon size={size} color={color} />;
+      case 'notifications':
+        return <BellIcon size={size} color={color} />;
+      case 'team':
+        return <UsersIcon size={size} color={color} />;
+      case 'account':
+        return <CheckmarkIcon size={size} color={color} />;
+      case 'preferences':
+        return <CheckmarkIcon size={size} color={color} />;
+      case 'integrations':
+        return <CheckmarkIcon size={size} color={color} />;
+      case 'help':
+        return <LightbulbIcon size={size} color={color} />;
+      default:
+        return <CheckmarkIcon size={size} color={color} />;
     }
   };
 
@@ -81,7 +131,11 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
     { icon: 'home', label: 'Home', page: 'home' as NavigationPage },
     { icon: 'timeline', label: 'Timeline', page: 'timeline' as NavigationPage },
     { icon: 'analytics', label: 'Task Analytics', page: 'analytics' as NavigationPage },
-    { icon: 'savingsdashboard', label: 'Savings Dashboard', page: 'savingsdashboard' as NavigationPage },
+    {
+      icon: 'savingsdashboard',
+      label: 'Savings Dashboard',
+      page: 'savingsdashboard' as NavigationPage,
+    },
     { icon: 'weeklysummary', label: 'Weekly Summary', page: 'weeklysummary' as NavigationPage },
     { icon: 'monthlyreport', label: 'Monthly Report', page: 'monthlyreport' as NavigationPage },
     { icon: 'insights', label: 'Insights', page: 'insights' as NavigationPage },

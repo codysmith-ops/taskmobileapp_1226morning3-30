@@ -62,7 +62,7 @@ export const TimelinePage: React.FC = () => {
             <Text style={styles.emptySubtext}>Add due dates to your tasks to see them here</Text>
           </View>
         ) : (
-          sortedDates.map((dateString) => {
+          sortedDates.map(dateString => {
             const taskList = groupedTasks[dateString];
             const date = new Date(dateString);
             const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });

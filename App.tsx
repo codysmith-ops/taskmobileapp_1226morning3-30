@@ -648,9 +648,7 @@ const App = (): React.JSX.Element => {
                 <View key={activity.id} style={styles.activityItem}>
                   <View style={styles.activityIconContainer}>
                     {activity.action === 'added' && <Text style={styles.activityIcon}>➕</Text>}
-                    {activity.action === 'completed' && (
-                      <Text style={styles.activityIcon}>✅</Text>
-                    )}
+                    {activity.action === 'completed' && <Text style={styles.activityIcon}>✅</Text>}
                     {activity.action === 'uncompleted' && (
                       <Text style={styles.activityIcon}>↩️</Text>
                     )}

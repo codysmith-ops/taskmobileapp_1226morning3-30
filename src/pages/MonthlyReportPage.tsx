@@ -262,7 +262,9 @@ export const MonthlyReportPage: React.FC = () => {
         </View>
 
         <View style={styles.achievementBadge}>
-          <Text style={styles.achievementText}>icon Perfect Month! You tracked every purchase!</Text>
+          <Text style={styles.achievementText}>
+            icon Perfect Month! You tracked every purchase!
+          </Text>
         </View>
       </View>
 

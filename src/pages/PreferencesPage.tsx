@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
-import { ListIcon, CalendarIcon, TextIcon, TrashIcon, UploadIcon, DownloadIcon } from '../components/icons';
+import {
+  ListIcon,
+  CalendarIcon,
+  TextIcon,
+  TrashIcon,
+  UploadIcon,
+  DownloadIcon,
+} from '../components/icons';
 
 export const PreferencesPage: React.FC = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -92,7 +99,10 @@ export const PreferencesPage: React.FC = () => {
               onPress={() => setDefaultView('list')}
             >
               <View style={styles.optionButtonContent}>
-                <ListIcon size={16} color={defaultView === 'list' ? palette.surface : palette.textSecondary} />
+                <ListIcon
+                  size={16}
+                  color={defaultView === 'list' ? palette.surface : palette.textSecondary}
+                />
                 <Text
                   style={[
                     styles.optionButtonText,
@@ -136,7 +146,10 @@ export const PreferencesPage: React.FC = () => {
               onPress={() => setSortBy('date')}
             >
               <View style={styles.optionButtonContent}>
-                <CalendarIcon size={14} color={sortBy === 'date' ? palette.surface : palette.textSecondary} />
+                <CalendarIcon
+                  size={14}
+                  color={sortBy === 'date' ? palette.surface : palette.textSecondary}
+                />
                 <Text
                   style={[
                     styles.optionButtonText,
@@ -165,7 +178,10 @@ export const PreferencesPage: React.FC = () => {
               onPress={() => setSortBy('name')}
             >
               <View style={styles.optionButtonContent}>
-                <TextIcon size={14} color={sortBy === 'name' ? palette.surface : palette.textSecondary} />
+                <TextIcon
+                  size={14}
+                  color={sortBy === 'name' ? palette.surface : palette.textSecondary}
+                />
                 <Text
                   style={[
                     styles.optionButtonText,
