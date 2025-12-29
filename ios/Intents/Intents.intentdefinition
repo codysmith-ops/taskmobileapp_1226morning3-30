@@ -1,0 +1,51 @@
+//
+//  Intents.intentdefinition
+//  Shopping List Siri Shortcuts
+//
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>INIntents</key>
+	<array>
+		<dict>
+			<key>INIntentCategory</key>
+			<string>create</string>
+			<key>INIntentDescription</key>
+			<string>Add an item to your shopping list</string>
+			<key>INIntentName</key>
+			<string>AddToShoppingListIntent</string>
+			<key>INIntentTitle</key>
+			<string>Add to Shopping List</string>
+			<key>INIntentType</key>
+			<string>Custom</string>
+			<key>INIntentParameters</key>
+			<array>
+				<dict>
+					<key>INIntentParameterName</key>
+					<string>itemName</string>
+					<key>INIntentParameterDisplayName</key>
+					<string>Item</string>
+					<key>INIntentParameterType</key>
+					<string>String</string>
+					<key>INIntentParameterRequired</key>
+					<true/>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>INIntentCategory</key>
+			<string>information</string>
+			<key>INIntentDescription</key>
+			<string>View your current shopping list</string>
+			<key>INIntentName</key>
+			<string>ViewShoppingListIntent</string>
+			<key>INIntentTitle</key>
+			<string>View Shopping List</string>
+			<key>INIntentType</key>
+			<string>Custom</string>
+		</dict>
+	</array>
+</dict>
+</plist>

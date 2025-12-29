@@ -21,6 +21,7 @@
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-community/datetimepicker": "^8.5.1",
     "@react-native-community/geolocation": "^3.4.0",
+    "@react-native-community/push-notification-ios": "^1.12.0",
     "@react-native-voice/voice": "^3.2.4",
     "@types/cheerio": "^0.22.35",
     "axios": "^1.13.2",
@@ -32,6 +33,7 @@
     "react-native-gesture-handler": "^2.30.0",
     "react-native-haptic-feedback": "^2.3.3",
     "react-native-image-picker": "^8.2.1",
+    "react-native-notifications": "^5.2.2",
     "react-native-svg": "^15.15.1",
     "zustand": "^5.0.9"
   },

@@ -894,6 +894,8 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
+  - react-native-notifications (5.2.2):
+    - React-Core
   - react-native-voice (3.2.4):
     - React-Core
   - React-nativeconfig (0.73.9)
@@ -1065,6 +1067,8 @@ PODS:
     - React-perflogger (= 0.73.9)
   - RNCAsyncStorage (2.2.0):
     - React-Core
+  - RNCPushNotificationIOS (1.12.0):
+    - React-Core
   - RNDateTimePicker (8.5.1):
     - React-Core
   - RNGestureHandler (2.30.0):
@@ -1113,6 +1117,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-notifications (from `../node_modules/react-native-notifications`)
   - "react-native-voice (from `../node_modules/@react-native-voice/voice`)"
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1135,6 +1140,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
@@ -1207,6 +1213,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-notifications:
+    :path: "../node_modules/react-native-notifications"
   react-native-voice:
     :path: "../node_modules/@react-native-voice/voice"
   React-nativeconfig:
@@ -1251,6 +1259,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNCPushNotificationIOS:
+    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDateTimePicker:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNGestureHandler:
@@ -1294,6 +1304,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 3dd48fdc197c566c90774761e4799e86b1937572
   react-native-geolocation: 49ea939d13f095705a71891555cc76215e63ec6a
   react-native-image-picker: bb3a66064010886b9472200945841e2cf79e1b52
+  react-native-notifications: e2d3c022d6077de7e420ba5c01b4bd9464f3941d
   react-native-voice: 908a0eba96c8c3d643e4f98b7232c6557d0a6f9c
   React-nativeconfig: c1729ab95240ec80d47a2bb8354d8f31138e35a7
   React-NativeModulesApple: 521cf070f15e717221f440e8d9b7b508db2fd456
@@ -1316,6 +1327,7 @@ SPEC CHECKSUMS:
   React-utils: 3914b10f3e2b95e78ab7cc53c98541d504ae387f
   ReactCommon: 03a07a32cbaf798b01e7025001d6fa5a862709f6
   RNCAsyncStorage: b44e8a4e798c3e1f56bffccd0f591f674fb9198f
+  RNCPushNotificationIOS: 85957a0534fd1309b4c028ccbe5b1baf9ab5cf57
   RNDateTimePicker: 1644c91bdbee110de801cf41c7c660c00366e174
   RNGestureHandler: ad7bdf3340a16d433d58023d4bddde2d633904f9
   RNReactNativeHapticFeedback: 9d07fb28f9ef1e81440181602954cb3c78d30184
