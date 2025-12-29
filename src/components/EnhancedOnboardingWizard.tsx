@@ -289,20 +289,20 @@ export const EnhancedOnboardingWizard: React.FC<EnhancedOnboardingProps> = ({ on
               <Text style={styles.summaryText}>Based on your selections, we've configured:</Text>
               <View style={styles.summaryList}>
                 {preferences.enableReceiptScanning && (
-                  <Text style={styles.summaryItem}>✓ Receipt scanning & OCR</Text>
+                  <Text style={styles.summaryItem}>Receipt scanning & OCR</Text>
                 )}
                 {preferences.enableCashbackOptimization && (
-                  <Text style={styles.summaryItem}>✓ Cashback optimization</Text>
+                  <Text style={styles.summaryItem}>Cashback optimization</Text>
                 )}
                 {preferences.enableBudgetTracking && (
-                  <Text style={styles.summaryItem}>✓ Smart budget tracking</Text>
+                  <Text style={styles.summaryItem}>Smart budget tracking</Text>
                 )}
                 {preferences.enableGeolocationPrompts && (
-                  <Text style={styles.summaryItem}>✓ Location-based prompts</Text>
+                  <Text style={styles.summaryItem}>Location-based prompts</Text>
                 )}
                 {preferences.familyMembers > 1 && (
                   <Text style={styles.summaryItem}>
-                    ✓ Family tracking ({preferences.familyMembers} members)
+                    Family tracking ({preferences.familyMembers} members)
                   </Text>
                 )}
               </View>

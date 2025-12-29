@@ -177,7 +177,7 @@ export const TaskCompletionDialog: React.FC<TaskCompletionDialogProps> = ({
               <Text style={styles.skipButtonText}>Not Yet</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.completeButton} onPress={handleComplete}>
-              <Text style={styles.completeButtonText}>✓ Complete</Text>
+              <Text style={styles.completeButtonText}>Complete</Text>
             </TouchableOpacity>
           </View>
         </View>

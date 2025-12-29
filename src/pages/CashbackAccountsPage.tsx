@@ -190,7 +190,7 @@ export const CashbackAccountsPage: React.FC = () => {
                 <Text style={styles.cardName}>{card.name}</Text>
                 {card.linked && (
                   <View style={styles.linkedBadge}>
-                    <Text style={styles.linkedBadgeText}>✓ Linked</Text>
+                    <Text style={styles.linkedBadgeText}>Linked</Text>
                   </View>
                 )}
               </View>

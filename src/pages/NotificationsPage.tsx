@@ -100,7 +100,7 @@ export const NotificationsPage: React.FC = () => {
   const getIcon = (type: Notification['type']): string => {
     switch (type) {
       case 'task':
-        return '✓';
+        return 'checkmark-circle';
       case 'chat':
         return 'chat';
       case 'system':
