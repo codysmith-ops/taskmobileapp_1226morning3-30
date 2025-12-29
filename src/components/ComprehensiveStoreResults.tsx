@@ -33,7 +33,7 @@ import {
   MapIcon,
   ChevronDownIcon,
   ChevronRightIcon,
-} from './icons';
+} from './Icons';
 
 interface Props {
   results: StoreResult[];

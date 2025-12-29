@@ -10,7 +10,7 @@ import {
   Switch,
 } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
-import { SettingsIcon, TrashIcon } from '../components/icons';
+import { SettingsIcon, TrashIcon } from '../components/Icons';
 
 interface TeamMember {
   id: string;

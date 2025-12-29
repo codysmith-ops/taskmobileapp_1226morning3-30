@@ -10,7 +10,7 @@ import {
   Switch,
 } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
-import { LightbulbIcon } from '../components/icons';
+import { LightbulbIcon } from '../components/Icons';
 
 interface CreditCard {
   id: string;

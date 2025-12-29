@@ -8,7 +8,7 @@ import {
   TrashIcon,
   UploadIcon,
   DownloadIcon,
-} from '../components/icons';
+} from '../components/Icons';
 
 export const PreferencesPage: React.FC = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);

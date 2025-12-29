@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
-import { LightbulbIcon } from './icons';
+import { LightbulbIcon } from './Icons';
 
 interface BrandPreferenceDialogProps {
   visible: boolean;

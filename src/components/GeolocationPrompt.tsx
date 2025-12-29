@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import { palette, spacing, radius, typography, shadow } from '../theme';
-import { LocationIcon, ReceiptIcon, CameraIcon } from './icons';
+import { LocationIcon, ReceiptIcon, CameraIcon } from './Icons';
 
 interface GeolocationPromptProps {
   visible: boolean;
