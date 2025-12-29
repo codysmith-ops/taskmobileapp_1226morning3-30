@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import { palette, spacing, radius, typography, shadow } from '../theme';
-import { LocationIcon, ReceiptIcon, CameraIcon } from './Icons';
+import { LocationIcon, CameraIcon } from './Icons';
 
 interface GeolocationPromptProps {
   visible: boolean;
@@ -82,7 +82,7 @@ export const GeolocationPrompt: React.FC<GeolocationPromptProps> = ({
           <View style={styles.iconContainer}>
             <View style={styles.iconGroup}>
               <LocationIcon size={28} color={palette.primary} />
-              <ReceiptIcon size={28} color={palette.primary} />
+              <CameraIcon size={28} color={palette.primary} />
             </View>
           </View>
           <Text style={styles.title}>Leaving {storeName}?</Text>

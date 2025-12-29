@@ -14,6 +14,8 @@ export type StoreResult = {
     distance?: number;
     latitude?: number;
     longitude?: number;
+    rating?: number;
+    phone?: string;
   };
   url?: string;
 };

@@ -43,7 +43,7 @@ interface Props {
 
 export const ComprehensiveStoreResults: React.FC<Props> = ({
   results,
-  userLocation,
+  userLocation: _userLocation,
   onStoreSelect,
 }) => {
   const [viewMode, setViewMode] = useState<'list' | 'grouped' | 'map'>('grouped');
@@ -127,7 +127,7 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
       activeOpacity={0.7}
       accessible={true}
       accessibilityRole="button"
-      accessibilityLabel={`${item.store}, ${item.productName}, $${item.price.toFixed(2)}, ${
+      accessibilityLabel={`${item.store}, ${item.productName}${item.price ? `, $${item.price.toFixed(2)}` : ''}, ${
         item.availability
       }${
         item.storeLocation?.distance ? `, ${formatDistance(item.storeLocation.distance)} away` : ''
@@ -135,7 +135,7 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
       accessibilityHint="Double tap to view store details"
     >
       <View style={styles.cardHeader}>
-        <Text style={styles.storeLogo} aria-hidden="true">
+        <Text style={styles.storeLogo} aria-hidden={true}>
           {item.storeLogo}
         </Text>
         <View style={styles.headerInfo}>
@@ -159,7 +159,7 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
           {item.productName}
         </Text>
         <View style={styles.priceRow}>
-          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+          <Text style={styles.price}>{item.price ? `$${item.price.toFixed(2)}` : 'Price unavailable'}</Text>
           {item.storeLocation?.rating && (
             <View style={styles.ratingContainer}>
               <StarIcon size={16} color="#D97706" filled />
@@ -228,11 +228,7 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
         <Text style={styles.headerTitle}>{filteredResults.length} stores found</Text>
         <View style={styles.headerStats}>
           <Text style={styles.statText}>
-            {filteredResults.filter(r => r.inStock).length} in stock accessible={true}
-            accessibilityRole="button" accessibilityLabel=
-            {filters.showFilters ? 'Hide filters' : 'Show filters'}
-            accessibilityHint="Double tap to toggle filter panel" accessibilityState=
-            {{ expanded: filters.showFilters }}
+            {filteredResults.filter(r => r.inStock).length} in stock
           </Text>
           <Text style={styles.statDivider}>•</Text>
           <Text style={styles.statText}>Within {filters.maxDistance} mi</Text>
@@ -243,6 +239,11 @@ export const ComprehensiveStoreResults: React.FC<Props> = ({
       <TouchableOpacity
         style={styles.filterToggle}
         onPress={() => setFilters(p => ({ ...p, showFilters: !p.showFilters }))}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={filters.showFilters ? 'Hide filters' : 'Show filters'}
+        accessibilityHint="Double tap to toggle filter panel"
+        accessibilityState={{ expanded: filters.showFilters }}
       >
         <View style={styles.filterToggleContent}>
           {filters.showFilters ? (
@@ -584,7 +585,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: spacing.md,
-    backgroundColor: palette.surfaceVariant,
+    backgroundColor: palette.surfaceElevated,
   },
   sectionIcon: {
     fontSize: 20,
