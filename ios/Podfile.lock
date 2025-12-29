@@ -886,6 +886,14 @@ PODS:
   - React-Mapbuffer (0.73.9):
     - glog
     - React-debug
+  - react-native-camera (4.2.1):
+    - React-Core
+    - react-native-camera/RCT (= 4.2.1)
+    - react-native-camera/RN (= 4.2.1)
+  - react-native-camera/RCT (4.2.1):
+    - React-Core
+  - react-native-camera/RN (4.2.1):
+    - React-Core
   - react-native-geolocation (3.4.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
@@ -1077,6 +1085,8 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
+  - RNPermissions (5.4.4):
+    - React-Core
   - RNReactNativeHapticFeedback (2.3.3):
     - glog
     - RCT-Folly (= 2022.05.16.00)
@@ -1117,6 +1127,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector-modern`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
+  - react-native-camera (from `../node_modules/react-native-camera`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-notifications (from `../node_modules/react-native-notifications`)
@@ -1146,6 +1157,7 @@ DEPENDENCIES:
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -1212,6 +1224,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   React-Mapbuffer:
     :path: "../node_modules/react-native/ReactCommon"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-image-picker:
@@ -1270,6 +1284,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNPermissions:
+    :path: "../node_modules/react-native-permissions"
   RNReactNativeHapticFeedback:
     :path: "../node_modules/react-native-haptic-feedback"
   RNSVG:
@@ -1307,6 +1323,7 @@ SPEC CHECKSUMS:
   React-jsinspector: aee04d04ef553d5e30e52a4de2af958cb060069f
   React-logger: ef76a6d8e04672f19be9b3a49f6ecc4c7141399b
   React-Mapbuffer: 3dd48fdc197c566c90774761e4799e86b1937572
+  react-native-camera: 079d80421f0572d6b4e836908114d614d0adb553
   react-native-geolocation: 49ea939d13f095705a71891555cc76215e63ec6a
   react-native-image-picker: bb3a66064010886b9472200945841e2cf79e1b52
   react-native-notifications: e2d3c022d6077de7e420ba5c01b4bd9464f3941d
@@ -1336,6 +1353,7 @@ SPEC CHECKSUMS:
   RNDateTimePicker: 1644c91bdbee110de801cf41c7c660c00366e174
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
   RNGestureHandler: ad7bdf3340a16d433d58023d4bddde2d633904f9
+  RNPermissions: 15f0316617e4a61c6f9b64174081837e674075ee
   RNReactNativeHapticFeedback: 9d07fb28f9ef1e81440181602954cb3c78d30184
   RNSVG: a807c48b50ef7efee52a1fa610a23c9df1bcb2f9
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17

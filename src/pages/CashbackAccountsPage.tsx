@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { palette, spacing, radius, typography } from '../theme';
 import { LightbulbIcon } from '../components/Icons';
+import { getCreditCardData, getAllCreditCards } from '../services/creditCardData';
 
 interface CreditCard {
   id: string;
@@ -37,7 +38,9 @@ export const CashbackAccountsPage: React.FC = () => {
       cashbackRate: 1,
       bonusCategories: [
         { category: 'Dining', rate: 3 },
-        { category: 'Travel', rate: 2 },
+        { category: 'Travel', rate: 3 },
+        { category: 'Streaming', rate: 3 },
+        { category: 'Online Groceries', rate: 3 },
       ],
       linked: true,
       autoSync: true,

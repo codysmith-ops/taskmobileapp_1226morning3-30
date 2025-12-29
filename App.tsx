@@ -54,6 +54,8 @@ import { TaskCompletionDialog } from './src/components/TaskCompletionDialog';
 import { GeofenceMonitor } from './src/components/GeofenceMonitor';
 import { getTaskIcon, ScannerIcon, CameraIcon } from './src/components/TaskTypeIcons';
 import { TrashIcon } from './src/components/Icons';
+import { BarcodeScanner } from './src/components/BarcodeScanner';
+import { DueDatePicker } from './src/components/DueDatePicker';
 
 // Helper to detect task type from title
 const getTaskType = (title: string): string => {
@@ -157,6 +159,9 @@ const App = (): React.JSX.Element => {
   const [pendingTaskData, setPendingTaskData] = useState<any>(null);
   const [isFirstTask, setIsFirstTask] = useState(true);
   const [pendingCategory, setPendingCategory] = useState<string>('other');
+  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
+  const [showDueDatePicker, setShowDueDatePicker] = useState(false);
+  const [dueDateLabel, setDueDateLabel] = useState('');
 
   // Activity log state
   const [activityLog, setActivityLog] = useState<
@@ -260,6 +265,7 @@ const App = (): React.JSX.Element => {
     setNote('');
     setQuantity('1');
     setDueDate('');
+    setDueDateLabel('');
     setAssignedTo('');
     setImageUri(undefined);
     setSkuCode('');
@@ -518,8 +524,63 @@ const App = (): React.JSX.Element => {
     );
   };
 
-  const handleScanner = async () => {
-    // Placeholder for barcode scanner with auto-fill
+  const handleBarcodeScanned = async (barcode: string) => {
+    console.log('📊 Barcode scanned:', barcode);
+    setSkuCode(barcode);
+
+    // Auto-recognize product
+    try {
+      const result = await recognizeProductFromBarcode(barcode);
+      if (result) {
+        // Auto-fill all fields
+        setTitle(result.product.name);
+        if (result.product.brand) {
+          setNote(
+            `Brand: ${result.product.brand}${
+              result.product.description ? '\n' + result.product.description : ''
+            }`
+          );
+        }
+
+        // Show available stores
+        if (result.stores.length > 0) {
+          const storeList = result.stores
+            .filter(s => s.inStock)
+            .slice(0, 3)
+            .map(
+              s =>
+                `${s.storeName}${s.distance ? ` (${s.distance.toFixed(1)}mi)` : ''}${
+                  s.price ? ` - $${s.price.toFixed(2)}` : ''
+                }`
+            )
+            .join('\n');
+
+          Alert.alert(
+            'Product Found!',
+            `${result.product.name}\n\nAvailable at:\n${storeList}`,
+            [{ text: 'OK' }]
+          );
+        }
+      } else {
+        Alert.alert('Product Not Found', `Barcode ${barcode} not recognized. Please enter details manually.`);
+      }
+    } catch (error) {
+      console.error('Product recognition error:', error);
+      Alert.alert('Error', 'Failed to recognize product. Please try again.');
+    }
+  };
+
+  const handleDueDateSelect = (date: Date, label: string) => {
+    setDueDate(date.getTime().toString());
+    setDueDateLabel(label);
+  };
+
+  const handleScanner = () => {
+    setShowBarcodeScanner(true);
+  };
+
+  const handleOldScanner = async () => {
+    // Placeholder for old barcode scanner with auto-fill
     Alert.alert('Scanner', 'Scan a barcode to auto-fill product details', [
       { text: 'Cancel', style: 'cancel' },
       {
@@ -752,13 +813,14 @@ const App = (): React.JSX.Element => {
             </View>
             <View style={styles.formHalf}>
               <Text style={styles.fieldLabel}>Due Date</Text>
-              <TextInput
+              <TouchableOpacity
                 style={styles.inputSmall}
-                placeholder="YYYY-MM-DD"
-                value={dueDate}
-                onChangeText={setDueDate}
-                placeholderTextColor={palette.textTertiary}
-              />
+                onPress={() => setShowDueDatePicker(true)}
+              >
+                <Text style={dueDateLabel ? styles.inputText : styles.inputPlaceholder}>
+                  {dueDateLabel || 'Select date'}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -979,6 +1041,20 @@ const App = (): React.JSX.Element => {
           setNearbyTasks([]);
         }}
         requireReceipt={false}
+      />
+
+      {/* Barcode Scanner */}
+      <BarcodeScanner
+        visible={showBarcodeScanner}
+        onClose={() => setShowBarcodeScanner(false)}
+        onScan={handleBarcodeScanned}
+      />
+
+      {/* Due Date Picker */}
+      <DueDatePicker
+        visible={showDueDatePicker}
+        onClose={() => setShowDueDatePicker(false)}
+        onSelect={handleDueDateSelect}
       />
 
       {/* Geofence Monitor */}
@@ -1328,6 +1404,14 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: palette.textSecondary,
     textAlign: 'center',
+  },
+  inputText: {
+    ...typography.body,
+    color: palette.text,
+  },
+  inputPlaceholder: {
+    ...typography.body,
+    color: palette.textTertiary,
   },
 });
 
