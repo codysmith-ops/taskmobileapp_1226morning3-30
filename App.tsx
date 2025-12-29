@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Alert,
   SafeAreaView,
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchCamera } from 'react-native-image-picker';
 import { useTodoStore, Task } from './src/store';
 import { palette, radius, shadow, spacing, typography } from './src/theme';
@@ -103,6 +104,25 @@ const App = (): React.JSX.Element => {
   const [setupComplete, setSetupComplete] = useState(false);
   const [userName, setUserName] = useState('User');
 
+  // Load setup status on mount
+  useEffect(() => {
+    const loadSetupStatus = async () => {
+      try {
+        const status = await AsyncStorage.getItem('setupComplete');
+        const savedName = await AsyncStorage.getItem('userName');
+        if (status === 'true') {
+          setSetupComplete(true);
+        }
+        if (savedName) {
+          setUserName(savedName);
+        }
+      } catch (error) {
+        console.log('Error loading setup status:', error);
+      }
+    };
+    loadSetupStatus();
+  }, []);
+
   // Navigation state
   const [currentPage, setCurrentPage] = useState<NavigationPage>('home');
   const [taskFilter, setTaskFilter] = useState<string | null>(null);
@@ -129,9 +149,17 @@ const App = (): React.JSX.Element => {
     Array<{ id: string; action: string; timestamp: number; taskTitle: string }>
   >([]);
 
-  const handleSetupComplete = (userData: UserSetupData) => {
+  const handleSetupComplete = async (userData: UserSetupData) => {
     setUserName(userData.name);
     setSetupComplete(true);
+
+    // Save to AsyncStorage
+    try {
+      await AsyncStorage.setItem('setupComplete', 'true');
+      await AsyncStorage.setItem('userName', userData.name);
+    } catch (error) {
+      console.log('Error saving setup status:', error);
+    }
 
     // Save user preferences to store
     setUserPreferences({

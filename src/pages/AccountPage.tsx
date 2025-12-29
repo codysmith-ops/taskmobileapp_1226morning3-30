@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { palette, spacing, radius, typography } from '../theme';
 
 export const AccountPage: React.FC = () => {
@@ -161,6 +162,37 @@ export const AccountPage: React.FC = () => {
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, styles.dangerTitle]}>Danger Zone</Text>
         <View style={styles.card}>
+          <TouchableOpacity
+            style={styles.actionRow}
+            onPress={async () => {
+              Alert.alert(
+                'Reset Setup Wizard',
+                'This will show the onboarding wizard again when you restart the app.',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  {
+                    text: 'Reset',
+                    style: 'destructive',
+                    onPress: async () => {
+                      try {
+                        await AsyncStorage.removeItem('setupComplete');
+                        await AsyncStorage.removeItem('userName');
+                        Alert.alert(
+                          'Success',
+                          'Setup wizard will appear on next restart. Please close and reopen the app.'
+                        );
+                      } catch (error) {
+                        Alert.alert('Error', 'Failed to reset setup wizard');
+                      }
+                    },
+                  },
+                ]
+              );
+            }}
+          >
+            <Text style={styles.dangerAction}>Reset Setup Wizard</Text>
+          </TouchableOpacity>
+          <View style={styles.divider} />
           <TouchableOpacity style={styles.actionRow}>
             <Text style={styles.dangerAction}>Sign Out</Text>
           </TouchableOpacity>
