@@ -40,8 +40,8 @@ jobs:
       run: |
         cd ios
         pod install
-    
-    - name: Build iOS app (ENFORCED - iPhone 15 iOS 17.5)
+
+    - name: Build iOS app
       run: |
         cd ios
         xcodebuild clean build \
