@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Platform, PermissionsAndroid, Alert, Linking } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Platform, PermissionsAndroid } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import { useTodoStore, Task } from '../store';
 
@@ -9,7 +9,6 @@ interface GeofenceMonitorProps {
 
 export const GeofenceMonitor: React.FC<GeofenceMonitorProps> = ({ onTasksNearby }) => {
   const { tasks, userPreferences } = useTodoStore();
-  const [isMonitoring, setIsMonitoring] = useState(false);
   const watchIdRef = useRef<number | null>(null);
   const lastCheckedTasks = useRef<Set<string>>(new Set());
 
@@ -27,8 +26,7 @@ export const GeofenceMonitor: React.FC<GeofenceMonitorProps> = ({ onTasksNearby 
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'ios') {
-      Geolocation.requestAuthorization('always');
-      startMonitoring();
+      Geolocation.requestAuthorization(() => startMonitoring());
     } else {
       try {
         const granted = await PermissionsAndroid.request(
