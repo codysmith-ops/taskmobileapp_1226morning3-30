@@ -82,34 +82,34 @@ export const radius = {
 };
 
 export const typography = {
-  // Typography hierarchy per design system
-  h1: { fontSize: 42, fontWeight: '700' as const, lineHeight: 48, fontFamily: 'Montserrat-Bold' },
-  h2: { fontSize: 32, fontWeight: '700' as const, lineHeight: 40, fontFamily: 'Montserrat-Bold' },
-  h3: { fontSize: 24, fontWeight: '700' as const, lineHeight: 32, fontFamily: 'Montserrat-Bold' },
+  // Typography hierarchy per design system (using iOS system fonts)
+  h1: { fontSize: 42, fontWeight: '700' as const, lineHeight: 48, fontFamily: 'System' },
+  h2: { fontSize: 32, fontWeight: '700' as const, lineHeight: 40, fontFamily: 'System' },
+  h3: { fontSize: 24, fontWeight: '700' as const, lineHeight: 32, fontFamily: 'System' },
   subtitle: {
     fontSize: 18,
     fontWeight: '600' as const,
     lineHeight: 24,
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'System',
   },
-  body: { fontSize: 16, fontWeight: '400' as const, lineHeight: 24, fontFamily: 'Inter-Regular' },
+  body: { fontSize: 16, fontWeight: '400' as const, lineHeight: 24, fontFamily: 'System' },
   bodyBold: {
     fontSize: 16,
     fontWeight: '600' as const,
     lineHeight: 24,
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'System',
   },
   secondary: {
     fontSize: 14,
     fontWeight: '400' as const,
     lineHeight: 20,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'System',
   },
   label: {
     fontSize: 12,
     fontWeight: '400' as const,
     lineHeight: 16,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'System',
     textTransform: 'uppercase' as const,
     letterSpacing: 1,
   },
