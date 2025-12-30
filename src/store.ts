@@ -11,12 +11,38 @@ export type UserGoal =
   | 'organize'
   | 'efficiency';
 
+export type TaskCategory =
+  | 'groceries'
+  | 'hardware'
+  | 'errands'
+  | 'medical'
+  | 'shopping'
+  | 'returns'
+  | 'dental'
+  | 'chiropractic'
+  | 'automotive'
+  | 'home-maintenance'
+  | 'pet-care'
+  | 'fitness'
+  | 'pharmacy'
+  | 'beauty';
+
+export type CustomCategory = {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+};
+
 export type UserPreferences = {
   goals: UserGoal[];
   budgetAmount?: number;
   budgetPeriod?: 'weekly' | 'monthly';
+  weeklySavingsGoal?: number;
+  automatedShoppingEnabled?: boolean;
   creditCards?: Array<{ name: string; rewardsType: string }>;
   collaborators?: Array<{ id: string; name: string; email: string }>;
+  customCategories?: CustomCategory[];
   aiSuggestionsEnabled: boolean;
   dealAlertsEnabled: boolean;
   priceComparisonEnabled: boolean;
@@ -39,6 +65,7 @@ export type Task = {
   title: string;
   note?: string;
   completed: boolean;
+  category?: TaskCategory | string; // TaskCategory or custom category ID
   locationLabel?: string;
   latitude?: number;
   longitude?: number;

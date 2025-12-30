@@ -20,6 +20,8 @@ import { useTodoStore, Task } from './src/store';
 import { palette, radius, shadow, spacing, typography } from './src/theme';
 import { SetupWizard, UserSetupData } from './src/components/SetupWizard';
 import { NavigationMenu, NavigationPage } from './src/components/NavigationMenu';
+import { HomePage } from './src/components/HomePage';
+import { ShoppingListPage } from './src/pages/ShoppingListPage';
 import { AccountPage } from './src/pages/AccountPage';
 import { PreferencesPage } from './src/pages/PreferencesPage';
 import { IntegrationsPage } from './src/pages/IntegrationsPage';
@@ -47,7 +49,6 @@ import { TemplatesPage } from './src/pages/TemplatesPage';
 import { AdminPage } from './src/pages/AdminPage';
 import { SyncStatusPage } from './src/pages/SyncStatusPage';
 import { CompliancePage } from './src/pages/CompliancePage';
-import { TaskMeter } from './src/components/TaskMeter';
 import { BrandPreferenceDialog, BrandPreference } from './src/components/BrandPreferenceDialog';
 import { StorePreferenceDialog } from './src/components/StorePreferenceDialog';
 import { TaskCompletionDialog } from './src/components/TaskCompletionDialog';
@@ -58,12 +59,7 @@ import { BarcodeScanner } from './src/components/BarcodeScanner';
 import { DueDatePicker } from './src/components/DueDatePicker';
 import { VoiceInput } from './src/components/VoiceInput';
 import { ParsedTask } from './src/services/taskParser.service';
-import {
-  EllioButtons,
-  EllioToasts,
-  EllioHeaders,
-  EllioEmptyStates,
-} from './src/content/ellioTheme';
+import { EllioButtons, EllioToasts } from './src/content/ellioTheme';
 import { ChatAssistant } from './src/components/ChatAssistant';
 
 // Helper to detect task type from title
@@ -87,6 +83,73 @@ const getTaskType = (title: string): string => {
   ) {
     return 'hardware';
   }
+  // New categories
+  if (
+    lowerTitle.includes('dental') ||
+    lowerTitle.includes('dentist') ||
+    lowerTitle.includes('tooth') ||
+    lowerTitle.includes('teeth')
+  ) {
+    return 'dental';
+  }
+  if (
+    lowerTitle.includes('chiro') ||
+    lowerTitle.includes('chiropractor') ||
+    lowerTitle.includes('adjustment') ||
+    lowerTitle.includes('spine')
+  ) {
+    return 'chiropractic';
+  }
+  if (
+    lowerTitle.includes('car') ||
+    lowerTitle.includes('auto') ||
+    lowerTitle.includes('vehicle') ||
+    lowerTitle.includes('oil change') ||
+    lowerTitle.includes('mechanic')
+  ) {
+    return 'automotive';
+  }
+  if (
+    lowerTitle.includes('home repair') ||
+    lowerTitle.includes('fix') ||
+    lowerTitle.includes('maintenance') ||
+    lowerTitle.includes('hvac') ||
+    lowerTitle.includes('plumbing')
+  ) {
+    return 'home-maintenance';
+  }
+  if (
+    lowerTitle.includes('pet') ||
+    lowerTitle.includes('vet') ||
+    lowerTitle.includes('dog') ||
+    lowerTitle.includes('cat')
+  ) {
+    return 'pet-care';
+  }
+  if (
+    lowerTitle.includes('gym') ||
+    lowerTitle.includes('workout') ||
+    lowerTitle.includes('fitness') ||
+    lowerTitle.includes('exercise')
+  ) {
+    return 'fitness';
+  }
+  if (
+    lowerTitle.includes('pharmacy') ||
+    lowerTitle.includes('prescription') ||
+    lowerTitle.includes('medication') ||
+    lowerTitle.includes('medicine')
+  ) {
+    return 'pharmacy';
+  }
+  if (
+    lowerTitle.includes('beauty') ||
+    lowerTitle.includes('salon') ||
+    lowerTitle.includes('spa') ||
+    lowerTitle.includes('cosmetic')
+  ) {
+    return 'beauty';
+  }
   if (
     lowerTitle.includes('retail') ||
     lowerTitle.includes('store') ||
@@ -96,7 +159,6 @@ const getTaskType = (title: string): string => {
   }
   if (
     lowerTitle.includes('medical') ||
-    lowerTitle.includes('pharmacy') ||
     lowerTitle.includes('doctor') ||
     lowerTitle.includes('prescription')
   ) {
@@ -652,7 +714,7 @@ const App = (): React.JSX.Element => {
     setShowBarcodeScanner(true);
   };
 
-  const handleOldScanner = async () => {
+  const _handleOldScanner = async () => {
     // Placeholder for old barcode scanner with auto-fill
     Alert.alert('Scanner', 'Scan a barcode to auto-fill product details', [
       { text: 'Cancel', style: 'cancel' },
@@ -710,7 +772,6 @@ const App = (): React.JSX.Element => {
   };
 
   const pendingCount = tasks.filter(t => !t.completed).length;
-  const completedCount = tasks.filter(t => t.completed).length;
 
   // Show setup wizard if not complete
   if (!setupComplete) {
@@ -755,6 +816,7 @@ const App = (): React.JSX.Element => {
         {currentPage === 'admin' && <AdminPage />}
         {currentPage === 'syncstatus' && <SyncStatusPage />}
         {currentPage === 'compliance' && <CompliancePage />}
+        {currentPage === 'shoppinglist' && <ShoppingListPage onNavigate={setCurrentPage} />}
         {currentPage === 'help' && (
           <View style={styles.placeholderPage}>
             <Text style={styles.placeholderText}>❓</Text>
@@ -772,70 +834,34 @@ const App = (): React.JSX.Element => {
       <StatusBar barStyle="dark-content" backgroundColor={palette.background} />
       <NavigationMenu currentPage={currentPage} onNavigate={setCurrentPage} userName={userName} />
 
-      <ScrollView
-        style={styles.flex}
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* Hero Section */}
-        <View style={styles.hero}>
-          <Text style={styles.heroTitle}>Welcome back, {userName}!</Text>
-          <View style={styles.statsRow}>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>{pendingCount}</Text>
-              <Text style={styles.statLabel}>Pending</Text>
+      <HomePage tasks={tasks} userName={userName} onNavigate={setCurrentPage} />
+
+      {/* Add Task Section - Floating above home */}
+      <View style={styles.addTaskSection}>
+        <ScrollView
+          style={styles.flex}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Add Task Card */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>What do you need?</Text>
+
+            {/* Scanner and Camera Buttons */}
+            <View style={styles.quickActions}>
+              <TouchableOpacity style={styles.quickAction} onPress={handleScanner}>
+                <ScannerIcon size={24} color={palette.primary} />
+                <Text style={styles.quickActionText}>Scan SKU</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.quickAction} onPress={handleCamera}>
+                <CameraIcon size={24} color={palette.primary} />
+                <Text style={styles.quickActionText}>Take Photo</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.quickAction} onPress={() => setShowVoiceInput(true)}>
+                <Text style={styles.microphoneIcon}>🎤</Text>
+                <Text style={styles.quickActionText}>Add by voice</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>{completedCount}</Text>
-              <Text style={styles.statLabel}>Done</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Task Meters - Multiple timeframes */}
-        <TaskMeter
-          tasks={tasks}
-          timeframe="today"
-          onCategoryPress={(category: string) => {
-            setTaskFilter(category);
-          }}
-        />
-
-        <TaskMeter
-          tasks={tasks}
-          timeframe="week"
-          onCategoryPress={(category: string) => {
-            setTaskFilter(category);
-          }}
-        />
-
-        <TaskMeter
-          tasks={tasks}
-          timeframe="month"
-          onCategoryPress={(category: string) => {
-            setTaskFilter(category);
-          }}
-        />
-
-        {/* Add Task Card */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>What do you need?</Text>
-
-          {/* Scanner and Camera Buttons */}
-          <View style={styles.quickActions}>
-            <TouchableOpacity style={styles.quickAction} onPress={handleScanner}>
-              <ScannerIcon size={24} color={palette.primary} />
-              <Text style={styles.quickActionText}>Scan SKU</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.quickAction} onPress={handleCamera}>
-              <CameraIcon size={24} color={palette.primary} />
-              <Text style={styles.quickActionText}>Take Photo</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.quickAction} onPress={() => setShowVoiceInput(true)}>
-              <Text style={styles.microphoneIcon}>🎤</Text>
-              <Text style={styles.quickActionText}>Add by voice</Text>
-            </TouchableOpacity>
-          </View>
 
           {skuCode ? (
             <View style={styles.skuBadge}>
@@ -1035,7 +1061,8 @@ const App = (): React.JSX.Element => {
             })()
           )}
         </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       {/* Brand Preference Dialog */}
       <BrandPreferenceDialog
@@ -1182,6 +1209,9 @@ const styles = StyleSheet.create({
     backgroundColor: palette.background,
   },
   flex: {
+    flex: 1,
+  },
+  addTaskSection: {
     flex: 1,
   },
   scrollContent: {

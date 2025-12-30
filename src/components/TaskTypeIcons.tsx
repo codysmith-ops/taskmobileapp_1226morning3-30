@@ -237,12 +237,268 @@ const AssignIcon: React.FC<IconProps> = ({ size = 24, color = '#5159B0', strokeW
   </Svg>
 );
 
+// Dental Icon
+const DentalIcon: React.FC<IconProps> = ({ size = 24, color = '#5159B0', strokeWidth = 2.5 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M12 14C13.6569 14 15 12.6569 15 11C15 9.34315 13.6569 8 12 8C10.3431 8 9 9.34315 9 11C9 12.6569 10.3431 14 12 14Z"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M8 4C6.5 4 5 5 5 7C5 9 5.5 14 7 18C8 20 9 22 10 22C11 22 11.5 20 11.5 18V11"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M16 4C17.5 4 19 5 19 7C19 9 18.5 14 17 18C16 20 15 22 14 22C13 22 12.5 20 12.5 18V11"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+// Chiropractic Icon
+const ChiropracticIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = '#5159B0',
+  strokeWidth = 2.5,
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Circle cx="12" cy="5" r="2" stroke={color} strokeWidth={strokeWidth} />
+    <Path
+      d="M12 7C10.5 7 10 8 10 9V11C10 12 10.5 13 12 13C13.5 13 14 12 14 11V9C14 8 13.5 7 12 7Z"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path d="M12 13V22" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+    <Path
+      d="M9 15L7 17M15 15L17 17"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+    />
+  </Svg>
+);
+
+// Automotive Icon
+const AutomotiveIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = '#5159B0',
+  strokeWidth = 2.5,
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M5 11L4 16V21H6V19H18V21H20V16L19 11L17 6H7L5 11Z"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Circle cx="7.5" cy="15.5" r="1.5" stroke={color} strokeWidth={strokeWidth} />
+    <Circle cx="16.5" cy="15.5" r="1.5" stroke={color} strokeWidth={strokeWidth} />
+    <Path d="M7 6H17" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+  </Svg>
+);
+
+// Home Maintenance Icon
+const HomeMaintenanceIcon: React.FC<IconProps> = ({
+  size = 24,
+  color = '#5159B0',
+  strokeWidth = 2.5,
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M3 12L12 3L21 12"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M5 10V20C5 20.5523 5.44772 21 6 21H9"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M19 10V20C19 20.5523 18.5523 21 18 21H15"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M15 13L12 16L9 13M12 16V21"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+// Pet Care Icon
+const PetCareIcon: React.FC<IconProps> = ({ size = 24, color = '#5159B0', strokeWidth = 2.5 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Circle cx="8" cy="8" r="1.5" stroke={color} strokeWidth={strokeWidth} />
+    <Circle cx="16" cy="8" r="1.5" stroke={color} strokeWidth={strokeWidth} />
+    <Circle cx="5" cy="13" r="1.5" stroke={color} strokeWidth={strokeWidth} />
+    <Circle cx="19" cy="13" r="1.5" stroke={color} strokeWidth={strokeWidth} />
+    <Path
+      d="M12 20C14.7614 20 17 17.7614 17 15C17 12.2386 14.7614 10 12 10C9.23858 10 7 12.2386 7 15C7 17.7614 9.23858 20 12 20Z"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+// Fitness Icon
+const FitnessIcon: React.FC<IconProps> = ({ size = 24, color = '#5159B0', strokeWidth = 2.5 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M6.5 6.5L7.5 5.5M17.5 6.5L16.5 5.5"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+    />
+    <Rect
+      x="2"
+      y="9"
+      width="3"
+      height="6"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Rect
+      x="19"
+      y="9"
+      width="3"
+      height="6"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Line
+      x1="5"
+      y1="12"
+      x2="19"
+      y2="12"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+    />
+  </Svg>
+);
+
+// Pharmacy Icon (different from Medical)
+const PharmacyIcon: React.FC<IconProps> = ({ size = 24, color = '#5159B0', strokeWidth = 2.5 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Path
+      d="M4 4H20C20.5523 4 21 4.44772 21 5V19C21 19.5523 20.5523 20 20 20H4C3.44772 20 3 19.5523 3 19V5C3 4.44772 3.44772 4 4 4Z"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path d="M12 8V16M8 12H16" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+  </Svg>
+);
+
+// Beauty Icon
+const BeautyIcon: React.FC<IconProps> = ({ size = 24, color = '#5159B0', strokeWidth = 2.5 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <Circle cx="12" cy="12" r="8" stroke={color} strokeWidth={strokeWidth} />
+    <Circle cx="9" cy="10" r="1" fill={color} />
+    <Circle cx="15" cy="10" r="1" fill={color} />
+    <Path
+      d="M8 15C8.5 16 10 17 12 17C14 17 15.5 16 16 15"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+    />
+  </Svg>
+);
+
 /**
  * Get icon component based on task category/keywords
  */
 export const getTaskIcon = (title: string, category?: string): React.FC<IconProps> => {
   const lowerTitle = title.toLowerCase();
   const lowerCategory = category?.toLowerCase() || '';
+
+  // New categories
+  if (
+    lowerTitle.includes('dental') ||
+    lowerTitle.includes('dentist') ||
+    lowerCategory === 'dental'
+  ) {
+    return DentalIcon;
+  }
+  if (
+    lowerTitle.includes('chiro') ||
+    lowerTitle.includes('chiropractor') ||
+    lowerCategory === 'chiropractic'
+  ) {
+    return ChiropracticIcon;
+  }
+  if (
+    lowerTitle.includes('car') ||
+    lowerTitle.includes('auto') ||
+    lowerTitle.includes('vehicle') ||
+    lowerCategory === 'automotive'
+  ) {
+    return AutomotiveIcon;
+  }
+  if (
+    lowerTitle.includes('home repair') ||
+    lowerTitle.includes('maintenance') ||
+    lowerTitle.includes('hvac') ||
+    lowerCategory === 'home-maintenance'
+  ) {
+    return HomeMaintenanceIcon;
+  }
+  if (lowerTitle.includes('pet') || lowerTitle.includes('vet') || lowerCategory === 'pet-care') {
+    return PetCareIcon;
+  }
+  if (
+    lowerTitle.includes('gym') ||
+    lowerTitle.includes('fitness') ||
+    lowerTitle.includes('workout') ||
+    lowerCategory === 'fitness'
+  ) {
+    return FitnessIcon;
+  }
+  if (
+    lowerTitle.includes('pharmacy') ||
+    lowerTitle.includes('prescription') ||
+    lowerTitle.includes('medication') ||
+    lowerCategory === 'pharmacy'
+  ) {
+    return PharmacyIcon;
+  }
+  if (
+    lowerTitle.includes('beauty') ||
+    lowerTitle.includes('salon') ||
+    lowerTitle.includes('spa') ||
+    lowerCategory === 'beauty'
+  ) {
+    return BeautyIcon;
+  }
 
   if (
     lowerTitle.includes('grocery') ||
@@ -314,6 +570,14 @@ export {
   GenericIcon,
   ScannerIcon,
   AssignIcon,
+  DentalIcon,
+  ChiropracticIcon,
+  AutomotiveIcon,
+  HomeMaintenanceIcon,
+  PetCareIcon,
+  FitnessIcon,
+  PharmacyIcon,
+  BeautyIcon,
   CameraIcon,
   CalendarIcon,
 };

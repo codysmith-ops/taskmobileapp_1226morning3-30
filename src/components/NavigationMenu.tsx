@@ -53,7 +53,8 @@ export type NavigationPage =
   | 'templates'
   | 'admin'
   | 'syncstatus'
-  | 'compliance';
+  | 'compliance'
+  | 'shoppinglist';
 
 interface NavigationMenuProps {
   currentPage: NavigationPage;
@@ -98,6 +99,8 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
     switch (page) {
       case 'home':
         return <CheckmarkIcon size={size} color={color} />;
+      case 'shoppinglist':
+        return <CheckmarkIcon size={size} color={color} />;
       case 'timeline':
         return <CalendarIcon size={size} color={color} />;
       case 'analytics':
@@ -139,6 +142,7 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
 
   const menuItems = [
     { icon: 'home', label: 'Home', page: 'home' as NavigationPage },
+    { icon: 'shoppinglist', label: 'Shopping List', page: 'shoppinglist' as NavigationPage },
     { icon: 'timeline', label: 'Timeline', page: 'timeline' as NavigationPage },
     { icon: 'analytics', label: 'Task Analytics', page: 'analytics' as NavigationPage },
     {
