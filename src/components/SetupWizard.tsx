@@ -26,6 +26,7 @@ import {
   LocationIcon,
   TargetIcon,
 } from './Icons';
+import { ChatAssistant } from './ChatAssistant';
 
 interface SetupWizardProps {
   onComplete: (userData: UserSetupData) => void;
@@ -89,12 +90,18 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
 
   // Popular credit cards
   const popularCards = [
+    'Visa Signature',
+    'Visa Infinite',
+    'Visa Platinum',
+    'American Express Gold',
+    'American Express Platinum',
+    'American Express Green',
+    'American Express Blue Cash Preferred',
+    'American Express Blue Cash Everyday',
     'Chase Sapphire Preferred',
     'Chase Sapphire Reserve',
     'Chase Freedom Unlimited',
     'Chase Freedom Flex',
-    'American Express Gold',
-    'American Express Platinum',
     'Capital One Venture',
     'Capital One Venture X',
     'Citi Double Cash',
@@ -102,6 +109,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
     'Wells Fargo Active Cash',
     'Bank of America Premium Rewards',
     'Apple Card',
+    'Other (I will enter manually)',
   ];
 
   // Common rewards types
@@ -1283,6 +1291,16 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
         <Text style={styles.subtitle}>{currentStep.subtitle}</Text>
         {currentStep.content}
       </ScrollView>
+
+      {/* Chat Assistant for Onboarding Guidance */}
+      <ChatAssistant
+        context={{
+          currentPage: 'Onboarding',
+          setupStep: step,
+          userName: name,
+        }}
+        tasks={[]}
+      />
 
       <View style={styles.footer}>
         {step > 0 && (

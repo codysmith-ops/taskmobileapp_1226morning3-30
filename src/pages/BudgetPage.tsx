@@ -179,7 +179,7 @@ export const BudgetPage: React.FC = () => {
         <View style={styles.listHeader}>
           <Text style={styles.listTitle}>Categories</Text>
           <TouchableOpacity style={styles.addButton} onPress={handleAddCategory}>
-            <Text style={styles.addButtonText}>+ Add Category</Text>
+            <Text style={styles.addButtonText}>Add category</Text>
           </TouchableOpacity>
         </View>
 

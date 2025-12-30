@@ -214,7 +214,7 @@ export const IntegrationsPage: React.FC = () => {
       {/* Add Custom Integration */}
       <View style={styles.section}>
         <TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>+ Add Custom Integration</Text>
+          <Text style={styles.addButtonText}>Add integration</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

@@ -190,7 +190,7 @@ export const FamilyPage: React.FC = () => {
             placeholderTextColor={palette.textTertiary}
           />
           <TouchableOpacity style={styles.submitButton} onPress={handleAddMember}>
-            <Text style={styles.submitButtonText}>Add Member</Text>
+            <Text style={styles.submitButtonText}>Add</Text>
           </TouchableOpacity>
         </View>
       )}

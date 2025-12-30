@@ -176,7 +176,7 @@ export const CashbackAccountsPage: React.FC = () => {
 
       <View style={styles.addButtonContainer}>
         <TouchableOpacity style={styles.addButton} onPress={handleAddNewCard}>
-          <Text style={styles.addButtonText}>+ Add Credit Card</Text>
+          <Text style={styles.addButtonText}>Add card</Text>
         </TouchableOpacity>
       </View>
 
