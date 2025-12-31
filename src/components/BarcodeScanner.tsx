@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { palette, spacing, radius, typography } from '../theme';
 
@@ -146,7 +146,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
   },
   closeButtonText: {
-    ...typography.button,
+    ...typography.body,
     color: '#fff',
+    fontWeight: '700',
+    fontSize: 16,
   },
 });

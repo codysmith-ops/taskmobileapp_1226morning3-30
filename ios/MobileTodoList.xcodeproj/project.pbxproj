@@ -15,18 +15,18 @@
 		1D6461E8E290862FF47276DD /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D60811ECE0594F689BF1170 /* Montserrat-Regular.ttf */; };
 		39F0DCC4D4CCC4DFA6B1BF44 /* Inter-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 48356660764DAD2A55EF3546 /* Inter-SemiBold.ttf */; };
 		4F841B51E585877EC83713FF /* libPods-MobileTodoList.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0777248614093CFB3B7A6B35 /* libPods-MobileTodoList.a */; };
-		568D6F36ECBD0B43FCD7207C /* Quicksand-Bold.ttf in Sources */ = {isa = PBXBuildFile; fileRef = 6C577E9C4472D517B4895D70 /* Quicksand-Bold.ttf */; };
+		5DFCF7FF2D474B53171DF79D /* Quicksand-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2320D02097BA696EC968AE28 /* Quicksand-SemiBold.ttf */; };
+		5FF0E732BFC02FBCAD954085 /* Quicksand-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C577E9C4472D517B4895D70 /* Quicksand-Bold.ttf */; };
 		6132EF182BDFF13200BBE14D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		A4D0EAD3948E3E3B432AC177 /* Quicksand-Medium.ttf in Sources */ = {isa = PBXBuildFile; fileRef = C5E81015968552822275ACDC /* Quicksand-Medium.ttf */; };
 		AEAF8AEB4A1C34C94BC61723 /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC0A029B3BF412C7C21EFE72 /* Inter-Medium.ttf */; };
 		AF138417833A814319AF2EAD /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C678838E0CB062AABDC0FC92 /* Inter-Bold.ttf */; };
-		AF2E6CBC5779D0BBCF8058C0 /* Quicksand-SemiBold.ttf in Sources */ = {isa = PBXBuildFile; fileRef = 2320D02097BA696EC968AE28 /* Quicksand-SemiBold.ttf */; };
+		C1ACF1DC349525AEEBC1261D /* Quicksand-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E3B666BC85FFB47B7856EB4B /* Quicksand-Regular.ttf */; };
 		C316BB53FEDD955832C099A3 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2F9DABBB25074FB793AD6FFA /* Montserrat-Bold.ttf */; };
 		C71E5DFF87B35FC907BAE516 /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1A98B9DF7BB582A0E2037C39 /* Montserrat-SemiBold.ttf */; };
 		CDB578352458C7BD8466E636 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 815DE7EA1E3C02C8FCA95E4D /* Inter-Regular.ttf */; };
+		E2D63CE1FCC6EEAE8496E3C5 /* Quicksand-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C5E81015968552822275ACDC /* Quicksand-Medium.ttf */; };
 		ED3245DB7C70F50576FFB810 /* libPods-MobileTodoList-MobileTodoListTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A44FC53FACEDC5E2C265007A /* libPods-MobileTodoList-MobileTodoListTests.a */; };
-		FEC299D0FC22FA39AC96C143 /* Quicksand-Regular.ttf in Sources */ = {isa = PBXBuildFile; fileRef = E3B666BC85FFB47B7856EB4B /* Quicksand-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,24 +50,24 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MobileTodoList/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MobileTodoList/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MobileTodoList/main.m; sourceTree = "<group>"; };
-		1A98B9DF7BB582A0E2037C39 /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Montserrat-SemiBold.ttf"; path = "../ios/MobileTodoList/Fonts/Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
-		2320D02097BA696EC968AE28 /* Quicksand-SemiBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Quicksand-SemiBold.ttf"; sourceTree = "<group>"; };
-		2F9DABBB25074FB793AD6FFA /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Montserrat-Bold.ttf"; path = "../ios/MobileTodoList/Fonts/Montserrat-Bold.ttf"; sourceTree = "<group>"; };
+		1A98B9DF7BB582A0E2037C39 /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Montserrat-SemiBold.ttf"; path = "MobileTodoList/Fonts/Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
+		2320D02097BA696EC968AE28 /* Quicksand-SemiBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "MobileTodoList/Fonts/Quicksand-SemiBold.ttf"; sourceTree = "<group>"; };
+		2F9DABBB25074FB793AD6FFA /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Montserrat-Bold.ttf"; path = "MobileTodoList/Fonts/Montserrat-Bold.ttf"; sourceTree = "<group>"; };
 		404FFF856437CBAD041AC762 /* Pods-MobileTodoList-MobileTodoListTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileTodoList-MobileTodoListTests.debug.xcconfig"; path = "Target Support Files/Pods-MobileTodoList-MobileTodoListTests/Pods-MobileTodoList-MobileTodoListTests.debug.xcconfig"; sourceTree = "<group>"; };
-		48356660764DAD2A55EF3546 /* Inter-SemiBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Inter-SemiBold.ttf"; path = "../ios/MobileTodoList/Fonts/Inter-SemiBold.ttf"; sourceTree = "<group>"; };
+		48356660764DAD2A55EF3546 /* Inter-SemiBold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Inter-SemiBold.ttf"; path = "MobileTodoList/Fonts/Inter-SemiBold.ttf"; sourceTree = "<group>"; };
 		6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = MobileTodoList/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		662B3D7D36520B63E1455383 /* Pods-MobileTodoList-MobileTodoListTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileTodoList-MobileTodoListTests.release.xcconfig"; path = "Target Support Files/Pods-MobileTodoList-MobileTodoListTests/Pods-MobileTodoList-MobileTodoListTests.release.xcconfig"; sourceTree = "<group>"; };
-		6C577E9C4472D517B4895D70 /* Quicksand-Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Quicksand-Bold.ttf"; sourceTree = "<group>"; };
-		815DE7EA1E3C02C8FCA95E4D /* Inter-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Inter-Regular.ttf"; path = "../ios/MobileTodoList/Fonts/Inter-Regular.ttf"; sourceTree = "<group>"; };
+		6C577E9C4472D517B4895D70 /* Quicksand-Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "MobileTodoList/Fonts/Quicksand-Bold.ttf"; sourceTree = "<group>"; };
+		815DE7EA1E3C02C8FCA95E4D /* Inter-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Inter-Regular.ttf"; path = "MobileTodoList/Fonts/Inter-Regular.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MobileTodoList/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		84B57D3F34638356DEF5615E /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Montserrat-Medium.ttf"; path = "../ios/MobileTodoList/Fonts/Montserrat-Medium.ttf"; sourceTree = "<group>"; };
-		9D60811ECE0594F689BF1170 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Montserrat-Regular.ttf"; path = "../ios/MobileTodoList/Fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
+		84B57D3F34638356DEF5615E /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Montserrat-Medium.ttf"; path = "MobileTodoList/Fonts/Montserrat-Medium.ttf"; sourceTree = "<group>"; };
+		9D60811ECE0594F689BF1170 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Montserrat-Regular.ttf"; path = "MobileTodoList/Fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		9E0AD25945E17FEDC09C675E /* Pods-MobileTodoList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileTodoList.release.xcconfig"; path = "Target Support Files/Pods-MobileTodoList/Pods-MobileTodoList.release.xcconfig"; sourceTree = "<group>"; };
 		A44FC53FACEDC5E2C265007A /* libPods-MobileTodoList-MobileTodoListTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MobileTodoList-MobileTodoListTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C5E81015968552822275ACDC /* Quicksand-Medium.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Quicksand-Medium.ttf"; sourceTree = "<group>"; };
-		C678838E0CB062AABDC0FC92 /* Inter-Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Inter-Bold.ttf"; path = "../ios/MobileTodoList/Fonts/Inter-Bold.ttf"; sourceTree = "<group>"; };
-		DC0A029B3BF412C7C21EFE72 /* Inter-Medium.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Inter-Medium.ttf"; path = "../ios/MobileTodoList/Fonts/Inter-Medium.ttf"; sourceTree = "<group>"; };
-		E3B666BC85FFB47B7856EB4B /* Quicksand-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "Quicksand-Regular.ttf"; sourceTree = "<group>"; };
+		C5E81015968552822275ACDC /* Quicksand-Medium.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "MobileTodoList/Fonts/Quicksand-Medium.ttf"; sourceTree = "<group>"; };
+		C678838E0CB062AABDC0FC92 /* Inter-Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Inter-Bold.ttf"; path = "MobileTodoList/Fonts/Inter-Bold.ttf"; sourceTree = "<group>"; };
+		DC0A029B3BF412C7C21EFE72 /* Inter-Medium.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = "Inter-Medium.ttf"; path = "MobileTodoList/Fonts/Inter-Medium.ttf"; sourceTree = "<group>"; };
+		E3B666BC85FFB47B7856EB4B /* Quicksand-Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = "MobileTodoList/Fonts/Quicksand-Regular.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EFC722150502DC703FBBDEB6 /* Pods-MobileTodoList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileTodoList.debug.xcconfig"; path = "Target Support Files/Pods-MobileTodoList/Pods-MobileTodoList.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -300,6 +300,10 @@
 				C71E5DFF87B35FC907BAE516 /* Montserrat-SemiBold.ttf in Resources */,
 				1D6461E8E290862FF47276DD /* Montserrat-Regular.ttf in Resources */,
 				39F0DCC4D4CCC4DFA6B1BF44 /* Inter-SemiBold.ttf in Resources */,
+				C1ACF1DC349525AEEBC1261D /* Quicksand-Regular.ttf in Resources */,
+				E2D63CE1FCC6EEAE8496E3C5 /* Quicksand-Medium.ttf in Resources */,
+				5DFCF7FF2D474B53171DF79D /* Quicksand-SemiBold.ttf in Resources */,
+				5FF0E732BFC02FBCAD954085 /* Quicksand-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,10 +457,6 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				FEC299D0FC22FA39AC96C143 /* Quicksand-Regular.ttf in Sources */,
-				A4D0EAD3948E3E3B432AC177 /* Quicksand-Medium.ttf in Sources */,
-				AF2E6CBC5779D0BBCF8058C0 /* Quicksand-SemiBold.ttf in Sources */,
-				568D6F36ECBD0B43FCD7207C /* Quicksand-Bold.ttf in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

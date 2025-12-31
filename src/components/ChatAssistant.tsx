@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     color: palette.text,
   },
   headerSubtitle: {
-    ...typography.caption,
+    ...typography.body,
     color: palette.textSecondary,
   },
   closeButton: {
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     color: palette.text,
   },
   messageTime: {
-    ...typography.caption,
+    ...typography.body,
     fontSize: 11,
   },
   userTime: {
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   suggestionsLabel: {
-    ...typography.caption,
+    ...typography.body,
     color: palette.textSecondary,
     marginBottom: spacing.xs,
   },

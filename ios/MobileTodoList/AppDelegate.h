@@ -1,4 +1,4 @@
-#import <React-RCTAppDelegate/RCTAppDelegate.h>
+#import <RCTAppDelegate.h>
 #import <UIKit/UIKit.h>
 #import <UserNotifications/UserNotifications.h>
 

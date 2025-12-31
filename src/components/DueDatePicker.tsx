@@ -145,7 +145,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButtonText: {
-    ...typography.button,
+    ...typography.body,
+    fontWeight: '700',
     color: palette.error,
   },
 });

@@ -113,6 +113,12 @@ export const typography = {
     textTransform: 'uppercase' as const,
     letterSpacing: 1,
   },
+  caption: {
+    fontSize: 12,
+    fontWeight: '400' as const,
+    lineHeight: 16,
+    fontFamily: 'Inter-Regular',
+  },
 };
 
 // Shadow system per design system specifications

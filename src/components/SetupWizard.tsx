@@ -2114,7 +2114,7 @@ const styles = StyleSheet.create({
     color: palette.textSecondary,
   },
   readOnlyInput: {
-    backgroundColor: palette.backgroundSecondary,
+    backgroundColor: palette.backgroundDark,
     justifyContent: 'center',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,

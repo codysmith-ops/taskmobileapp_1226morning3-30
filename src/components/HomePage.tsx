@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     backgroundColor: palette.surface,
     padding: spacing.lg,
     borderRadius: radius.lg,
-    ...shadow.sm,
+    ...shadow.light,
     marginBottom: spacing.xl,
   },
   goalHeader: {
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     height: 8,
-    backgroundColor: palette.backgroundSecondary,
+    backgroundColor: palette.backgroundDark,
     borderRadius: radius.full,
     overflow: 'hidden',
     marginBottom: spacing.sm,
