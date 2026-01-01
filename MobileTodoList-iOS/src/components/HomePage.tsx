@@ -8,7 +8,7 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import { palette, spacing, radius, typography, shadow } from '../theme';
+import { EllioColors, EllioSpacing, EllioRadius, EllioTypography, EllioShadow } from '../theme/ellioTokens';
 import { Task } from '../store';
 import {
   ChartIcon,
@@ -148,7 +148,7 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
           onPress={() => onNavigate('analytics')}
         >
           <View style={styles.statIcon}>
-            <CheckmarkIcon size={24} color={palette.primary} />
+            <CheckmarkIcon size={24} color={EllioColors.primary.main} />
           </View>
           <Text style={styles.statValue}>{completedThisWeek}</Text>
           <Text style={styles.statLabel}>Completed this week</Text>
@@ -158,7 +158,7 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
         {/* Upcoming Card */}
         <TouchableOpacity style={styles.statCard} onPress={() => onNavigate('calendar')}>
           <View style={styles.statIcon}>
-            <CalendarIcon size={20} color={palette.warning} />
+            <CalendarIcon size={20} color={EllioColors.states.warning.main} />
           </View>
           <Text style={styles.statValueSmall}>{upcomingTasks}</Text>
           <Text style={styles.statLabelSmall}>Due soon</Text>
@@ -168,7 +168,7 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
         <TouchableOpacity style={styles.statCard} onPress={() => onNavigate('savingsdashboard')}>
           <View style={styles.cardHeader}>
             <View style={styles.statIcon}>
-              <DollarIcon size={20} color={palette.success} />
+              <DollarIcon size={20} color={EllioColors.states.success.main} />
             </View>
             <InfoTooltip
               title="How Money Saved Works"
@@ -185,7 +185,7 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
         <TouchableOpacity style={styles.statCard} onPress={() => onNavigate('cashback')}>
           <View style={styles.cardHeader}>
             <View style={styles.statIcon}>
-              <TrendUpIcon size={20} color={palette.primary} />
+              <TrendUpIcon size={20} color={EllioColors.primary.main} />
             </View>
             <InfoTooltip
               title="How Cashback Works"
@@ -201,7 +201,7 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
         {/* Total Tasks Card */}
         <TouchableOpacity style={styles.statCard} onPress={() => onNavigate('analytics')}>
           <View style={styles.statIcon}>
-            <ChartIcon size={20} color={palette.textSecondary} />
+            <ChartIcon size={20} color={EllioColors.text.secondary} />
           </View>
           <Text style={styles.statValueSmall}>{totalTasks}</Text>
           <Text style={styles.statLabelSmall}>Total tasks</Text>
@@ -212,7 +212,7 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
       <View style={styles.goalCard}>
         <View style={styles.goalHeader}>
           <View style={styles.goalTitleRow}>
-            <TargetIcon size={20} color={palette.primary} />
+            <TargetIcon size={20} color={EllioColors.primary.main} />
             <Text style={styles.goalTitle}>Weekly Savings Goal</Text>
             <InfoTooltip
               title="How Goal Progress Works"
@@ -240,7 +240,7 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
               onChangeText={setWeeklySavingsGoal}
               keyboardType="decimal-pad"
               placeholder="150"
-              placeholderTextColor={palette.textTertiary}
+              placeholderTextColor={EllioColors.text.tertiary}
             />
             <Text style={styles.perWeek}>/ week</Text>
           </View>
@@ -320,57 +320,57 @@ const styles = StyleSheet.create({
     backgroundColor: palette.background,
   },
   content: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
+    paddingHorizontal: EllioSpacing.lg,
+    paddingTop: EllioSpacing.lg,
   },
   trialBanner: {
     backgroundColor: '#FEF3C7',
-    padding: spacing.md,
-    borderRadius: radius.md,
+    padding: EllioSpacing.md,
+    borderRadius: EllioRadius.md,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.lg,
-    ...shadow.sm,
+    marginBottom: EllioSpacing.lg,
+    ...EllioShadow.light,
   },
   trialBannerIcon: {
     fontSize: 28,
-    marginRight: spacing.md,
+    marginRight: EllioSpacing.md,
   },
   trialBannerContent: {
     flex: 1,
   },
   trialBannerText: {
-    ...typography.bodyBold,
+    ...EllioTypography.bodyBold,
     color: '#92400E',
-    marginBottom: spacing.xs,
+    marginBottom: EllioSpacing.xs,
   },
   trialBannerAction: {
-    ...typography.caption,
-    color: palette.primary,
+    ...EllioTypography.caption,
+    color: EllioColors.primary.main,
     fontWeight: '600',
   },
   header: {
-    marginBottom: spacing.xl,
+    marginBottom: EllioSpacing.xl,
   },
   greeting: {
-    ...typography.h1,
+    ...EllioTypography.h1,
     color: palette.text,
-    marginBottom: spacing.xs,
+    marginBottom: EllioSpacing.xs,
   },
   subtitle: {
-    ...typography.body,
-    color: palette.textSecondary,
+    ...EllioTypography.body,
+    color: EllioColors.text.secondary,
   },
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.md,
-    marginBottom: spacing.xl,
+    gap: EllioSpacing.md,
+    marginBottom: EllioSpacing.xl,
   },
   statCard: {
-    backgroundColor: palette.surface,
-    padding: spacing.md,
-    borderRadius: radius.lg,
+    backgroundColor: EllioColors.surface.background,
+    padding: EllioSpacing.md,
+    borderRadius: EllioRadius.lg,
     ...shadow.light,
     width: '48%',
   },
@@ -381,176 +381,176 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: spacing.sm,
+    marginBottom: EllioSpacing.sm,
   },
   statIcon: {
-    marginBottom: spacing.sm,
+    marginBottom: EllioSpacing.sm,
   },
   statValue: {
-    ...typography.h1,
+    ...EllioTypography.h1,
     color: palette.text,
-    marginBottom: spacing.xs,
+    marginBottom: EllioSpacing.xs,
   },
   statLabel: {
-    ...typography.body,
-    color: palette.textSecondary,
-    marginBottom: spacing.xs,
+    ...EllioTypography.body,
+    color: EllioColors.text.secondary,
+    marginBottom: EllioSpacing.xs,
   },
   statDetail: {
-    ...typography.caption,
-    color: palette.textTertiary,
+    ...EllioTypography.caption,
+    color: EllioColors.text.tertiary,
   },
   statValueSmall: {
-    ...typography.h2,
+    ...EllioTypography.h2,
     color: palette.text,
-    marginBottom: spacing.xs,
+    marginBottom: EllioSpacing.xs,
   },
   statLabelSmall: {
-    ...typography.caption,
-    color: palette.textSecondary,
+    ...EllioTypography.caption,
+    color: EllioColors.text.secondary,
   },
   goalCard: {
-    backgroundColor: palette.surface,
-    padding: spacing.lg,
-    borderRadius: radius.lg,
-    ...shadow.sm,
-    marginBottom: spacing.xl,
+    backgroundColor: EllioColors.surface.background,
+    padding: EllioSpacing.lg,
+    borderRadius: EllioRadius.lg,
+    ...EllioShadow.light,
+    marginBottom: EllioSpacing.xl,
   },
   goalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    marginBottom: EllioSpacing.md,
   },
   goalTitleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: EllioSpacing.sm,
   },
   goalTitle: {
-    ...typography.h3,
+    ...EllioTypography.h3,
     color: palette.text,
   },
   editButton: {
-    ...typography.bodyBold,
-    color: palette.primary,
+    ...EllioTypography.bodyBold,
+    color: EllioColors.primary.main,
   },
   saveButton: {
-    ...typography.bodyBold,
-    color: palette.success,
+    ...EllioTypography.bodyBold,
+    color: EllioColors.states.success.main,
   },
   goalAmount: {
-    ...typography.h2,
+    ...EllioTypography.h2,
     color: palette.text,
-    marginBottom: spacing.md,
+    marginBottom: EllioSpacing.md,
   },
   goalInputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: spacing.md,
+    marginBottom: EllioSpacing.md,
   },
   dollarSign: {
-    ...typography.h2,
+    ...EllioTypography.h2,
     color: palette.text,
-    marginRight: spacing.xs,
+    marginRight: EllioSpacing.xs,
   },
   goalInput: {
-    ...typography.h2,
+    ...EllioTypography.h2,
     color: palette.text,
     borderBottomWidth: 2,
-    borderBottomColor: palette.primary,
-    paddingVertical: spacing.xs,
+    borderBottomColor: EllioColors.primary.main,
+    paddingVertical: EllioSpacing.xs,
     minWidth: 100,
   },
   perWeek: {
-    ...typography.body,
-    color: palette.textSecondary,
-    marginLeft: spacing.sm,
+    ...EllioTypography.body,
+    color: EllioColors.text.secondary,
+    marginLeft: EllioSpacing.sm,
   },
   progressContainer: {
-    marginTop: spacing.sm,
+    marginTop: EllioSpacing.sm,
   },
   progressBar: {
     height: 8,
-    backgroundColor: palette.backgroundSecondary,
-    borderRadius: radius.full,
+    backgroundColor: EllioColors.surface.elevated,
+    borderRadius: EllioRadius.full,
     overflow: 'hidden',
-    marginBottom: spacing.sm,
+    marginBottom: EllioSpacing.sm,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: palette.success,
+    backgroundColor: EllioColors.states.success.main,
   },
   progressText: {
-    ...typography.secondary,
-    color: palette.textSecondary,
+    ...EllioTypography.secondary,
+    color: EllioColors.text.secondary,
     textAlign: 'center',
   },
   goalStatusMessage: {
-    ...typography.caption,
-    color: palette.primary,
+    ...EllioTypography.caption,
+    color: EllioColors.primary.main,
     textAlign: 'center',
-    marginTop: spacing.xs,
+    marginTop: EllioSpacing.xs,
     fontStyle: 'italic',
   },
   encouragementText: {
-    ...typography.bodyBold,
-    color: palette.warning,
+    ...EllioTypography.bodyBold,
+    color: EllioColors.states.warning.main,
     textAlign: 'center',
-    marginTop: spacing.xs,
+    marginTop: EllioSpacing.xs,
   },
   goalAchieved: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.xs,
-    marginTop: spacing.md,
-    paddingTop: spacing.md,
+    gap: EllioSpacing.xs,
+    marginTop: EllioSpacing.md,
+    paddingTop: EllioSpacing.md,
     borderTopWidth: 1,
-    borderTopColor: palette.border,
+    borderTopColor: EllioColors.border.standard,
   },
   celebrationEmoji: {
     fontSize: 20,
   },
   goalAchievedText: {
-    ...typography.bodyBold,
-    color: palette.success,
+    ...EllioTypography.bodyBold,
+    color: EllioColors.states.success.main,
     flex: 1,
   },
   bonusText: {
-    ...typography.secondary,
-    color: palette.success,
+    ...EllioTypography.secondary,
+    color: EllioColors.states.success.main,
     textAlign: 'center',
-    marginTop: spacing.xs,
+    marginTop: EllioSpacing.xs,
     fontWeight: '600',
   },
   sectionTitle: {
-    ...typography.h3,
+    ...EllioTypography.h3,
     color: palette.text,
-    marginBottom: spacing.md,
+    marginBottom: EllioSpacing.md,
   },
   quickActions: {
-    marginBottom: spacing.xl,
+    marginBottom: EllioSpacing.xl,
   },
   actionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.md,
+    gap: EllioSpacing.md,
   },
   actionButton: {
-    backgroundColor: palette.surface,
+    backgroundColor: EllioColors.surface.background,
     width: '48%',
-    padding: spacing.lg,
-    borderRadius: radius.lg,
+    padding: EllioSpacing.lg,
+    borderRadius: EllioRadius.lg,
     alignItems: 'center',
-    ...shadow.sm,
+    ...EllioShadow.light,
   },
   actionIcon: {
     fontSize: 32,
-    marginBottom: spacing.sm,
+    marginBottom: EllioSpacing.sm,
   },
   actionText: {
-    ...typography.body,
+    ...EllioTypography.body,
     color: palette.text,
   },
   bottomSpacer: {
