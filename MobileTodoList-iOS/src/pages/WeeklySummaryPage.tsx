@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Share, Alert } from 'react-native';
 import { useTodoStore } from '../store';
 import { palette, spacing, typography, radius, shadow } from '../theme';
@@ -16,6 +16,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const WeeklySummaryPage: React.FC = () => {
   const { tasks } = useTodoStore();
   const [selectedGoals, setSelectedGoals] = useState<Set<string>>(new Set());
+
+  // Load saved goals on mount
+  useEffect(() => {
+    loadSavedGoals();
+  }, []);
+
+  const loadSavedGoals = async () => {
+    try {
+      const saved = await AsyncStorage.getItem('@ellio_next_week_goals');
+      if (saved) {
+        const goalsArray = JSON.parse(saved);
+        setSelectedGoals(new Set(goalsArray));
+      }
+    } catch (error) {
+      console.error('Failed to load saved goals:', error);
+    }
+  };
 
   // Calculate weekly metrics
   const now = new Date();
