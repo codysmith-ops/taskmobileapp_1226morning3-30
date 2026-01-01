@@ -114,7 +114,7 @@ export const EllioOnboarding = {
     items: [
       'Scan receipts to track spending',
       'Voice-add tasks naturally',
-      'Suggest what's next',
+      "Suggest what's next",
     ],
     button: 'Start using Ellio',
   },
@@ -177,7 +177,7 @@ export const EllioLabels = {
   
   // Empty states
   allClear: 'All clear.',
-  noTasksYet: 'Add one thing you'd like to handle next.',
+  noTasksYet: "Add one thing you'd like to handle next.",
   
   // Date chips
   today: 'Today',
@@ -212,7 +212,7 @@ export const EllioMessages = {
   // Empty states
   emptyHome: {
     title: 'All clear.',
-    body: 'Add one thing you'd like to handle next.',
+    body: "Add one thing you'd like to handle next.",
   },
   emptyBudget: {
     title: 'No budget set yet.',
@@ -228,11 +228,11 @@ export const EllioMessages = {
   },
   emptyFamily: {
     title: 'Just you for now.',
-    body: 'Invite family members when you're ready.',
+    body: "Invite family members when you're ready.",
   },
   emptyTimeline: {
     title: 'Your timeline starts now.',
-    body: 'Add a task and it'll show up here.',
+    body: "Add a task and it'll show up here.",
   },
   
   // Data transparency
@@ -303,7 +303,7 @@ export const EllioEmptyStates = {
   home: {
     icon: '✓',
     title: 'All clear.',
-    body: 'Add one thing you'd like to handle next.',
+    body: "Add one thing you'd like to handle next.",
     action: { label: 'Add', onPress: 'openAddTask' },
   },
   
@@ -317,7 +317,7 @@ export const EllioEmptyStates = {
   timeline: {
     icon: '📅',
     title: 'Your timeline starts now.',
-    body: 'Add a task and it'll show up here.',
+    body: "Add a task and it'll show up here.",
     action: { label: 'Add', onPress: 'openAddTask' },
   },
   
@@ -345,7 +345,7 @@ export const EllioEmptyStates = {
   family: {
     icon: '👥',
     title: 'Just you for now.',
-    body: 'Invite family members when you're ready.',
+    body: "Invite family members when you're ready.",
     action: { label: 'Invite', onPress: 'openInvite' },
   },
   
@@ -365,7 +365,7 @@ export const EllioEmptyStates = {
   team: {
     icon: '👤',
     title: 'Just you for now.',
-    body: 'Invite team members when you're ready.',
+    body: "Invite team members when you're ready.",
     action: { label: 'Invite', onPress: 'openInvite' },
   },
   

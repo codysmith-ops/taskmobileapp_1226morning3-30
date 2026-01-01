@@ -891,6 +891,7 @@ const App = (): React.JSX.Element => {
             <Text style={styles.placeholderTitle}>Help & Support</Text>
             <Text style={styles.placeholderSubtitle}>Documentation and support coming soon</Text>
           </View>
+        )}
         </PageTipContainer>
       </SafeAreaView>
     );
@@ -902,9 +903,8 @@ const App = (): React.JSX.Element => {
       <StatusBar barStyle="dark-content" backgroundColor={palette.background} />
       <NavigationMenu currentPage={currentPage} onNavigate={setCurrentPage} userName={userName} />
 
-      <PageTipContainer currentPage={currentPage}>      <NavigationMenu currentPage={currentPage} onNavigate={setCurrentPage} userName={userName} />
-
-      <HomePage tasks={tasks} userName={userName} onNavigate={setCurrentPage} />
+      <PageTipContainer currentPage={currentPage}>
+        <HomePage tasks={tasks} userName={userName} onNavigate={setCurrentPage} />
 
       {/* Add Task Section - Floating above home */}
       <View style={styles.addTaskSection}>

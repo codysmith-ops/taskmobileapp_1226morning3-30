@@ -35,9 +35,9 @@ export const EMPTY_STATE_CONFIGS: Record<
     icon: '💰',
     title: 'Set your first budget',
     message:
-      'Set a budget to track your spending and get alerts when you\'re close to limits.',
+      "Set a budget to track your spending and get alerts when you're close to limits.",
     actionText: 'Set Your First Budget',
-    helpText: 'Not sure where to start? Most people begin with a $500/month grocery budget.',
+    helpText: "Not sure where to start? Most people begin with a $500/month grocery budget.",
   },
   insights: {
     icon: '📊',
@@ -59,7 +59,7 @@ export const EMPTY_STATE_CONFIGS: Record<
   cashback_accounts: {
     icon: '💸',
     title: 'Connect cashback apps',
-    message: 'No cashback accounts connected yet. When you're ready, connect apps like:',
+    message: "No cashback accounts connected yet. When you're ready, connect apps like:",
     bulletPoints: ['Rakuten', 'Ibotta', 'Fetch Rewards', 'Honey'],
     actionText: 'Browse Integrations',
   },
