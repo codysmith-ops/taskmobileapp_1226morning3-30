@@ -8,7 +8,7 @@ import {
   Modal,
   Animated,
 } from 'react-native';
-import { palette, spacing, radius, typography } from '../theme';
+import { EllioColors, EllioSpacing, EllioRadius, EllioTypography } from '../theme/ellioTokens';
 import {
   ChartIcon,
   DollarIcon,
@@ -93,7 +93,7 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
   };
 
   const getIconForPage = (page: NavigationPage, isActive: boolean) => {
-    const color = isActive ? palette.primary : palette.textSecondary;
+    const color = isActive ? EllioColors.primary.main : EllioColors.text.secondary;
     const size = 20;
 
     switch (page) {
@@ -254,14 +254,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    backgroundColor: palette.surface,
+    paddingHorizontal: EllioSpacing.md,
+    paddingVertical: EllioSpacing.md,
+    backgroundColor: EllioColors.surface.background,
     borderBottomWidth: 1,
-    borderBottomColor: palette.border,
+    borderBottomColor: EllioColors.border.standard,
   },
   menuButton: {
-    padding: spacing.sm,
+    padding: EllioSpacing.sm,
   },
   menuIcon: {
     gap: 4,
@@ -269,15 +269,15 @@ const styles = StyleSheet.create({
   menuLine: {
     width: 24,
     height: 3,
-    backgroundColor: palette.primary,
+    backgroundColor: EllioColors.primary.main,
     borderRadius: 2,
   },
   headerTitle: {
-    ...typography.subtitle,
-    color: palette.text,
+    ...EllioTypography.subtitle,
+    color: EllioColors.text.primary,
     fontFamily: 'Quicksand-Bold',
     fontSize: 20,
-    marginLeft: spacing.xs,
+    marginLeft: EllioSpacing.xs,
   },
   logoContainer: {
     flexDirection: 'row',
@@ -290,15 +290,15 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: palette.overlay,
+    backgroundColor: EllioColors.overlay.standard,
   },
   menuContainer: {
     position: 'absolute',
     top: 60,
-    left: spacing.md,
-    right: spacing.md,
-    backgroundColor: palette.surface,
-    borderRadius: radius.card,
+    left: EllioSpacing.md,
+    right: EllioSpacing.md,
+    backgroundColor: EllioColors.surface.background,
+    borderRadius: EllioRadius.card,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -307,23 +307,23 @@ const styles = StyleSheet.create({
     maxHeight: '80%',
   },
   menuHeader: {
-    padding: spacing.lg,
-    backgroundColor: palette.primary,
-    borderTopLeftRadius: radius.card,
-    borderTopRightRadius: radius.card,
+    padding: EllioSpacing.lg,
+    backgroundColor: EllioColors.primary.main,
+    borderTopLeftRadius: EllioRadius.card,
+    borderTopRightRadius: EllioRadius.card,
   },
   menuUserName: {
-    ...typography.subtitle,
-    color: palette.surface,
+    ...EllioTypography.subtitle,
+    color: EllioColors.surface.background,
     marginBottom: 4,
   },
   menuUserEmail: {
-    ...typography.secondary,
-    color: palette.labelOnDark,
+    ...EllioTypography.secondary,
+    color: EllioColors.primary.light,
   },
   menuDivider: {
     height: 1,
-    backgroundColor: palette.border,
+    backgroundColor: EllioColors.border.standard,
   },
   menuItems: {
     maxHeight: 400,
@@ -331,11 +331,11 @@ const styles = StyleSheet.create({
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: spacing.md,
-    gap: spacing.md,
+    padding: EllioSpacing.md,
+    gap: EllioSpacing.md,
   },
   menuItemActive: {
-    backgroundColor: palette.infoLight,
+    backgroundColor: EllioColors.states.info.light,
   },
   menuItemIcon: {
     width: 32,
@@ -343,18 +343,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   menuItemLabel: {
-    ...typography.body,
-    color: palette.text,
+    ...EllioTypography.body,
+    color: EllioColors.text.primary,
     flex: 1,
   },
   menuItemLabelActive: {
-    ...typography.bodyBold,
-    color: palette.primary,
+    ...EllioTypography.bodyBold,
+    color: EllioColors.primary.main,
   },
   activeIndicator: {
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: palette.primary,
+    backgroundColor: EllioColors.primary.main,
   },
 });
