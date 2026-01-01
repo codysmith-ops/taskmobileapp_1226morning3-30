@@ -39,7 +39,21 @@ export type UserGoal =
   | 'collaborate'
   | 'organize'
   | 'efficiency';
-export type Category = 'groceries' | 'hardware' | 'errands' | 'medical' | 'shopping' | 'returns';
+export type Category = 
+  | 'groceries' 
+  | 'hardware' 
+  | 'errands' 
+  | 'medical' 
+  | 'shopping' 
+  | 'returns'
+  | 'dental'
+  | 'chiropractic'
+  | 'automotive'
+  | 'home-maintenance'
+  | 'pet-care'
+  | 'fitness'
+  | 'pharmacy'
+  | 'beauty';
 
 export interface UserSetupData {
   name: string;
@@ -865,7 +879,22 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
           </Text>
           <View style={styles.categoryGrid}>
             {(
-              ['groceries', 'hardware', 'errands', 'medical', 'shopping', 'returns'] as Category[]
+              [
+                'groceries', 
+                'hardware', 
+                'errands', 
+                'medical', 
+                'shopping', 
+                'returns',
+                'dental',
+                'chiropractic',
+                'automotive',
+                'home-maintenance',
+                'pet-care',
+                'fitness',
+                'pharmacy',
+                'beauty'
+              ] as Category[]
             ).map(category => (
               <TouchableOpacity
                 key={category}
@@ -936,6 +965,86 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
                       }
                     />
                   )}
+                  {category === 'dental' && (
+                    <CalendarIcon
+                      size={32}
+                      color={
+                        selectedCategories.includes(category)
+                          ? palette.primary
+                          : palette.textSecondary
+                      }
+                    />
+                  )}
+                  {category === 'chiropractic' && (
+                    <CheckmarkIcon
+                      size={32}
+                      color={
+                        selectedCategories.includes(category)
+                          ? palette.primary
+                          : palette.textSecondary
+                      }
+                    />
+                  )}
+                  {category === 'automotive' && (
+                    <LocationIcon
+                      size={32}
+                      color={
+                        selectedCategories.includes(category)
+                          ? palette.primary
+                          : palette.textSecondary
+                      }
+                    />
+                  )}
+                  {category === 'home-maintenance' && (
+                    <TargetIcon
+                      size={32}
+                      color={
+                        selectedCategories.includes(category)
+                          ? palette.primary
+                          : palette.textSecondary
+                      }
+                    />
+                  )}
+                  {category === 'pet-care' && (
+                    <ChartIcon
+                      size={32}
+                      color={
+                        selectedCategories.includes(category)
+                          ? palette.primary
+                          : palette.textSecondary
+                      }
+                    />
+                  )}
+                  {category === 'fitness' && (
+                    <DollarIcon
+                      size={32}
+                      color={
+                        selectedCategories.includes(category)
+                          ? palette.primary
+                          : palette.textSecondary
+                      }
+                    />
+                  )}
+                  {category === 'pharmacy' && (
+                    <CalendarIcon
+                      size={32}
+                      color={
+                        selectedCategories.includes(category)
+                          ? palette.primary
+                          : palette.textSecondary
+                      }
+                    />
+                  )}
+                  {category === 'beauty' && (
+                    <CameraIcon
+                      size={32}
+                      color={
+                        selectedCategories.includes(category)
+                          ? palette.primary
+                          : palette.textSecondary
+                      }
+                    />
+                  )}
                 </View>
                 <Text
                   style={[
@@ -943,7 +1052,11 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
                     selectedCategories.includes(category) && styles.categoryLabelActive,
                   ]}
                 >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                  {category === 'home-maintenance' 
+                    ? 'Home Maintenance' 
+                    : category === 'pet-care'
+                    ? 'Pet Care'
+                    : category.charAt(0).toUpperCase() + category.slice(1)}
                 </Text>
                 {selectedCategories.includes(category) && (
                   <View style={styles.categoryCheckmark}>

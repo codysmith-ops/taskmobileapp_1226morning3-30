@@ -94,6 +94,18 @@ export function getAssistantResponse(userMessage: string, context: ChatContext):
     return getFeatureExplanation('categories');
   }
 
+  // Savings and money-saving tips
+  if (
+    query.includes('save money') ||
+    query.includes('savings') ||
+    query.includes('save more') ||
+    query.includes('budget') ||
+    query.includes('cheaper') ||
+    query.includes('generic')
+  ) {
+    return getSavingsSuggestions();
+  }
+
   // How-to questions
   if (query.includes('how') && query.includes('add task')) {
     return getHowToResponse('add_task');
@@ -131,6 +143,31 @@ export function getAssistantResponse(userMessage: string, context: ChatContext):
 
   // Default response
   return getDefaultResponse(userMessage);
+}
+
+/**
+ * Provide money-saving suggestions and tips
+ */
+function getSavingsSuggestions(): ChatMessage {
+  const tips = [
+    `💰 **Smart Savings Tips**\n\n**Buy Generic Brands:**\n• Store brands are 20-40% cheaper\n• Same quality, different label\n• Try: Kirkland (Costco), Great Value (Walmart), 365 (Whole Foods)\n\n**Alternatives & Substitutes:**\n• Frozen veggies = 50% cheaper than fresh\n• Dried beans instead of canned\n• Butter instead of specialty spreads\n• Oats instead of cereal\n\n**Other Ways to Save:**\n• Shop weekly ads\n• Use coupons (digital + paper)\n• Buy in bulk for non-perishables\n• Shop discount grocers (Aldi, Lidl)\n• Meal prep to reduce waste\n\n${EllioVoice.signatures.whenReady}`,
+
+    `🛒 **Grocery Savings Strategies**\n\n**1. Choose Generic:**\n• Milk: Save $1-2 per gallon\n• Cereal: Save $2-3 per box\n• Pasta: Save $1 per pound\n• Spices: Save 50-70%\n\n**2. Smart Swaps:**\n• Fresh → Frozen veggies ($2-3 savings)\n• Name brand → Store brand (30% off)\n• Pre-cut → Whole produce (40% off)\n• Bottled water → Filter pitcher ($200/year)\n\n**3. Shopping Habits:**\n• Make a list (avoid impulse buys)\n• Never shop hungry\n• Compare unit prices\n• Check clearance section first\n\n${EllioVoice.signatures.youreGood}`,
+
+    `💡 **Advanced Saving Techniques**\n\n**Stack Deals:**\n• Sale price + coupon + cashback app\n• Example: $4 cereal → $2 sale → $1 coupon → $0.50 Ibotta = $0.50!\n\n**Generic Brands Worth Trying:**\n• Kirkland (Costco) - Premium quality\n• Trader Joe's - Unique flavors\n• Amazon Basics - Household essentials\n• Great Value (Walmart) - Everything\n• Market Pantry (Target) - Reliable\n\n**Budget Grocery Stores:**\n• Aldi - 50% cheaper than big chains\n• Lidl - European quality, low prices\n• WinCo - Employee-owned, no frills\n• Costco - Bulk savings (membership pays off)\n\n**Meal Planning:**\n• Cook once, eat twice (leftovers)\n• Meatless Monday (save $5-10/meal)\n• Breakfast for dinner (cheap & easy)\n\nSet a weekly savings goal in the app!`,
+
+    `🎯 **Hit Your Savings Goal**\n\n**Quick Wins (Save $20-50/week):**\n\n1. **Switch to Generic:**\n   • 5 name brands → store brands\n   • Weekly savings: $15-25\n\n2. **Buy Frozen:**\n   • Veggies, fruits, protein\n   • Weekly savings: $10-15\n\n3. **Skip Pre-Made:**\n   • Make your own: salads, snacks, lunches\n   • Weekly savings: $20-30\n\n4. **Use Cashback Apps:**\n   • Ibotta, Fetch, Rakuten\n   • Weekly savings: $5-10\n\n5. **Shop Sales Only:**\n   • Plan meals around weekly ads\n   • Weekly savings: $15-25\n\n**Total Potential: $65-105/week!**\n\n${EllioVoice.signatures.notAllAtOnce} Start with 2-3 tips!`,
+  ];
+
+  const randomTip = tips[Math.floor(Math.random() * tips.length)];
+
+  return {
+    id: Date.now().toString(),
+    text: randomTip,
+    sender: 'assistant',
+    timestamp: Date.now(),
+    type: 'text',
+  };
 }
 
 /**
@@ -331,10 +368,10 @@ export function getSuggestedQuestions(context: ChatContext): string[] {
     return [
       'How do I add tasks?',
       'What is voice input?',
-      'Show my tasks',
-      'How does scanning work?',
+      'How can I save money?',
+      'Show me savings tips',
     ];
   }
 
-  return ['What can you do?', 'How does this feature work?', 'Show my tasks', 'Help'];
+  return ['What can you do?', 'How can I save money?', 'Show my tasks', 'Help'];
 }

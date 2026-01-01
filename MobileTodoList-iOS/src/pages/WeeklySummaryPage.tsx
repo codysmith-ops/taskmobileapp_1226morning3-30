@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Share, Alert } from 'react-native';
 import { useTodoStore } from '../store';
 import { palette, spacing, typography, radius, shadow } from '../theme';
 import {
@@ -11,9 +11,11 @@ import {
   WarningIcon,
   LightbulbIcon,
 } from '../components/Icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const WeeklySummaryPage: React.FC = () => {
   const { tasks } = useTodoStore();
+  const [selectedGoals, setSelectedGoals] = useState<Set<string>>(new Set());
 
   // Calculate weekly metrics
   const now = new Date();
@@ -63,7 +65,22 @@ export const WeeklySummaryPage: React.FC = () => {
   const gradeColor =
     completionRate >= 80 ? palette.success : completionRate >= 60 ? palette.warning : palette.error;
 
-  // Daily breakdown
+  // Detect wins
+  const wins: string[] = [];
+  if (completedThisWeek >= 10) wins.push('Completed 10+ tasks');
+  if (completionRate >= 80) wins.push('80%+ completion rate');
+  if (onTimeRate >= 90) wins.push('90%+ on-time completion');
+  if (totalThisWeek > 0 && totalThisWeek === completedThisWeek) wins.push('Completed every task');
+
+  // Daily breakdown with emoji indicators
+  const getDailyEmoji = (completed: number, total: number): string => {
+    if (total === 0) return '—';
+    const rate = completed / total;
+    if (rate >= 0.8) return '😊';
+    if (rate >= 0.5) return '😐';
+    return '😟';
+  };
+
   const dailyData = Array.from({ length: 7 }, (_, i) => {
     const date = new Date(now);
     date.setDate(now.getDate() - (6 - i));
@@ -74,18 +91,57 @@ export const WeeklySummaryPage: React.FC = () => {
       const taskDate = new Date(t.createdAt);
       return taskDate.toDateString() === date.toDateString();
     });
+    const completed = dayTasks.filter(t => t.completed).length;
+    const total = dayTasks.length;
     return {
       day: date.toLocaleDateString('en-US', { weekday: 'short' }),
-      completed: dayTasks.filter(t => t.completed).length,
-      total: dayTasks.length,
+      completed,
+      total,
+      emoji: getDailyEmoji(completed, total),
     };
   });
+
+  // Next week goals
+  const nextWeekGoals = [
+    { id: 'scan_receipts', text: 'Scan every receipt' },
+    { id: 'generic_brands', text: 'Try 2 generic brands' },
+    { id: 'price_insights', text: 'Check price insights daily' },
+  ];
+
+  const toggleGoal = (goalId: string) => {
+    const newSelected = new Set(selectedGoals);
+    if (newSelected.has(goalId)) {
+      newSelected.delete(goalId);
+    } else {
+      newSelected.add(goalId);
+    }
+    setSelectedGoals(newSelected);
+    // Save to AsyncStorage
+    AsyncStorage.setItem('@ellio_next_week_goals', JSON.stringify(Array.from(newSelected)));
+  };
+
+  const handleShare = async () => {
+    try {
+      const message = `My Ellio Weekly Summary:\n\n📊 Grade: ${grade}\n✅ Completed: ${completedThisWeek} tasks\n🎯 Completion Rate: ${completionRate.toFixed(0)}%\n⏰ On-Time Rate: ${onTimeRate.toFixed(0)}%\n\n${wins.length > 0 ? `🌟 This Week's Wins:\n${wins.map(w => `• ${w}`).join('\n')}\n\n` : ''}Keep crushing it! 💪`;
+      
+      await Share.share({
+        message,
+      });
+    } catch (error) {
+      console.error('Share failed:', error);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Weekly Summary</Text>
-        <Text style={styles.subtitle}>Your productivity at a glance</Text>
+        <View>
+          <Text style={styles.title}>Weekly Summary</Text>
+          <Text style={styles.subtitle}>Your productivity at a glance</Text>
+        </View>
+        <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
+          <Text style={styles.shareButtonText}>Share</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Letter Grade Card */}
@@ -131,6 +187,7 @@ export const WeeklySummaryPage: React.FC = () => {
         <View style={styles.dailyChart}>
           {dailyData.map((day, index) => (
             <View key={index} style={styles.dayColumn}>
+              <Text style={styles.dayEmoji}>{day.emoji}</Text>
               <View style={styles.barContainer}>
                 {day.total > 0 && (
                   <View
@@ -155,41 +212,41 @@ export const WeeklySummaryPage: React.FC = () => {
         </View>
       </View>
 
-      {/* Goals & Recommendations */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>This Week's Goals</Text>
-        <View style={styles.goalsList}>
-          <View style={styles.goalItem}>
-            <Text style={styles.goalIcon}>
-              <TargetIcon />
-            </Text>
-            <View style={styles.goalContent}>
-              <Text style={styles.goalText}>
-                Maintain {completionRate >= 80 ? 'excellent' : 'good'} completion rate
-              </Text>
-              <Text style={styles.goalSubtext}>Current: {completionRate.toFixed(0)}%</Text>
-            </View>
-          </View>
-          <View style={styles.goalItem}>
-            <Text style={styles.goalIcon}>
-              <ClockIcon />
-            </Text>
-            <View style={styles.goalContent}>
-              <Text style={styles.goalText}>Complete tasks on time</Text>
-              <Text style={styles.goalSubtext}>Current: {onTimeRate.toFixed(0)}% on-time</Text>
-            </View>
-          </View>
-          <View style={styles.goalItem}>
-            <Text style={styles.goalIcon}>
-              <TrendUpIcon />
-            </Text>
-            <View style={styles.goalContent}>
-              <Text style={styles.goalText}>Stay consistent daily</Text>
-              <Text style={styles.goalSubtext}>Track progress each day</Text>
-            </View>
+      {/* This Week's Wins */}
+      {wins.length > 0 && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>🌟 This Week's Wins</Text>
+          <View style={styles.winsList}>
+            {wins.map((win, index) => (
+              <View key={index} style={styles.winItem}>
+                <Text style={styles.winCheckmark}>✓</Text>
+                <Text style={styles.winText}>{win}</Text>
+              </View>
+            ))}
           </View>
         </View>
+      )}
+
+      {/* Goals for Next Week */}
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Goals for Next Week</Text>
+        <View style={styles.goalsList}>
+          {nextWeekGoals.map((goal) => (
+            <TouchableOpacity
+              key={goal.id}
+              style={styles.goalCheckboxRow}
+              onPress={() => toggleGoal(goal.id)}
+            >
+              <View style={[styles.checkbox, selectedGoals.has(goal.id) && styles.checkboxChecked]}>
+                {selectedGoals.has(goal.id) && <Text style={styles.checkboxIcon}>✓</Text>}
+              </View>
+              <Text style={styles.goalCheckboxText}>{goal.text}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
+
+      {/* Old Goals Section - Removed */}
 
       {/* Insights */}
       <View style={styles.card}>
@@ -250,6 +307,19 @@ const styles = StyleSheet.create({
     backgroundColor: palette.primary,
     padding: spacing.lg,
     paddingTop: spacing.xl,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  shareButton: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.button,
+  },
+  shareButtonText: {
+    ...typography.bodyBold,
+    color: palette.surface,
   },
   title: {
     ...typography.h2,
@@ -328,13 +398,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    height: 150,
+    height: 180,
     paddingTop: spacing.md,
   },
   dayColumn: {
     flex: 1,
     alignItems: 'center',
     gap: spacing.xs,
+  },
+  dayEmoji: {
+    fontSize: 20,
   },
   barContainer: {
     width: '100%',
@@ -358,8 +431,60 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '600',
   },
+  winsList: {
+    gap: spacing.sm,
+  },
+  winItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.md,
+    backgroundColor: palette.successLight,
+    borderRadius: radius.button,
+  },
+  winCheckmark: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: palette.success,
+  },
+  winText: {
+    ...typography.body,
+    color: palette.text,
+    flex: 1,
+  },
   goalsList: {
     gap: spacing.md,
+  },
+  goalCheckboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.md,
+    backgroundColor: palette.background,
+    borderRadius: radius.button,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: palette.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: palette.primary,
+    borderColor: palette.primary,
+  },
+  checkboxIcon: {
+    color: palette.surface,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  goalCheckboxText: {
+    ...typography.body,
+    color: palette.text,
+    flex: 1,
   },
   goalItem: {
     flexDirection: 'row',

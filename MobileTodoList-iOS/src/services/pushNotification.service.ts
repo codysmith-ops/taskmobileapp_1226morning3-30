@@ -221,6 +221,68 @@ class PushNotificationService {
     }
     return false;
   }
+
+  /**
+   * Schedule a notification for a specific date/time
+   */
+  async scheduleNotificationAt(params: {
+    id: string;
+    title: string;
+    body: string;
+    data?: any;
+    date: Date;
+  }): Promise<void> {
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.scheduleLocalNotification({
+        alertTitle: params.title,
+        alertBody: params.body,
+        fireDate: params.date.toISOString(),
+        userInfo: { ...params.data, notificationId: params.id },
+      });
+      console.log('🔔 Scheduled notification:', params.id, 'for', params.date.toISOString());
+    }
+  }
+
+  /**
+   * Cancel a specific scheduled notification
+   */
+  async cancelScheduledNotification(notificationId: string): Promise<void> {
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.cancelLocalNotifications({ notificationId });
+      console.log('🔕 Cancelled notification:', notificationId);
+    }
+  }
+
+  /**
+   * Cancel all scheduled notifications
+   */
+  async cancelAllScheduledNotifications(): Promise<void> {
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.cancelAllLocalNotifications();
+      console.log('🔕 Cancelled all notifications');
+    }
+  }
 }
 
 export const notificationService = PushNotificationService.getInstance();
+
+// Export simple functions for backward compatibility
+export async function scheduleNotification(params: {
+  id: string;
+  title: string;
+  body: string;
+  data?: any;
+  date?: Date;
+}): Promise<void> {
+  await notificationService.scheduleNotificationAt({
+    id: params.id,
+    title: params.title,
+    body: params.body,
+    data: params.data,
+    date: params.date || new Date(Date.now() + 60000), // Default: 1 minute from now
+  });
+}
+
+export async function cancelNotification(notificationId: string): Promise<void> {
+  await notificationService.cancelScheduledNotification(notificationId);
+}

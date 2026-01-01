@@ -27,6 +27,7 @@ import {
 import { palette, spacing, radius, typography } from '../theme';
 import { EllioButtons } from '../content/ellioTheme';
 import { Task } from '../store';
+import { EllioElephantLogo } from './EllioElephantLogo';
 
 interface ChatAssistantProps {
   context: ChatContext;
@@ -132,7 +133,7 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ context, tasks }) 
           ]}
         >
           <TouchableOpacity style={styles.fabButton} onPress={handleOpen}>
-            <Text style={styles.fabIcon}>💬</Text>
+            <EllioElephantLogo size={32} color="#ffffff" />
             <View style={styles.pulseIndicator} />
           </TouchableOpacity>
         </Animated.View>
@@ -148,7 +149,7 @@ export const ChatAssistant: React.FC<ChatAssistantProps> = ({ context, tasks }) 
           <View style={styles.header}>
             <View style={styles.headerContent}>
               <View style={styles.assistantAvatar}>
-                <Text style={styles.assistantAvatarText}>💬</Text>
+                <EllioElephantLogo size={36} color="#8B5CF6" />
               </View>
               <View style={styles.headerText}>
                 <Text style={styles.headerTitle}>Ellio Assistant</Text>

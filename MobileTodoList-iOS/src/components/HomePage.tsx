@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -18,8 +18,23 @@ import {
   TrendUpIcon,
   CalendarIcon,
 } from './Icons';
+import { InfoTooltip } from './InfoTooltip';
 
 import { NavigationPage } from './NavigationMenu';
+import {
+  getActiveGoal,
+  createSavingsGoal,
+  calculateGoalProgress,
+  getGoalStatusMessage,
+  GoalProgress,
+  SavingsGoal,
+} from '../services/savingsGoals.service';
+import {
+  getSubscriptionStatus,
+  isTrialEndingSoon,
+  getTrialStatusMessage,
+  SubscriptionStatus,
+} from '../services/trialSubscription.service';
 
 interface HomePageProps {
   tasks: Task[];
@@ -30,6 +45,41 @@ interface HomePageProps {
 export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate }) => {
   const [weeklySavingsGoal, setWeeklySavingsGoal] = useState('150');
   const [isEditingGoal, setIsEditingGoal] = useState(false);
+  const [currentGoal, setCurrentGoal] = useState<SavingsGoal | null>(null);
+  const [goalProgress, setGoalProgress] = useState<GoalProgress | null>(null);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
+  const [trialEnding, setTrialEnding] = useState(false);
+  const [trialMessage, setTrialMessage] = useState('');
+
+  // Load savings goal and subscription status on mount
+  useEffect(() => {
+    loadSavingsGoal();
+    loadSubscriptionStatus();
+  }, []);
+
+  const loadSavingsGoal = async () => {
+    const activeGoal = await getActiveGoal();
+    if (activeGoal) {
+      setCurrentGoal(activeGoal);
+      setWeeklySavingsGoal(activeGoal.targetAmount.toString());
+      const progress = await calculateGoalProgress(activeGoal);
+      setGoalProgress(progress);
+    }
+  };
+
+  const loadSubscriptionStatus = async () => {
+    const status = await getSubscriptionStatus();
+    setSubscriptionStatus(status);
+    
+    const isEnding = await isTrialEndingSoon();
+    setTrialEnding(isEnding);
+    
+    if (status.isTrial) {
+      const message = await getTrialStatusMessage();
+      setTrialMessage(message);
+    }
+  };
+
 
   // Calculate statistics
   const today = new Date();
@@ -57,29 +107,33 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
   const savingsGoalNumber = parseFloat(weeklySavingsGoal) || 150;
   const savingsProgress = Math.min((moneySavedThisWeek / savingsGoalNumber) * 100, 100);
 
-  const handleSaveGoal = () => {
+  const handleSaveGoal = async () => {
     setIsEditingGoal(false);
-    Alert.alert('Goal Updated', `Weekly savings goal set to $${weeklySavingsGoal}`);
-  };
-
-  const showMoneySavedInfo = () => {
-    Alert.alert(
-      '💰 How Money Saved Works',
-      'Ellio compares prices on your receipts to average prices in your area (using county + ZIP from receipts, not GPS).\n\nThis shows how much you saved by shopping smart!\n\nScan 3+ receipts to see your savings.',
-      [{ text: 'Got It' }]
-    );
-  };
-
-  const showCashbackInfo = () => {
-    Alert.alert(
-      '💳 How Cashback Works',
-      'Connect your cashback apps (Rakuten, Ibotta, Fetch) and Ellio will track your total earnings in one place.\n\nLink accounts in Settings → Integrations.',
-      [{ text: 'Got It' }]
-    );
+    const amount = parseFloat(weeklySavingsGoal) || 150;
+    
+    // Create new weekly savings goal
+    await createSavingsGoal('weekly', amount, 'groceries');
+    await loadSavingsGoal();
+    
+    Alert.alert('Goal Updated', `Weekly savings goal set to $${amount.toFixed(2)}`);
   };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Trial Reminder Banner */}
+      {trialEnding && trialMessage && (
+        <TouchableOpacity 
+          style={styles.trialBanner}
+          onPress={() => onNavigate('settings')}
+        >
+          <Text style={styles.trialBannerIcon}>⏰</Text>
+          <View style={styles.trialBannerContent}>
+            <Text style={styles.trialBannerText}>{trialMessage}</Text>
+            <Text style={styles.trialBannerAction}>Upgrade Now →</Text>
+          </View>
+        </TouchableOpacity>
+      )}
+
       {/* Welcome Header */}
       <View style={styles.header}>
         <Text style={styles.greeting}>Hey, {userName}</Text>
@@ -116,9 +170,12 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
             <View style={styles.statIcon}>
               <DollarIcon size={20} color={palette.success} />
             </View>
-            <TouchableOpacity onPress={showMoneySavedInfo} style={styles.helpButton}>
-              <Text style={styles.helpIcon}>?</Text>
-            </TouchableOpacity>
+            <InfoTooltip
+              title="How Money Saved Works"
+              body="Ellio compares prices on your receipts to average prices in your area (using county + ZIP from receipts, not GPS). This shows how much you saved by shopping smart!"
+              footnote="Scan 3+ receipts to see your savings."
+              iconSize={14}
+            />
           </View>
           <Text style={styles.statValueSmall}>${moneySavedThisWeek.toFixed(2)}</Text>
           <Text style={styles.statLabelSmall}>Saved</Text>
@@ -130,9 +187,12 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
             <View style={styles.statIcon}>
               <TrendUpIcon size={20} color={palette.primary} />
             </View>
-            <TouchableOpacity onPress={showCashbackInfo} style={styles.helpButton}>
-              <Text style={styles.helpIcon}>?</Text>
-            </TouchableOpacity>
+            <InfoTooltip
+              title="How Cashback Works"
+              body="Connect your cashback apps (Rakuten, Ibotta, Fetch) and Ellio will track your total earnings in one place."
+              footnote="Link accounts in Settings → Integrations."
+              iconSize={14}
+            />
           </View>
           <Text style={styles.statValueSmall}>${cashbackEarned.toFixed(2)}</Text>
           <Text style={styles.statLabelSmall}>Cashback</Text>
@@ -154,6 +214,11 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
           <View style={styles.goalTitleRow}>
             <TargetIcon size={20} color={palette.primary} />
             <Text style={styles.goalTitle}>Weekly Savings Goal</Text>
+            <InfoTooltip
+              title="How Goal Progress Works"
+              body="Your progress is calculated from receipts scanned this week compared to your target. It updates in real-time as you shop."
+              iconSize={14}
+            />
           </View>
           {!isEditingGoal ? (
             <TouchableOpacity onPress={() => setIsEditingGoal(true)}>
@@ -186,18 +251,23 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
         {/* Progress Bar */}
         <View style={styles.progressContainer}>
           <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: `${savingsProgress}%` }]} />
+            <View style={[styles.progressFill, { width: `${goalProgress?.percentComplete || savingsProgress}%` }]} />
           </View>
           <Text style={styles.progressText}>
             ${moneySavedThisWeek.toFixed(2)} of ${savingsGoalNumber.toFixed(2)} (
-            {Math.round(savingsProgress)}%)
+            {Math.round(goalProgress?.percentComplete || savingsProgress)}%)
           </Text>
-          {savingsProgress >= 50 && savingsProgress < 100 && (
+          {goalProgress && (
+            <Text style={styles.goalStatusMessage}>
+              {getGoalStatusMessage(goalProgress)}
+            </Text>
+          )}
+          {(goalProgress?.percentComplete || savingsProgress) >= 50 && (goalProgress?.percentComplete || savingsProgress) < 100 && (
             <Text style={styles.encouragementText}>Halfway there! 🌟</Text>
           )}
         </View>
 
-        {savingsProgress >= 100 && (
+        {(goalProgress?.percentComplete || savingsProgress) >= 100 && (
           <View style={styles.goalAchieved}>
             <Text style={styles.celebrationEmoji}>🎉</Text>
             <Text style={styles.goalAchievedText}>
@@ -205,7 +275,7 @@ export const HomePage: React.FC<HomePageProps> = ({ tasks, userName, onNavigate 
             </Text>
           </View>
         )}
-        {savingsProgress > 100 && (
+        {(goalProgress?.percentComplete || savingsProgress) > 100 && (
           <Text style={styles.bonusText}>
             +${(moneySavedThisWeek - savingsGoalNumber).toFixed(2)} above goal 🚀
           </Text>
@@ -253,6 +323,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.lg,
   },
+  trialBanner: {
+    backgroundColor: '#FEF3C7',
+    padding: spacing.md,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.lg,
+    ...shadow.sm,
+  },
+  trialBannerIcon: {
+    fontSize: 28,
+    marginRight: spacing.md,
+  },
+  trialBannerContent: {
+    flex: 1,
+  },
+  trialBannerText: {
+    ...typography.bodyBold,
+    color: '#92400E',
+    marginBottom: spacing.xs,
+  },
+  trialBannerAction: {
+    ...typography.caption,
+    color: palette.primary,
+    fontWeight: '600',
+  },
   header: {
     marginBottom: spacing.xl,
   },
@@ -286,19 +382,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: spacing.sm,
-  },
-  helpButton: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: palette.primaryLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  helpIcon: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: palette.surface,
   },
   statIcon: {
     marginBottom: spacing.sm,
@@ -402,6 +485,13 @@ const styles = StyleSheet.create({
     ...typography.secondary,
     color: palette.textSecondary,
     textAlign: 'center',
+  },
+  goalStatusMessage: {
+    ...typography.caption,
+    color: palette.primary,
+    textAlign: 'center',
+    marginTop: spacing.xs,
+    fontStyle: 'italic',
   },
   encouragementText: {
     ...typography.bodyBold,

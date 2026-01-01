@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,15 @@ import {
 } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { palette, spacing, radius, typography } from '../theme';
-import { LocationIcon, CameraIcon } from '../components/Icons';
+import { LocationIcon, CameraIcon, CheckmarkIcon } from '../components/Icons';
+import {
+  calculateReceiptSavings,
+  getWeeklySavings,
+  getSavingsExplanation,
+  type SavingsLog,
+  type WeeklySavings,
+  type PriceComparison,
+} from '../services/priceAccuracy.service';
 
 interface ReceiptItem {
   name: string;
@@ -32,6 +40,8 @@ interface ScannedReceipt {
     amount: number;
     percentage: number;
   }[];
+  savingsLog?: SavingsLog;
+  priceComparisons?: PriceComparison[];
 }
 
 export const ReceiptScannerPage: React.FC = () => {
@@ -55,6 +65,16 @@ export const ReceiptScannerPage: React.FC = () => {
   ]);
   const [scanning, setScanning] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState<ScannedReceipt | null>(null);
+  const [weeklySavings, setWeeklySavings] = useState<WeeklySavings | null>(null);
+
+  useEffect(() => {
+    loadWeeklySavings();
+  }, [receipts]);
+
+  const loadWeeklySavings = async () => {
+    const savings = await getWeeklySavings();
+    setWeeklySavings(savings);
+  };
 
   const handleTakePhoto = async () => {
     try {
@@ -136,36 +156,59 @@ export const ReceiptScannerPage: React.FC = () => {
     }
   };
 
-  const processReceipt = (imageUri?: string) => {
+  const processReceipt = async (imageUri?: string) => {
     setScanning(true);
 
     // Simulate OCR processing
-    setTimeout(() => {
+    setTimeout(async () => {
+      const mockItems = [
+        { name: 'Household Items', price: 45.5, category: 'Home' },
+        { name: 'Electronics', price: 44.49, category: 'Electronics' },
+      ];
+      
+      const mockStoreName = 'Target';
+      const mockTotal = mockItems.reduce((sum, item) => sum + item.price, 0);
+      
+      // Calculate price accuracy and savings
+      const savingsLog = await calculateReceiptSavings(
+        `receipt_${Date.now()}`,
+        mockStoreName,
+        mockItems,
+        'Target\n123 Main St\nSan Francisco, CA 94102' // Mock receipt text with location
+      );
+      
       const mockReceipt: ScannedReceipt = {
         id: Date.now().toString(),
         date: new Date().toISOString(),
-        storeName: 'Target',
-        total: 89.99,
-        items: [
-          { name: 'Household Items', price: 45.5, category: 'Home' },
-          { name: 'Electronics', price: 44.49, category: 'Electronics' },
-        ],
+        storeName: mockStoreName,
+        total: mockTotal,
+        items: mockItems,
         imageUri,
-        location: 'Current Location',
+        location: savingsLog.location.storeAddress || 'Current Location',
         estimatedRewards: [
           { card: 'Chase Freedom', amount: 4.5, percentage: 5 },
           { card: 'Citi Double Cash', amount: 1.8, percentage: 2 },
         ],
+        savingsLog,
+        priceComparisons: savingsLog.itemComparisons,
       };
 
       setReceipts([mockReceipt, ...receipts]);
       setScanning(false);
+      
+      const savingsText = savingsLog.totalSavings > 0
+        ? `You saved $${savingsLog.totalSavings.toFixed(2)} vs. area average!`
+        : savingsLog.totalSavings < -1
+        ? `Price was $${Math.abs(savingsLog.totalSavings).toFixed(2)} above area average`
+        : 'Prices match area average';
+      
       Alert.alert(
         'Receipt Scanned!',
-        `Total: $${mockReceipt.total.toFixed(
-          2
-        )}\nEstimated Rewards: $${mockReceipt.estimatedRewards[0].amount.toFixed(2)}`,
-        [{ text: 'View Details', onPress: () => setSelectedReceipt(mockReceipt) }]
+        `Total: $${mockReceipt.total.toFixed(2)}\n${savingsText}\nEstimated Rewards: $${mockReceipt.estimatedRewards[0].amount.toFixed(2)}`,
+        [
+          { text: 'View Details', onPress: () => setSelectedReceipt(mockReceipt) },
+          { text: 'OK' },
+        ]
       );
     }, 2000);
   };
@@ -208,19 +251,69 @@ export const ReceiptScannerPage: React.FC = () => {
 
           <View style={styles.detailsCard}>
             <Text style={styles.sectionTitle}>Items</Text>
-            {selectedReceipt.items.map((item, index) => (
-              <View key={index} style={styles.itemRow}>
-                <View style={styles.itemInfo}>
-                  <Text style={styles.itemName}>{item.name}</Text>
-                  <Text style={styles.itemCategory}>{item.category}</Text>
+            {selectedReceipt.items.map((item, index) => {
+              const comparison = selectedReceipt.priceComparisons?.find(
+                c => c.itemName === item.name
+              );
+              return (
+                <View key={index} style={styles.itemRow}>
+                  <View style={styles.itemInfo}>
+                    <Text style={styles.itemName}>{item.name}</Text>
+                    <Text style={styles.itemCategory}>{item.category}</Text>
+                    {comparison && (
+                      <View style={styles.priceComparisonRow}>
+                        {comparison.savings > 0.25 ? (
+                          <View style={styles.savingsBadge}>
+                            <CheckmarkIcon size={12} color={palette.success} />
+                            <Text style={styles.savingsText}>
+                              Saved ${comparison.savings.toFixed(2)} vs. avg
+                            </Text>
+                          </View>
+                        ) : comparison.savings < -0.25 ? (
+                          <Text style={styles.overpaidText}>
+                            ${Math.abs(comparison.savings).toFixed(2)} above avg
+                          </Text>
+                        ) : (
+                          <Text style={styles.fairPriceText}>Fair price</Text>
+                        )}
+                      </View>
+                    )}
+                  </View>
+                  <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
                 </View>
-                <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
-              </View>
-            ))}
+              );
+            })}
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Total</Text>
               <Text style={styles.totalAmount}>${selectedReceipt.total.toFixed(2)}</Text>
             </View>
+            {selectedReceipt.savingsLog && (
+              <View style={styles.savingsSummaryRow}>
+                {selectedReceipt.savingsLog.totalSavings > 0 ? (
+                  <>
+                    <Text style={styles.savingsSummaryLabel}>
+                      💰 You saved vs. area average
+                    </Text>
+                    <Text style={styles.savingsSummaryAmount}>
+                      ${selectedReceipt.savingsLog.totalSavings.toFixed(2)}
+                    </Text>
+                  </>
+                ) : selectedReceipt.savingsLog.totalSavings < -1 ? (
+                  <>
+                    <Text style={styles.overpaidSummaryLabel}>
+                      ⚠️ Paid above area average
+                    </Text>
+                    <Text style={styles.overpaidSummaryAmount}>
+                      ${Math.abs(selectedReceipt.savingsLog.totalSavings).toFixed(2)}
+                    </Text>
+                  </>
+                ) : (
+                  <Text style={styles.fairPriceSummary}>
+                    ✓ Prices match area average
+                  </Text>
+                )}
+              </View>
+            )}
           </View>
 
           <View style={styles.detailsCard}>
@@ -247,8 +340,28 @@ export const ReceiptScannerPage: React.FC = () => {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Receipt Scanner</Text>
         <View style={styles.rewardsBadge}>
-          <Text style={styles.rewardsText}>${calculateTotalRewards().toFixed(2)}</Text>
-          <Text style={styles.rewardsLabel}>Total Rewards</Text>
+          <Text style={styles.rewardsText}>
+            ${weeklySavings ? weeklySavings.totalSaved.toFixed(2) : '0.00'}
+          </Text>
+          <Text style={styles.rewardsLabel}>
+            {weeklySavings && weeklySavings.receiptsCount > 0
+              ? `Saved This Week (${weeklySavings.receiptsCount} receipts)`
+              : 'Scan receipts to see savings'}
+          </Text>
+          {weeklySavings && weeklySavings.receiptsCount >= 3 && (
+            <TouchableOpacity
+              style={styles.howCalculatedButton}
+              onPress={() => {
+                Alert.alert(
+                  '💡 How We Calculate Savings',
+                  `Ellio compares your receipt prices to:\n\n1. Average prices in your area (county + ZIP)\n2. Prices at other stores you've shopped\n3. Historical prices for the same items\n\nThis week: ${weeklySavings.receiptsCount} receipts analyzed\nTotal saved: $${weeklySavings.totalSaved.toFixed(2)}\n\nData source: Your receipts + aggregated pricing data from your area (no GPS).`,
+                  [{ text: 'Got it' }]
+                );
+              }}
+            >
+              <Text style={styles.howCalculatedText}>How is this calculated?</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
@@ -352,6 +465,16 @@ const styles = StyleSheet.create({
   rewardsLabel: {
     ...typography.secondary,
     color: palette.success,
+  },
+  howCalculatedButton: {
+    marginTop: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  howCalculatedText: {
+    ...typography.secondary,
+    color: palette.primary,
+    fontSize: 12,
+    textDecorationLine: 'underline',
   },
   scanButtons: {
     flexDirection: 'row',
@@ -524,6 +647,66 @@ const styles = StyleSheet.create({
     ...typography.secondary,
     color: palette.textSecondary,
     fontSize: 12,
+  },
+  priceComparisonRow: {
+    marginTop: spacing.xs,
+  },
+  savingsBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  savingsText: {
+    ...typography.secondary,
+    color: palette.success,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  overpaidText: {
+    ...typography.secondary,
+    color: palette.warning,
+    fontSize: 12,
+  },
+  fairPriceText: {
+    ...typography.secondary,
+    color: palette.textSecondary,
+    fontSize: 12,
+  },
+  savingsSummaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: spacing.md,
+    marginTop: spacing.md,
+    borderTopWidth: 2,
+    borderTopColor: palette.successLight,
+    backgroundColor: palette.successLight,
+    padding: spacing.md,
+    borderRadius: radius.md,
+  },
+  savingsSummaryLabel: {
+    ...typography.bodyBold,
+    color: palette.success,
+    flex: 1,
+  },
+  savingsSummaryAmount: {
+    ...typography.h3,
+    color: palette.success,
+    fontWeight: '700',
+  },
+  overpaidSummaryLabel: {
+    ...typography.bodyBold,
+    color: palette.warning,
+    flex: 1,
+  },
+  overpaidSummaryAmount: {
+    ...typography.h3,
+    color: palette.warning,
+    fontWeight: '700',
+  },
+  fairPriceSummary: {
+    ...typography.bodyBold,
+    color: palette.textSecondary,
   },
   itemPrice: {
     ...typography.body,
