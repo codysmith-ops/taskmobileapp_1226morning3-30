@@ -248,20 +248,6 @@ export const CalendarIcon = ({ size = 24, color = '#5159B0' }: IconProps) => (
   </Svg>
 );
 
-export const CartIcon = ({ size = 24, color = '#5159B0' }: IconProps) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <Circle cx="9" cy="21" r="2" stroke={color} strokeWidth="2.5" />
-    <Circle cx="20" cy="21" r="2" stroke={color} strokeWidth="2.5" />
-    <Path
-      d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6"
-      stroke={color}
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </Svg>
-);
-
 export const CreditCardIcon = ({ size = 24, color = '#5159B0' }: IconProps) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Rect x="1" y="4" width="22" height="16" rx="2" stroke={color} strokeWidth="2.5" />
