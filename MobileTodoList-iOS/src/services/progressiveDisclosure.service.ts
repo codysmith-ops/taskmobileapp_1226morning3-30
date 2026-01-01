@@ -238,7 +238,7 @@ export function getFeatureTitle(feature: FeatureName): string {
 export async function resetFeatureTracking(): Promise<void> {
   try {
     const keys = await AsyncStorage.getAllKeys();
-    const ellioKeys = keys.filter(key => key.startsWith('@ellio_'));
+    const ellioKeys = keys.filter((key: string) => key.startsWith('@ellio_'));
     await AsyncStorage.multiRemove(ellioKeys);
     console.log('🔄 Feature tracking reset');
   } catch (error) {

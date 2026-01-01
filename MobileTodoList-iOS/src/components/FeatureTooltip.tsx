@@ -12,7 +12,7 @@ import {
   Modal,
   StyleSheet,
 } from 'react-native';
-import { palette, spacing, radius, typography, shadow } from '../theme';
+import { palette, spacing, radius, typography } from '../theme';
 import {
   type FeatureName,
   getFeatureTitle,
@@ -21,7 +21,7 @@ import {
   suppressFeatureTooltip,
 } from '../services/progressiveDisclosure.service';
 
-interface FeatureTooltipProps {
+export interface FeatureTooltipProps {
   visible: boolean;
   feature: FeatureName;
   onShowMe: () => void;
@@ -100,15 +100,19 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     width: '100%',
     maxWidth: 340,
-    ...shadow.xl,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 12,
   },
   header: {
     marginBottom: spacing.md,
   },
   badge: {
-    ...typography.caption,
+    fontSize: 12,
+    fontWeight: '700' as const,
     color: palette.primary,
-    fontWeight: 'bold',
     backgroundColor: palette.primaryLight,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,

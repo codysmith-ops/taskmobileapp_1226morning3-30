@@ -10,13 +10,12 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
-  Image,
 } from 'react-native';
-import { palette, spacing, radius, typography, shadow } from '../theme';
+import { palette, spacing, radius, typography } from '../theme';
 
-export type PermissionType = 'microphone' | 'camera' | 'location' | 'notifications';
+export type PermissionType = 'microphone' | 'camera' | 'location';
 
-interface PermissionPrePromptProps {
+export interface PermissionPrePromptProps {
   visible: boolean;
   permissionType: PermissionType;
   onAllow: () => void;
@@ -85,7 +84,7 @@ export const PermissionPrePrompt: React.FC<PermissionPrePromptProps> = ({
   onAllow,
   onDeny,
 }) => {
-  const config = PERMISSION_CONFIG[permissionType];
+  const config = PERMISSION_CONFIG[permissionType as PermissionType];
 
   return (
     <Modal
@@ -103,7 +102,7 @@ export const PermissionPrePrompt: React.FC<PermissionPrePromptProps> = ({
 
           <View style={styles.benefitsContainer}>
             <Text style={styles.benefitsTitle}>This helps you:</Text>
-            {config.benefits.map((benefit, index) => (
+            {config.benefits.map((benefit: string, index: number) => (
               <View key={index} style={styles.benefitRow}>
                 <Text style={styles.bulletPoint}>✓</Text>
                 <Text style={styles.benefitText}>{benefit}</Text>
@@ -143,7 +142,11 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     width: '100%',
     maxWidth: 400,
-    ...shadow.xl,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 12,
   },
   icon: {
     fontSize: 64,
@@ -164,7 +167,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   benefitsContainer: {
-    backgroundColor: palette.backgroundSecondary,
+    backgroundColor: palette.background,
     borderRadius: radius.md,
     padding: spacing.md,
     marginBottom: spacing.lg,

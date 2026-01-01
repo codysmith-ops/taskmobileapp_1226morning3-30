@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface ContextualTipProps {
+export interface ContextualTipProps {
   page: string;
   tipId: string;
   message: string;

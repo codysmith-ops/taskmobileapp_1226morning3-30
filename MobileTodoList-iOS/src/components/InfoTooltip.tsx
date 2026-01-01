@@ -12,32 +12,34 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import { palette, spacing, radius, typography, shadow } from '../theme';
+import { palette, spacing, radius, typography } from '../theme';
 
 interface InfoTooltipProps {
   title: string;
-  content: string;
-  size?: number;
-  color?: string;
+  body: string;
+  footnote?: string;
+  iconSize?: number;
+  iconColor?: string;
 }
 
 export const InfoTooltip: React.FC<InfoTooltipProps> = ({
   title,
-  content,
-  size = 20,
-  color = palette.primary,
+  body,
+  footnote,
+  iconSize = 16,
+  iconColor = palette.textSecondary,
 }) => {
   const [visible, setVisible] = useState(false);
 
   return (
     <>
       <TouchableOpacity
-        style={[styles.button, { width: size, height: size }]}
+        style={[styles.button, { width: iconSize, height: iconSize }]}
         onPress={() => setVisible(true)}
         accessibilityLabel={`Info: ${title}`}
         accessibilityRole="button"
       >
-        <Text style={[styles.buttonText, { fontSize: size * 0.7, color }]}>?</Text>
+        <Text style={[styles.buttonText, { fontSize: iconSize * 0.7, color: iconColor }]}>?</Text>
       </TouchableOpacity>
 
       <Modal
@@ -54,7 +56,7 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
           <View style={styles.modalContainer}>
             <TouchableOpacity
               activeOpacity={1}
-              onPress={e => e.stopPropagation()}
+              onPress={(e: any) => e.stopPropagation()}
             >
               <View style={styles.modal}>
                 <View style={styles.header}>
@@ -68,7 +70,8 @@ export const InfoTooltip: React.FC<InfoTooltipProps> = ({
                 </View>
 
                 <ScrollView style={styles.contentContainer}>
-                  <Text style={styles.content}>{content}</Text>
+                  <Text style={styles.bodyText}>{body}</Text>
+                  {footnote && <Text style={styles.footnote}>{footnote}</Text>}
                 </ScrollView>
 
                 <TouchableOpacity
@@ -112,7 +115,11 @@ const styles = StyleSheet.create({
     backgroundColor: palette.surface,
     borderRadius: radius.lg,
     padding: spacing.lg,
-    ...shadow.lg,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   header: {
     flexDirection: 'row',
@@ -139,10 +146,16 @@ const styles = StyleSheet.create({
   contentContainer: {
     maxHeight: 400,
   },
-  content: {
+  bodyText: {
     ...typography.body,
     color: palette.textSecondary,
     lineHeight: 24,
+  },
+  footnote: {
+    ...typography.secondary,
+    color: palette.textTertiary,
+    marginTop: spacing.md,
+    fontStyle: 'italic',
   },
   gotItButton: {
     marginTop: spacing.lg,
