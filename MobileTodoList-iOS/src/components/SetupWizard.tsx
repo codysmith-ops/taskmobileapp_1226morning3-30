@@ -439,7 +439,35 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
             achieve them.
           </Text>
 
-
+          <TouchableOpacity
+            style={[
+              styles.goalCard,
+              selectedGoals.includes('save-money') && styles.goalCardSelected,
+            ]}
+            onPress={() => toggleGoal('save-money')}
+          >
+            <View style={styles.goalHeader}>
+              <View style={styles.goalIconContainer}>
+                <DollarIcon size={32} color={palette.primary} />
+              </View>
+              <View style={styles.goalInfo}>
+                <Text style={styles.goalTitle}>Save Money</Text>
+                <Text style={styles.goalDescription}>
+                  Find deals, compare prices, track savings
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.checkbox,
+                  selectedGoals.includes('save-money') && styles.checkboxSelected,
+                ]}
+              >
+                {selectedGoals.includes('save-money') && (
+                  <CheckmarkIcon size={16} color={palette.surface} />
+                )}
+              </View>
+            </View>
+          </TouchableOpacity>
 
           <TouchableOpacity
             style={[
