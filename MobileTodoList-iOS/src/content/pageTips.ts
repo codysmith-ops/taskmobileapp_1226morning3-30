@@ -12,6 +12,44 @@ export interface PageTip {
 }
 
 export const PAGE_TIPS: PageTip[] = [
+  // Setup Wizard
+  {
+    page: 'setup_welcome',
+    tipId: 'getting_started',
+    message: 'Welcome! This quick setup helps me understand how you want to use Ellio. You can change anything later.',
+    position: 'top',
+  },
+  {
+    page: 'setup_goals',
+    tipId: 'choose_goals',
+    message: 'Pick what matters most to you. I\'ll personalize your experience based on your choices.',
+    position: 'top',
+  },
+  {
+    page: 'setup_credit',
+    tipId: 'credit_cards',
+    message: 'Adding cards is optional but helps me track cashback rewards automatically.',
+    position: 'top',
+  },
+  {
+    page: 'setup_categories',
+    tipId: 'task_categories',
+    message: 'Select the lists you want to see. You can add more later in settings.',
+    position: 'top',
+  },
+  {
+    page: 'setup_permissions',
+    tipId: 'permissions_why',
+    message: 'These permissions are optional. They just make features like receipt scanning and reminders work better.',
+    position: 'top',
+  },
+  {
+    page: 'setup_voice',
+    tipId: 'voice_preference',
+    message: 'Voice input is the fastest way to add tasks, but typing works great too!',
+    position: 'top',
+  },
+  
   // Home Page
   {
     page: 'home',

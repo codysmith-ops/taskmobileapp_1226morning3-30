@@ -87,16 +87,15 @@ export const ContextualTip: React.FC<ContextualTipProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    left: 20,
-    right: 20,
+    marginHorizontal: 20,
+    marginVertical: 16,
     zIndex: 1000,
   },
   positionTop: {
-    top: 80,
+    marginTop: 16,
   },
   positionBottom: {
-    bottom: 100,
+    marginBottom: 16,
   },
   bubble: {
     backgroundColor: '#8B5CF6',

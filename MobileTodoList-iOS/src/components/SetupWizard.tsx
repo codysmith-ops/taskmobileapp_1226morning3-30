@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -27,6 +27,8 @@ import {
   TargetIcon,
 } from './Icons';
 import { ChatAssistant } from './ChatAssistant';
+import { ContextualTip } from './ContextualTip';
+import { getTipsForPage } from '../content/pageTips';
 
 interface SetupWizardProps {
   onComplete: (userData: UserSetupData) => void;
@@ -82,6 +84,10 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
   const [company, setCompany] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
+  // Contextual tip state
+  const [showTip, setShowTip] = useState(false);
+  const [currentTip, setCurrentTip] = useState<any>(null);
+
   // New onboarding state
   const [locationPermissionGranted, setLocationPermissionGranted] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
@@ -101,6 +107,27 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
   const [useDebitCard, setUseDebitCard] = useState(false);
   const [debitCardName, setDebitCardName] = useState('');
   const [debitRewardsInfo, setDebitRewardsInfo] = useState('');
+
+  // Show tip when step changes
+  useEffect(() => {
+    const stepToPage: { [key: number]: string } = {
+      0: 'setup_welcome',
+      1: 'setup_goals',
+      2: 'setup_credit',
+      3: 'setup_categories',
+      4: 'setup_permissions',
+      5: 'setup_voice',
+    };
+    
+    const pageName = stepToPage[step];
+    if (pageName) {
+      const tips = getTipsForPage(pageName);
+      if (tips.length > 0) {
+        setCurrentTip(tips[0]);
+        setShowTip(true);
+      }
+    }
+  }, [step]);
 
   // Popular credit cards
   const popularCards = [
@@ -1397,6 +1424,17 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
       </View>
 
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
+        {/* Contextual Tip - shown at top of content */}
+        {showTip && currentTip && (
+          <ContextualTip
+            page={currentTip.page}
+            tipId={currentTip.tipId}
+            message={currentTip.message}
+            position={currentTip.position || 'top'}
+            onDismiss={() => setShowTip(false)}
+          />
+        )}
+        
         <Text style={styles.title}>{currentStep.title}</Text>
         <Text style={styles.subtitle}>{currentStep.subtitle}</Text>
         {currentStep.content}
